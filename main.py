@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-RPG Maker Save Editor — Ponto de Entrada Principal (Universal Edition)
+Save Maker — Ponto de Entrada Principal (Universal Edition)
 
 Suporta:
   - RPG Maker MV (.rpgsave)
@@ -51,7 +51,7 @@ def main():
         args_list = args_list[1:]
 
     parser = argparse.ArgumentParser(
-        description="Editor e Conversor Universal de Saves de RPG Maker (MV, MZ, VX Ace, VX, XP, 2000/2003, JSON)",
+        description="Save Maker — Editor e Conversor Universal de Saves de RPG Maker (MV, MZ, VX Ace, VX, XP, 2000/2003, JSON)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__
     )

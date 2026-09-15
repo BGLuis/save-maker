@@ -1,5 +1,5 @@
 # ==============================================================================
-# Makefile para RPG Maker Save Editor (Universal Edition)
+# Makefile para Save Maker (RPG Maker Universal Edition)
 # ==============================================================================
 
 SHELL := /bin/bash
@@ -9,8 +9,8 @@ PYTHON := $(VENV_DIR)/bin/python
 PIP := $(VENV_DIR)/bin/pip
 CLI_WRAPPER := $(PROJECT_DIR)/scripts/rpg-save-editor
 LOCAL_BIN := $(HOME)/.local/bin
-BINARY_NAME := rpg-save-editor
-ALIASES ?= save-editor rpgse rse
+BINARY_NAME := save-maker
+ALIASES ?= savemaker save-editor rpg-save-editor rpgse rse sm
 
 # Fallback se a .venv não existir
 ifeq ($(wildcard $(PYTHON)),)
@@ -25,7 +25,7 @@ all: help
 help:
 	@echo ""
 	@echo "=================================================================="
-	@echo "  🎮 RPG Maker Save Editor — Comandos Disponíveis"
+	@echo "  🎮 Save Maker — Comandos Disponíveis"
 	@echo "=================================================================="
 	@echo ""
 	@echo "  Execução Rápida:"

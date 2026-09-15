@@ -46,7 +46,7 @@ case "$1" in
         exit 0
         ;;
     --list-aliases)
-        echo "Atalhos instalados em $LOCAL_BIN para o RPG Maker Save Editor:"
+        echo "Atalhos instalados em $LOCAL_BIN para o Save Maker:"
         found=0
         if [ -d "$LOCAL_BIN" ]; then
             canonical="$(readlink -f "$SCRIPT_SOURCE" || true)"

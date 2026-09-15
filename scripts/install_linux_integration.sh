@@ -57,9 +57,9 @@ cat > "$APP_DIR/rpg-save-editor.desktop" <<EOF
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=RPG Maker Save Editor
+Name=Save Maker
 GenericName=Save Editor
-Comment=Editor Universal de Saves de RPG Maker (MV, MZ, VX Ace, VX, XP, 2000/2003, JSON)
+Comment=Save Maker — Editor Universal de Saves de RPG Maker (MV, MZ, VX Ace, VX, XP, 2000/2003, JSON)
 Exec=$CLI_WRAPPER %f
 Icon=applications-games
 Terminal=false
@@ -87,8 +87,8 @@ mkdir -p "$NEMO_DIR"
 
 cat > "$NEMO_DIR/rpg-save-editor.nemo_action" <<EOF
 [Nemo Action]
-Name=Editar com RPG Maker Save Editor
-Comment=Abre o save no RPG Maker Save Editor
+Name=Editar com Save Maker
+Comment=Abre o save no Save Maker
 Exec=$CLI_WRAPPER %F
 Icon-Name=applications-games
 Selection=any
@@ -97,7 +97,7 @@ EOF
 
 cat > "$NEMO_DIR/rpg-save-editor-cli.nemo_action" <<EOF
 [Nemo Action]
-Name=Editar no Terminal (RPG Maker CLI)
+Name=Editar no Terminal (Save Maker CLI)
 Comment=Abre o save no terminal interativo
 Exec=x-terminal-emulator -e "$CLI_WRAPPER --interactive %F"
 Icon-Name=utilities-terminal
@@ -137,7 +137,7 @@ Actions=openGUI;openCLI;exportJSON;
 X-KDE-Priority=TopLevel
 
 [Desktop Action openGUI]
-Name=Abrir no RPG Maker Save Editor
+Name=Abrir no Save Maker
 Icon=applications-games
 Exec=$CLI_WRAPPER %f
 
@@ -164,5 +164,5 @@ echo "=================================================================="
 echo "  ✓ Integração com o sistema concluída com sucesso!"
 echo "  Agora você pode clicar com o botão direito em arquivos"
 echo "  .rpgsave, .rmmzsave, .rvdata2, .rxdata, .lsd, etc."
-echo "  e selecionar 'Editar com RPG Maker Save Editor'!"
+echo "  e selecionar 'Editar com Save Maker'!"
 echo "=================================================================="

@@ -63,7 +63,7 @@ class ModernSaveEditorApp(CtkDndApp):
         super().__init__()
 
         # Configurações de Janela
-        self.title("RPG Maker Save Editor — Universal Edition")
+        self.title("Save Maker — Universal RPG Maker Editor")
         self.geometry("1180x760")
         self.minsize(960, 620)
         ctk.set_appearance_mode("dark")

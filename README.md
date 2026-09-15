@@ -1,10 +1,10 @@
-# 🎮 RPG Maker Save Editor (Universal Edition)
+# 🎮 Save Maker
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Interface: CustomTkinter & Rich](https://img.shields.io/badge/UI-CustomTkinter%20%7C%20Rich%20TUI-informational.svg)]()
 
-Um editor e conversor universal, moderno e de alta performance para arquivos de save de **RPG Maker**. Suporta desde versões clássicas em Ruby até os motores mais recentes em JavaScript/Web, com interface gráfica moderna em **CustomTkinter** (Dark/Light mode), **TUI interativa rica no terminal** com **Rich**, descoberta automática de banco de dados do jogo e integração nativa com o desktop Linux.
+**Save Maker** é um editor e conversor universal, moderno e de alta performance para arquivos de save de **RPG Maker**. Suporta desde versões clássicas em Ruby até os motores mais recentes em JavaScript/Web, com interface gráfica moderna em **CustomTkinter** (Dark/Light mode), **TUI interativa rica no terminal** com **Rich**, descoberta automática de banco de dados do jogo e integração nativa com o desktop Linux.
 
 ---
 
@@ -32,7 +32,7 @@ Um editor e conversor universal, moderno e de alta performance para arquivos de 
   - Fallback automático para terminal quando executado via SSH ou em ambientes sem servidor gráfico (headless)
 - **Integração com Desktop Linux:**
   - Menus de contexto no botão direito para gerenciadores de arquivos (**Nautilus**, **Nemo**, **Dolphin**)
-  - Associação de tipos MIME e atalhos de terminal globais (`rpg-save-editor`, `save-editor`, `rpgse`, `rse`)
+  - Associação de tipos MIME e atalhos de terminal globais (`save-maker`, `savemaker`, `rpg-save-editor`, `save-editor`, `rse`, `sm`)
 
 ---
 
@@ -40,8 +40,8 @@ Um editor e conversor universal, moderno e de alta performance para arquivos de 
 
 ### 1. Clonar o repositório
 ```bash
-git clone https://github.com/BGLuis/save-editor-rpgmaker.git
-cd save-editor-rpgmaker
+git clone https://github.com/BGLuis/save-maker.git
+cd save-maker
 ```
 
 ### 2. Configurar o ambiente virtual e dependências
@@ -103,10 +103,12 @@ make install
 Após instalado, você pode rodar em qualquer pasta:
 ```bash
 # Atalhos disponíveis no terminal:
-rpg-save-editor [arquivo]
+save-maker [arquivo]
+savemaker [arquivo]
 save-editor [arquivo]
+rpg-save-editor [arquivo]
 rse [arquivo]
-rpgse [arquivo]
+sm [arquivo]
 ```
 
 Para adicionar ou remover atalhos customizados:
@@ -142,7 +144,7 @@ Os testes cobrem:
 ## 📂 Estrutura do Projeto
 
 ```text
-save-editor-rpgmaker/
+save-maker/
 ├── main.py                  # Ponto de entrada universal (CLI / GUI / Export / Import)
 ├── Makefile                 # Comandos para build, instalação, execução e testes
 ├── requirements.txt         # Dependências do projeto

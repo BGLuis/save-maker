@@ -105,7 +105,7 @@ class InteractiveCliSession:
         working_dir = Path(os.environ.get("CALLER_WORKING_DIR", os.getcwd())).resolve()
 
         self.console.print(Panel.fit(
-            f"[bold cyan]RPG Maker Save Editor — CLI Interativa[/bold cyan]\n"
+            f"[bold cyan]Save Maker — CLI Interativa[/bold cyan]\n"
             f"[dim]Buscando saves em: {working_dir}[/dim]",
             border_style="cyan"
         ))
@@ -186,7 +186,7 @@ class InteractiveCliSession:
 
         self.console.print(Panel(
             grid,
-            title="[bold cyan]🎮 RPG Maker Save Editor — Painel de Controle[/bold cyan]",
+            title="[bold cyan]🎮 Save Maker — Painel de Controle[/bold cyan]",
             border_style="cyan"
         ))
 
