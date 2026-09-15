@@ -1,0 +1,3 @@
+lzstring>=1.0.4
+future>=1.0.0
+tkinterdnd2>=0.4.3
