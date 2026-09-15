@@ -15,6 +15,7 @@ from .mv_mz_adapter import MvMzAdapter
 from .ruby_adapter import RubyAdapter
 from .lsd_adapter import LsdAdapter
 from .generic_adapter import GenericJsonAdapter
+from .wolf_adapter import WolfAdapter, try_parse_wolf_header
 
 
 def detect_and_create_adapter(path: Path | str, db_manager=None) -> BaseSaveAdapter:
@@ -56,6 +57,19 @@ def detect_and_create_adapter(path: Path | str, db_manager=None) -> BaseSaveAdap
         else:
             adapter.engine_name = "RPG Maker MV"
         return adapter
+
+    # Wolf RPG Editor (.sav) - sem magic bytes; detecção 100% estrutural (descriptografa e
+    # valida marcadores + checksum). Restrito a extensões plausíveis para não pagar o custo de
+    # ler o arquivo inteiro e descriptografar para todo .json/.txt que chegue até aqui.
+    if ext in (".sav", ".dat", ""):
+        try:
+            full_data = fpath.read_bytes()
+        except Exception:
+            full_data = b""
+        if try_parse_wolf_header(full_data) is not None:
+            adapter = WolfAdapter(db_manager)
+            adapter.engine_name = "Wolf RPG Editor"
+            return adapter
 
     # GZIP ou ZLIB comprimido
     if len(header) >= 2 and ((header[0] == 0x1F and header[1] == 0x8B) or header[0] == 0x78):

@@ -17,6 +17,7 @@
   - **RPG Maker VX** (`.rvdata` — Ruby Marshal)
   - **RPG Maker XP** (`.rxdata` — Ruby Marshal)
   - **RPG Maker 2000 / 2003** (`.lsd` — formato binário LcfSaveData)
+  - **Wolf RPG Editor / ウディタ** (`.sav` — experimental, veja [Limitações Conhecidas](#-limitações-conhecidas))
   - **Saves em JSON e Web** (`.json`, `.sav`, `.dat`, `.txt`)
 - **Descoberta Automática de Banco de Dados:**
   - Detecta automaticamente pastas de dados do jogo (`data/`, `Data/`, `www/data/`)
@@ -156,7 +157,9 @@ save-maker/
 │   │   ├── generic_adapter.py
 │   │   ├── lsd_adapter.py
 │   │   ├── mv_mz_adapter.py
-│   │   └── ruby_adapter.py
+│   │   ├── ruby_adapter.py
+│   │   ├── wolf_adapter.py  # Wolf RPG Editor (.sav) - experimental
+│   │   └── wolf_database.py # Schema CDataBase.project do Wolf RPG Editor
 │   ├── cli/                 # Interface de linha de comando rica (TUI com Rich)
 │   │   └── interactive.py
 │   ├── ui/                  # Interface Gráfica Moderna (CustomTkinter)
@@ -170,6 +173,36 @@ save-maker/
 ```
 
 ---
+
+## ⚠️ Limitações Conhecidas
+
+### Wolf RPG Editor (`.sav`)
+
+O suporte ao Wolf RPG Editor é **experimental**. O formato de save deste motor não é
+documentado oficialmente — esta implementação é um port do único parser de referência
+conhecido publicamente ([Sinflower/WolfSave](https://github.com/Sinflower/WolfSave)). Antes de
+confiar nos dados, esteja ciente de que:
+
+- A semântica da maioria dos campos internos do save é **desconhecida**. Eles são preservados
+  estruturalmente (permitindo round-trip sem corromper o arquivo), mas só ficam visíveis na
+  aba "Avançado" como blocos genéricos, sem nomes amigáveis.
+- **Ouro, tempo de jogo, personagens e inventário** são resolvidos por uma heurística de
+  melhor esforço: o editor procura, no banco de dados do jogo (`CDataBase.project`), campos
+  cujo nome contenha palavras-chave como "Gold"/"所持金", "Actor"/"アクター" etc. Isso pode
+  falhar ou retornar vazio em jogos com nomenclatura diferente.
+- **Switches globais não são suportados** — o Wolf RPG Editor não tem esse conceito neste
+  nível de dados (só self-switches por evento/mapa). Limitação intencional, não um bug.
+- **Nenhum save real do Wolf RPG Editor foi usado para validar esta implementação.** Os testes
+  automatizados usam apenas fixtures sintéticas construídas em memória. Faça backup do seu
+  save antes de editá-lo e testes com cautela.
+- Apenas o esquema de criptografia mais simples (XOR) é suportado. O **Wolf RPG Pro** (3.5+)
+  usa criptografia mais forte (AES/ChaCha20) para os arquivos de banco de dados do projeto e
+  não é suportado — a resolução de nomes amigáveis falha graciosamente (IDs numéricos) nesse
+  caso, mas a leitura/escrita do próprio save `.sav` deve funcionar independentemente da
+  versão do motor, desde que use o esquema XOR simples.
+- Apenas o schema do projeto (`CDataBase.project`, nomes de tipos/campos/linhas) é lido — os
+  valores fixos de referência (`DataBase.dat`, equivalente a `Items.json` do RPG Maker) ainda
+  não são analisados.
 
 ## 📄 Licença
 

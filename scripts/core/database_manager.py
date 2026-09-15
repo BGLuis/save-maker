@@ -28,6 +28,11 @@ except Exception:
     ruby_load = None
     _RUBY_AVAILABLE = False
 
+from .wolf_database import parse_wolf_project, project_types_to_wolf_types, WolfCryptoUnsupportedError
+
+_WOLF_ITEM_NAME_KEYWORDS = ["アイテム", "item"]
+_WOLF_ACTOR_NAME_KEYWORDS = ["アクター", "キャラクター", "actor", "character"]
+
 
 class GameDatabaseManager:
     """Gerencia mapeamentos de nomes, ícones e descrições do jogo."""
@@ -42,13 +47,15 @@ class GameDatabaseManager:
         self.skills: Dict[str, Dict[str, Any]] = {}
         self.switches: Dict[int, str] = {}
         self.variables: Dict[int, str] = {}
+        self.wolf_types: Dict[int, Dict[str, Any]] = {}
         self.currency_unit: str = "G"
         self.game_title: str = ""
         self.config: Dict[str, Any] = {}
 
     def is_loaded(self) -> bool:
         """Retorna True se algum banco de dados relevante foi carregado."""
-        return bool(self.items or self.weapons or self.armors or self.actors or self.switches or self.variables)
+        return bool(self.items or self.weapons or self.armors or self.actors or self.switches
+                    or self.variables or self.wolf_types)
 
     def summary_info(self) -> str:
         """Gera uma string descritiva com o resumo do que foi carregado."""
@@ -65,6 +72,8 @@ class GameDatabaseManager:
             parts.append(f"{len(self.switches)} switches")
         if self.variables:
             parts.append(f"{len(self.variables)} vars")
+        if self.wolf_types:
+            parts.append(f"{len(self.wolf_types)} tipos Wolf RPG")
 
         if not parts:
             return "Nenhum banco de dados conectado"
@@ -95,6 +104,10 @@ class GameDatabaseManager:
             save_dir.parent.parent / "Data",
             save_dir.parent.parent / "www" / "data",
             save_dir.parent.parent / "www" / "Data",
+            # Padrão Wolf RPG Editor (Game/Save/SaveDataNN.sav -> Game/Data/BasicData)
+            save_dir.parent / "Data" / "BasicData",
+            save_dir.parent / "data" / "BasicData",
+            save_dir / "Data" / "BasicData",
         ]
 
         # Adiciona pasta interna de dados do projeto como fallback
@@ -114,7 +127,8 @@ class GameDatabaseManager:
         key_files = [
             "Items.json", "items.json", "Items.rvdata2", "Items.rxdata",
             "System.json", "system.json", "System.rvdata2", "System.rxdata",
-            "Armors.json", "armors.json", "Armors.rvdata2", "Armors.rxdata"
+            "Armors.json", "armors.json", "Armors.rvdata2", "Armors.rxdata",
+            "CDataBase.project", "CDataBase.dat",
         ]
         for k in key_files:
             if (directory / k).exists():
@@ -146,7 +160,9 @@ class GameDatabaseManager:
         if self._load_data_file(d, "Skills", self.skills): loaded_any = True
         # 7. Carrega System (switches, variables, moeda)
         if self._load_system_file(d): loaded_any = True
-        # 8. Carrega config.json se existir
+        # 8. Carrega CDataBase.project do Wolf RPG Editor (nomes de tipos/campos/linhas)
+        if self._load_wolf_database(d): loaded_any = True
+        # 9. Carrega config.json se existir
         self._load_config_file(d)
 
         return loaded_any
@@ -162,6 +178,7 @@ class GameDatabaseManager:
         self.skills.clear()
         self.switches.clear()
         self.variables.clear()
+        self.wolf_types.clear()
         self.currency_unit = "G"
         self.game_title = ""
         self.config.clear()
@@ -351,6 +368,57 @@ class GameDatabaseManager:
         except Exception as e:
             print(f"[GameDatabaseManager] Erro ao ler System: {e}")
             return False
+
+    def _load_wolf_database(self, directory: Path) -> bool:
+        """
+        Carrega o schema de CDataBase.project do Wolf RPG Editor (nomes de tipos, campos e
+        linhas de dados) para popular self.wolf_types, consumido pelas heurísticas de melhor
+        esforço do WolfAdapter. Diferente de items/actors (dados fixos com id->nome 1:1), os
+        "tipos" do Wolf são categorias livres definidas pelo próprio jogo - por isso ficam em
+        um dict separado em vez de forçados no formato items/actors do RPG Maker.
+
+        Como espelho leve de compatibilidade, linhas de tipos cujo nome pareça um "banco de
+        itens" ou "banco de atores" também são copiadas para self.items/self.actors, para que
+        as abas existentes de Inventário/Personagens da UI funcionem de graça (mesmo sem
+        preço/descrição/stats fixos, que vivem em DataBase.dat - não lido por esta versão).
+        Falhas (arquivo ausente, criptografia não suportada, formato inesperado) degradam
+        graciosamente para "sem nomes Wolf resolvidos" em vez de interromper a descoberta.
+        """
+        fpath = directory / "CDataBase.project"
+        if not fpath.is_file():
+            return False
+
+        try:
+            types = parse_wolf_project(fpath)
+        except WolfCryptoUnsupportedError as e:
+            print(f"[GameDatabaseManager] {e}")
+            return False
+        except Exception as e:
+            print(f"[GameDatabaseManager] Erro ao ler CDataBase.project: {e}")
+            return False
+
+        self.wolf_types = project_types_to_wolf_types(types)
+
+        for type_idx, info in self.wolf_types.items():
+            name_lower = (info.get("name") or "").lower()
+            if any(k in name_lower for k in _WOLF_ITEM_NAME_KEYWORDS):
+                target = self.items
+            elif any(k in name_lower for k in _WOLF_ACTOR_NAME_KEYWORDS):
+                target = self.actors
+            else:
+                continue
+            for row in info.get("rows", []):
+                row_id = str(row["index"])
+                target[row_id] = {
+                    "id": row_id,
+                    "name": row["name"] or f"{info['name']} #{row['index']}",
+                    "description": "",
+                    "price": 0,
+                    "iconIndex": 0,
+                    "raw": {},
+                }
+
+        return bool(self.wolf_types)
 
     def _load_config_file(self, directory: Path):
         """Carrega config.json se presente."""

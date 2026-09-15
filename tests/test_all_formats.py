@@ -8,6 +8,7 @@ Testes automatizados para todos os formatos de save de RPG Maker:
 - XP (.rxdata)
 - 2000 / 2003 (.lsd)
 - JSON / Web saves (.json)
+- Wolf RPG Editor (.sav) - experimental, ver ressalvas em test_wolf_adapter_roundtrip()
 """
 import sys
 import io
@@ -25,6 +26,7 @@ from core.mv_mz_adapter import MvMzAdapter
 from core.ruby_adapter import RubyAdapter
 from core.lsd_adapter import LsdAdapter, write_ber_int
 from core.generic_adapter import GenericJsonAdapter
+from core.wolf_adapter import WolfAdapter
 
 try:
     from rubymarshal.writer import writes as ruby_writes
@@ -221,6 +223,150 @@ def test_generic_json_adapter():
     print("✔ test_generic_json_adapter passou com sucesso!")
 
 
+def test_wolf_adapter_roundtrip():
+    """
+    Testa o adaptador experimental do Wolf RPG Editor (.sav) usando uma fixture sintética
+    construída em memória pelo próprio teste (populando o WolfAdapter diretamente e chamando
+    seu próprio save(), em vez de reimplementar a serialização aqui) - nenhum save real do
+    Wolf RPG Editor está disponível para validação.
+
+    Isto valida APENAS a consistência interna do adaptador (round-trip determinístico do
+    formato que ele mesmo escreve/lê, incluindo marcadores 0x19 e checksum), NÃO a
+    compatibilidade com o motor Wolf RPG Editor real - essa limitação é intencional e está
+    documentada no módulo core/wolf_adapter.py.
+    """
+
+    class _StubDB:
+        """Simula GameDatabaseManager.wolf_types sem depender do parser de .project (Marco 6),
+        para testar a lógica de heurística (gold/actors/inventory) isoladamente."""
+        wolf_types = {
+            0: {
+                "name": "Sistema",
+                "fields": [{"index": 0, "name": "Gold"}, {"index": 1, "name": "Steps"}],
+                "rows": [{"index": 0, "name": "Config"}],
+            },
+            1: {
+                "name": "Characters",
+                "fields": [{"index": 0, "name": "HP"}, {"index": 1, "name": "ATK"}],
+                "rows": [{"index": 0, "name": "Herói Principal"}],
+            },
+            2: {
+                "name": "Item List",
+                "fields": [{"index": 0, "name": "Quantity"}],
+                "rows": [{"index": 0, "name": "Poção"}],
+            },
+        }
+
+    adapter = WolfAdapter()
+    adapter.game_name = "Jogo de Teste Wolf RPG"
+
+    # Popula SavePart3 com um grupo de variáveis inteiras e uma variável de texto
+    adapter.save_part3["var2"] = 1
+    adapter.save_part3["vars1"] = [1]
+    adapter.save_part3["vars2"] = [3]
+    adapter.save_part3["vars3"] = [10, 20, 30]
+    adapter.save_part3["var4"] = 1
+    adapter.save_part3["mds1New"] = ["Olá".encode("utf-8") + b"\x00"]
+
+    # Popula VariableDatabase com 3 tipos: sistema (gold/steps), atores e itens
+    adapter.variable_database = {
+        "unknown": 0, "typeCount": 3,
+        "types": [
+            {"unknown": -1, "dis": 0, "fieldCount": 2, "typeConfig": [1, 1], "typeDataCount": 1,
+             "rows": [[{"id": 0, "type": 1, "number": 500}, {"id": 1, "type": 1, "number": 120}]]},
+            {"unknown": -1, "dis": 0, "fieldCount": 2, "typeConfig": [1, 1], "typeDataCount": 1,
+             "rows": [[{"id": 0, "type": 1, "number": 350}, {"id": 1, "type": 1, "number": 20}]]},
+            {"unknown": -1, "dis": 0, "fieldCount": 1, "typeConfig": [1], "typeDataCount": 1,
+             "rows": [[{"id": 0, "type": 1, "number": 5}]]},
+        ],
+    }
+    adapter.bind_database(_StubDB())
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        first_path = Path(tmpdir) / "SaveData01.sav"
+        assert adapter.save(first_path, backup=False)
+
+        # 1. Detecção estrutural (sem magic bytes - decripta e valida marcadores/checksum)
+        detected = detect_and_create_adapter(first_path)
+        assert isinstance(detected, WolfAdapter)
+
+        # 2. Checa getters básicos
+        assert adapter.get_gold() == 500
+        assert adapter.get_playtime_and_steps() == ("N/A", 120)
+        assert adapter.get_switches() == []  # sem suporte por design
+        variables = adapter.get_variables()
+        assert [v["value"] for v in variables] == [10, 20, 30, "Olá"]
+
+        actors = adapter.get_actors()
+        assert len(actors) == 1 and actors[0]["hp"] == 350 and actors[0]["atk"] == 20
+
+        inventory = adapter.get_inventory("items")
+        assert len(inventory) == 1 and inventory[0]["quantity"] == 5
+
+        # 3. Muta via todos os setters relevantes
+        assert adapter.set_gold(9999)
+        assert adapter.set_variable(1, 777)
+        assert adapter.set_variable(3, "Novo Texto")
+        assert adapter.update_actor(0, {"hp": 999, "atk": 88})
+        assert adapter.set_item_quantity("items", 0, 42)
+        assert adapter.set_switch(0, True) is False  # confirma no-op documentado
+
+        second_path = Path(tmpdir) / "SaveData02.sav"
+        assert adapter.save(second_path, backup=False)
+
+        # 4. Recarrega em instância nova e confirma que tudo persistiu
+        reloaded = WolfAdapter()
+        reloaded.bind_database(_StubDB())
+        reloaded.load(second_path)
+
+        assert reloaded.get_gold() == 9999
+        reloaded_vars = reloaded.get_variables()
+        assert reloaded_vars[1]["value"] == 777
+        assert reloaded_vars[3]["value"] == "Novo Texto"
+        assert reloaded.get_actors()[0]["hp"] == 999
+        assert reloaded.get_actors()[0]["atk"] == 88
+        assert reloaded.get_inventory("items")[0]["quantity"] == 42
+
+        # 5. Sanidade estrutural pós-roundtrip: marcadores e checksum continuam válidos
+        raw = second_path.read_bytes()
+        from core.wolf_adapter import try_parse_wolf_header
+        info = try_parse_wolf_header(raw)
+        assert info is not None
+
+    print("✔ test_wolf_adapter_roundtrip passou com sucesso! (fixture sintética - ver ressalvas no docstring)")
+
+
+def test_wolf_version_gating_roundtrip():
+    """Roundtrip byte-a-byte (sem mutação) em duas file_version diferentes, para pegar bugs
+    de version-gating (ex: fork u16/u32 de string em SavePart3 na versão 0x6F)."""
+    for version in (0x60, 0x8E):
+        adapter = WolfAdapter()
+        adapter.file_version = version
+        from core.wolf_adapter import (_default_save_part1, _default_save_part2,
+                                        _default_save_part3, _default_save_part4,
+                                        _default_save_part5, _default_save_part7)
+        adapter.save_part1 = _default_save_part1(version)
+        adapter.save_part2 = _default_save_part2(version)
+        adapter.save_part3 = _default_save_part3(version)
+        adapter.save_part4 = _default_save_part4(version)
+        adapter.save_part5 = _default_save_part5(version)
+        adapter.save_part7 = _default_save_part7()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            p1 = Path(tmpdir) / "a.sav"
+            p2 = Path(tmpdir) / "b.sav"
+            adapter.save(p1, backup=False)
+
+            reloaded = WolfAdapter()
+            reloaded.load(p1)
+            assert reloaded.file_version == version
+            reloaded.save(p2, backup=False)
+
+            assert p1.read_bytes() == p2.read_bytes(), f"roundtrip não é byte-exato para version=0x{version:x}"
+
+    print("✔ test_wolf_version_gating_roundtrip passou com sucesso!")
+
+
 def test_detector():
     """Testa detecção automática de formatos."""
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -246,6 +392,20 @@ def test_detector():
         a_lsd = detect_and_create_adapter(p_lsd)
         assert isinstance(a_lsd, LsdAdapter)
 
+        # Caso positivo Wolf RPG Editor: sem magic bytes, detecção puramente estrutural
+        p_wolf = d / "SaveData01.sav"
+        WolfAdapter().save(p_wolf, backup=False)
+        a_wolf = detect_and_create_adapter(p_wolf)
+        assert isinstance(a_wolf, WolfAdapter)
+
+        # Caso negativo: um .sav que NÃO é Wolf RPG não pode ser misclassificado - deve cair
+        # no fallback MV/MZ -> Generic já existente, sem quebrar a detecção de outros formatos
+        p_fake_sav = d / "fake.sav"
+        p_fake_sav.write_bytes(b'{"party": {"_gold": 100}}')
+        a_fake = detect_and_create_adapter(p_fake_sav)
+        assert not isinstance(a_fake, WolfAdapter)
+        assert isinstance(a_fake, MvMzAdapter)
+
     print("✔ test_detector passou com sucesso!")
 
 
@@ -254,5 +414,7 @@ if __name__ == "__main__":
     test_ruby_adapter_roundtrip()
     test_lsd_adapter_roundtrip()
     test_generic_json_adapter()
+    test_wolf_adapter_roundtrip()
+    test_wolf_version_gating_roundtrip()
     test_detector()
     print("\nTODOS OS TESTES DE FORMATO PASSARAM COM SUCESSO!")

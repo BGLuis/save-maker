@@ -697,6 +697,7 @@ class ModernSaveEditorApp(CtkDndApp):
                 ("RPG Maker VX (*.rvdata)", "*.rvdata"),
                 ("RPG Maker XP (*.rxdata)", "*.rxdata"),
                 ("RPG Maker 2000/2003 (*.lsd)", "*.lsd"),
+                ("Wolf RPG Editor - experimental (*.sav)", "*.sav"),
                 ("JSON / Decrypted (*.json)", "*.json"),
                 ("Todos os Arquivos (*.*)", "*.*")
             ]

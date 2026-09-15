@@ -3,6 +3,7 @@
 Testes automatizados para a Descoberta e Mapeamento Automático de Banco de Dados do Jogo
 """
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -11,6 +12,7 @@ sys.path.insert(0, str(SCRIPTS_DIR))
 sys.path.insert(0, str(ROOT_DIR))
 
 from core.database_manager import GameDatabaseManager
+from core.wolf_adapter import WolfAdapter, ByteWriter, _write_memdata, _encode_wolf_string
 
 
 def test_automatic_database_discovery():
@@ -60,7 +62,48 @@ def test_friendly_name_resolutions():
     print("✔ test_friendly_name_resolutions passou com sucesso!")
 
 
+def test_wolf_database_autodiscovery():
+    """
+    Testa a descoberta automática do schema Wolf RPG Editor (CDataBase.project) a partir do
+    caminho convencional <GameDir>/Save/SaveDataNN.sav -> <GameDir>/Data/BasicData. Como não
+    há jogo real do Wolf RPG Editor disponível, monta uma fixture sintética de diretório
+    (save + CDataBase.project em texto puro) só para este teste.
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        game_dir = Path(tmp) / "JogoWolfTeste"
+        save_dir = game_dir / "Save"
+        data_dir = game_dir / "Data" / "BasicData"
+        save_dir.mkdir(parents=True)
+        data_dir.mkdir(parents=True)
+
+        save_path = save_dir / "SaveData01.sav"
+        WolfAdapter().save(save_path, backup=False)
+
+        w = ByteWriter()
+        w.u32(1)  # 1 tipo
+        _write_memdata(w, _encode_wolf_string("Sistema", "utf-8"), 4)
+        w.u32(1)  # 1 campo
+        _write_memdata(w, _encode_wolf_string("Gold", "utf-8"), 4)
+        w.u32(1)  # 1 linha de dados
+        _write_memdata(w, _encode_wolf_string("Config", "utf-8"), 4)
+        _write_memdata(w, b"\x00", 4)  # description vazia
+        w.u32(1)  # fieldTypeListSize == fieldCount
+        w.u8(1)
+        w.u32(0); w.u32(0); w.u32(0); w.u32(0)
+        (data_dir / "CDataBase.project").write_bytes(w.getvalue())
+
+        db = GameDatabaseManager()
+        found = db.discover_and_load(save_path)
+        assert found is True, "Falha na descoberta automática do schema Wolf RPG Editor"
+        assert 0 in db.wolf_types
+        assert db.wolf_types[0]["name"] == "Sistema"
+        assert db.wolf_types[0]["fields"][0]["name"] == "Gold"
+
+    print("✔ test_wolf_database_autodiscovery passou com sucesso!")
+
+
 if __name__ == "__main__":
     test_automatic_database_discovery()
     test_friendly_name_resolutions()
+    test_wolf_database_autodiscovery()
     print("\nTODOS OS TESTES DE BANCO DE DADOS PASSARAM!")

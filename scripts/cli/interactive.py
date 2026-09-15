@@ -30,7 +30,7 @@ from core.database_manager import GameDatabaseManager, GLOBAL_DB
 from core.detector import detect_and_create_adapter
 from core.base_adapter import BaseSaveAdapter
 
-SUPPORTED_EXTS = (".rpgsave", ".rmmzsave", ".rvdata2", ".rvdata", ".rxdata", ".lsd", ".json")
+SUPPORTED_EXTS = (".rpgsave", ".rmmzsave", ".rvdata2", ".rvdata", ".rxdata", ".lsd", ".json", ".sav")
 
 
 def scan_for_save_files(start_dir: Path | str, max_depth: int = 3) -> List[Path]:
