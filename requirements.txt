@@ -1,3 +1,8 @@
 lzstring>=1.0.4
 future>=1.0.0
 tkinterdnd2>=0.4.3
+customtkinter>=5.2.0
+rubymarshal>=1.2.10
+darkdetect>=0.8.0
+packaging>=20.0
+rich>=13.0.0

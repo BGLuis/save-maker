@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+set -e
+
+# Diretório onde o comando foi invocado pelo usuário
+ORIGINAL_PWD="$PWD"
+export CALLER_WORKING_DIR="$ORIGINAL_PWD"
+export SAVE_EDITOR_INVOKED_AS="$(basename "$0")"
+
+# Resolver caminho real do script mesmo se executado via symlink (ex: ~/.local/bin/save-editor)
+SCRIPT_SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SCRIPT_SOURCE" ]; do
+    SCRIPT_DIR="$(cd -P "$(dirname "$SCRIPT_SOURCE")" >/dev/null 2>&1 && pwd)"
+    SCRIPT_SOURCE="$(readlink "$SCRIPT_SOURCE")"
+    [[ $SCRIPT_SOURCE != /* ]] && SCRIPT_SOURCE="$SCRIPT_DIR/$SCRIPT_SOURCE"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$SCRIPT_SOURCE")" >/dev/null 2>&1 && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd)"
+
+LOCAL_BIN="${LOCAL_BIN:-$HOME/.local/bin}"
+
+# Gerenciamento de apelidos e atalhos de terminal
+case "$1" in
+    --add-alias)
+        if [ -z "$2" ]; then
+            echo "Uso: $(basename "$0") --add-alias <nome_do_atalho>"
+            echo "Exemplo: $(basename "$0") --add-alias se"
+            exit 1
+        fi
+        mkdir -p "$LOCAL_BIN"
+        ln -sf "$SCRIPT_SOURCE" "$LOCAL_BIN/$2"
+        echo "✓ Atalho '$2' instalado com sucesso em $LOCAL_BIN/$2 -> $SCRIPT_SOURCE"
+        exit 0
+        ;;
+    --remove-alias)
+        if [ -z "$2" ]; then
+            echo "Uso: $(basename "$0") --remove-alias <nome_do_atalho>"
+            echo "Exemplo: $(basename "$0") --remove-alias se"
+            exit 1
+        fi
+        if [ -e "$LOCAL_BIN/$2" ] || [ -L "$LOCAL_BIN/$2" ]; then
+            rm -f "$LOCAL_BIN/$2"
+            echo "✓ Atalho '$2' removido com sucesso de $LOCAL_BIN."
+        else
+            echo "Aviso: Atalho '$2' não encontrado em $LOCAL_BIN."
+        fi
+        exit 0
+        ;;
+    --list-aliases)
+        echo "Atalhos instalados em $LOCAL_BIN para o RPG Maker Save Editor:"
+        found=0
+        if [ -d "$LOCAL_BIN" ]; then
+            canonical="$(readlink -f "$SCRIPT_SOURCE" || true)"
+            for f in "$LOCAL_BIN"/*; do
+                if [ -L "$f" ]; then
+                    target="$(readlink -f "$f" || true)"
+                    if [ "$target" = "$canonical" ]; then
+                        echo "  - $(basename "$f") -> $f"
+                        found=1
+                    fi
+                fi
+            done
+        fi
+        if [ "$found" -eq 0 ]; then
+            echo "  (Nenhum atalho encontrado apontando para este script)"
+        fi
+        exit 0
+        ;;
+esac
+
+# Localizar interpretador Python (.venv ou sistema)
+PYTHON_BIN="$PROJECT_ROOT/.venv/bin/python"
+if [ ! -f "$PYTHON_BIN" ]; then
+    if command -v python3 >/dev/null 2>&1; then
+        PYTHON_BIN="python3"
+    else
+        PYTHON_BIN="python"
+    fi
+fi
+
+# Processar argumentos para converter caminhos relativos em absolutos a partir do ORIGINAL_PWD
+ARGS=()
+for arg in "$@"; do
+    if [[ "$arg" != -* ]] && [ -e "$ORIGINAL_PWD/$arg" ]; then
+        ARGS+=("$(realpath "$ORIGINAL_PWD/$arg")")
+    else
+        ARGS+=("$arg")
+    fi
+done
+
+# Muda para a raiz do projeto para consistência de imports e banco de dados
+cd "$PROJECT_ROOT" || exit 1
+
+# Executa o editor passando todos os argumentos
+exec "$PYTHON_BIN" "$PROJECT_ROOT/main.py" "${ARGS[@]}"
