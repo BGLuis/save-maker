@@ -409,12 +409,17 @@ class InteractiveCliSession:
         query = Prompt.ask("\nFiltrar switches por nome ou ID (Enter para ver todos)", default="").strip().lower()
 
         filtered = [s for s in switches if not query or query in s["name"].lower() or query in str(s["id"])]
-        table = Table(title=f"Switches ({len(filtered)} exibidos)", header_style="bold cyan")
+        displayed = min(len(filtered), 50)
+        if displayed < len(filtered):
+            title = f"Switches ({displayed} de {len(filtered)} exibidos - use o filtro)"
+        else:
+            title = f"Switches ({len(filtered)} exibidos)"
+        table = Table(title=title, header_style="bold cyan")
         table.add_column("ID", width=6, justify="right")
         table.add_column("Nome da Switch", style="bold")
         table.add_column("Estado", width=10, justify="center")
 
-        for s in filtered[:50]:
+        for s in filtered[:displayed]:
             state_str = "[bold green]LIGADO[/bold green]" if s["value"] else "[dim red]DESLIGADO[/dim red]"
             table.add_row(f"#{s['id']}", s["name"], state_str)
 
