@@ -19,7 +19,7 @@
   <br/>
 
   <p align="center">
-    <a href="README.md#-português">🇧🇷 <b>Versão em Português</b></a>
+    <a href="README.md">🇧🇷 <b>Versão em Português</b></a> &nbsp;•&nbsp; 🇺🇸 <b>English</b>
   </p>
 </div>
 
