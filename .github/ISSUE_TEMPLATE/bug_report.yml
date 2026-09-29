@@ -1,0 +1,76 @@
+name: Relatório de Bug / Bug Report
+description: Crie um relatório de erro para ajudar a identificar e corrigir bugs no Save Maker.
+title: "[BUG]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por dedicar seu tempo para relatar um bug! Por favor, preencha os campos abaixo com o máximo de detalhes possível.
+  - type: input
+    id: game-format
+    attributes:
+      label: Jogo e Formato de Save / Game & Save Format
+      description: Informe o jogo e a extensão/motor do save (ex: RPG Maker MV .rpgsave, MZ .rmmzsave, VX Ace .rvdata2, XP, 2000/2003 .lsd).
+      placeholder: Ex: RPG Maker MV (.rpgsave)
+    validations:
+      required: true
+  - type: dropdown
+    id: interface
+    attributes:
+      label: Interface Utilizada / Interface Used
+      options:
+        - "GUI Moderna (CustomTkinter)"
+        - "CLI / TUI Interativa no Terminal (Rich)"
+        - "Comando CLI (export / import)"
+        - "Outro / Não aplicável"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição do Problema / Description of the Issue
+      description: Uma explicação clara e objetiva do que aconteceu.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Passos para Reproduzir / Steps to Reproduce
+      description: Como reproduzir o problema passo a passo.
+      placeholder: |
+        1. Iniciar Save Maker com 'make gui' ou 'make run'
+        2. Carregar o arquivo de save '...'
+        3. Alterar o valor de '...'
+        4. O erro ocorre
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamento Esperado / Expected Behavior
+      description: O que deveria ter acontecido.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs e Mensagens de Erro / Error Logs & Traceback
+      description: Cole aqui a mensagem de erro ou traceback do terminal, se houver.
+      render: shell
+  - type: input
+    id: os-python
+    attributes:
+      label: Sistema Operacional e Versão do Python / OS & Python Version
+      placeholder: Ex: Ubuntu 22.04 LTS / Arch Linux - Python 3.11
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Validações / Checklist
+      options:
+        - label: Verifiquei que não existe uma issue aberta ou fechada sobre este mesmo problema.
+          required: true
+        - label: Testei com a versão mais recente do repositório (`main`).
+          required: false

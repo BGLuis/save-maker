@@ -1,0 +1,48 @@
+name: Sugestão de Funcionalidade / Feature Request
+description: Sugira uma nova ideia, funcionalidade ou suporte a novos motores de jogos para o Save Maker.
+title: "[FEATURE]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por ajudar a evoluir o Save Maker! Compartilhe sua ideia detalhando a motivação e como imagina essa funcionalidade.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema ou Motivação / Problem or Motivation
+      description: Há algum problema ou limitação atual que essa funcionalidade resolveria?
+      placeholder: Ex: Ao jogar jogos feitos com o motor X, não consigo editar o save porque o formato Y ainda não é reconhecido...
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposta de Solução / Proposed Solution
+      description: Uma descrição clara de como você gostaria que funcionasse.
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Área Principal de Impacto / Main Area of Impact
+      options:
+        - "Suporte a novos motores ou formatos de save"
+        - "Interface Gráfica (GUI CustomTkinter)"
+        - "Interface de Terminal (TUI Rich)"
+        - "Autodescoberta de banco de dados do jogo"
+        - "Integração com Desktop Linux"
+        - "Performance e Otimização"
+        - "Outro"
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas Consideradas / Alternatives Considered
+      description: Quaisquer soluções alternativas ou recursos que você já tentou utilizar.
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto Adicional / Additional Context
+      description: Screenshots, links de documentação do formato ou exemplos de arquivos de save.

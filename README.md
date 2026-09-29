@@ -1,209 +1,246 @@
-# 🎮 Save Maker
+<div align="center">
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Interface: CustomTkinter & Rich](https://img.shields.io/badge/UI-CustomTkinter%20%7C%20Rich%20TUI-informational.svg)]()
+<!-- Badges de Status do GitHub -->
+![GitHub Stars](https://www.shieldcn.dev/github/stars/bgluis/save-maker.svg?variant=secondary&size=sm)
+![GitHub Forks](https://www.shieldcn.dev/github/forks/bgluis/save-maker.svg?variant=secondary&size=sm)
+![Watchers](https://www.shieldcn.dev/github/watchers/bgluis/save-maker.svg?variant=secondary&size=sm)
+![Contributors](https://www.shieldcn.dev/github/contributors/bgluis/save-maker.svg?theme=emerald&size=sm)
+![License](https://www.shieldcn.dev/github/license/bgluis/save-maker.svg?variant=ghost&size=sm)
 
-**Save Maker** é um editor e conversor universal, moderno e de alta performance para arquivos de save de **RPG Maker**. Suporta desde versões clássicas em Ruby até os motores mais recentes em JavaScript/Web, com interface gráfica moderna em **CustomTkinter** (Dark/Light mode), **TUI interativa rica no terminal** com **Rich**, descoberta automática de banco de dados do jogo e integração nativa com o desktop Linux.
+<br/>
+
+<!-- Badges das Tecnologias Utilizadas -->
+![Python](https://shieldcn.dev/badge/Python-3.10+-3776AB.svg?logo=python&variant=branded&size=sm)
+![Linux](https://shieldcn.dev/badge/Linux-FCC624.svg?logo=linux&variant=branded&size=sm)
+
+  <h3>Save Maker</h3>
+  Editor e conversor universal de saves para jogos de RPG Maker e correlatos com GUI e TUI interativa.
+
+  <br/>
+
+  <p align="center">
+    <a href="#-português">🇧🇷 <b>Português</b></a> &nbsp;•&nbsp; <a href="#-english">🇺🇸 <b>English</b></a>
+  </p>
+</div>
 
 ---
 
-## 🌟 Recursos Principais
+## 🇧🇷 Português
 
-- **Suporte Universal a Motores de RPG Maker:**
-  - **RPG Maker MV** (`.rpgsave` — compressão None/Zlib/Gzip + LZString)
+# 📖 Sobre
+O **Save Maker** é um editor e conversor universal, moderno e de alto desempenho para arquivos de save de jogos desenvolvidos em **RPG Maker** e motores correlatos. Ele foi projetado para permitir a visualização, modificação e recuperação de saves tanto através de uma **Interface Gráfica Moderna (GUI)** construída com CustomTkinter quanto por uma **Interface Interativa no Terminal (TUI)** desenvolvida com Rich, além de utilitários de linha de comando para exportação e importação direta.
+
+### Recursos Principais
+- **Suporte Universal a Motores de Jogos:**
+  - **RPG Maker MV** (`.rpgsave` — compressões None, Zlib, Gzip e LZString)
   - **RPG Maker MZ** (`.rmmzsave` — formato LZString moderno)
   - **RPG Maker VX Ace** (`.rvdata2` — serialização Ruby Marshal)
   - **RPG Maker VX** (`.rvdata` — Ruby Marshal)
   - **RPG Maker XP** (`.rxdata` — Ruby Marshal)
   - **RPG Maker 2000 / 2003** (`.lsd` — formato binário LcfSaveData)
-  - **Wolf RPG Editor / ウディタ** (`.sav` — experimental, veja [Limitações Conhecidas](#-limitações-conhecidas))
+  - **Wolf RPG Editor / ウディタ** (`.sav` — decodificação e edição)
   - **Saves em JSON e Web** (`.json`, `.sav`, `.dat`, `.txt`)
-- **Descoberta Automática de Banco de Dados:**
-  - Detecta automaticamente pastas de dados do jogo (`data/`, `Data/`, `www/data/`)
-  - Carrega e correlaciona nomes reais e amigáveis de **Itens**, **Armas**, **Armaduras**, **Heróis/Atores**, **Switches** e **Variáveis**
+- **Autodescoberta Inteligente de Banco de Dados:**
+  - Identifica automaticamente pastas de dados do jogo (`data/`, `Data/`, `www/data/`) e correlaciona IDs numéricos com os nomes reais de itens, armas, armaduras, heróis, switches e variáveis.
+- **Múltiplas Formas de Utilização:**
+  - **GUI Moderna:** Drag & Drop nativo de arquivos, alternância entre temas Dark e Light, abas para Visão Geral, Inventário, Grupo, Switches & Variáveis, Cheats Rápidos e Árvore JSON Raw.
+  - **CLI / TUI Interativa:** Menus visuais e coloridos diretamente no terminal via Rich, com fallback automático para conexões SSH e ambientes headless.
+  - **Linha de Comando:** Conversão direta ou em lote entre arquivos de save de RPG Maker e JSON legível.
+- **Integração Nativa com o Desktop Linux:**
+  - Menus de contexto no botão direito para gerenciadores de arquivos (Nautilus, Nemo, Dolphin) e atalhos de terminal globais (`save-maker`, `savemaker`, `rse`, etc.).
+
+# 📋 Motivo
+Apenas uma ferramenta para editar saves quando jogos bugam.
+
+# 💻 Como iniciar
+
+### Requisitos
+- [Python 3.10+](https://www.python.org/downloads/)
+- [Git](https://git-scm.com/)
+- [Tkinter / python3-tk](https://docs.python.org/3/library/tkinter.html) *(necessário para execução da GUI no Linux: `sudo apt install python3-tk` ou equivalente da sua distribuição)*
+- [GNU Make](https://www.gnu.org/software/make/) *(opcional, para execução simplificada dos comandos via Makefile)*
+
+### Instalação
+
+1. Clone o repositório do projeto:
+  ```sh
+  git clone https://github.com/bgluis/save-maker.git
+  ```
+
+2. Navegue até o diretório do projeto:
+  ```sh
+  cd save-maker
+  ```
+
+3. Configure o ambiente virtual e instale as dependências através de um dos métodos abaixo:
+
+  **Método 1: Automático via Makefile (Recomendado)**
+  ```sh
+  make venv
+  ```
+
+  **Método 2: Manual via Python venv**
+  ```sh
+  python3 -m venv .venv
+  source .venv/bin/activate
+  pip install -r requirements.txt
+  ```
+
+### Como Usar
+
 - **Interface Gráfica Moderna (GUI):**
-  - Construída com **CustomTkinter** com suporte a Dark e Light Mode
-  - Drag & Drop nativo de arquivos de save
-  - Abas especializadas para **Visão Geral**, **Equipe / Heróis**, **Inventário**, **Switches & Variáveis**, **Atalhos / Cheats** e **Árvore Completa (JSON Raw)**
-  - Otimização extrema de renderização com tabelas virtuais e lazy loading (< 0.1ms para atualizações)
-- **CLI Interativa no Terminal (TUI):**
-  - Modo interativo no terminal utilizando a biblioteca **Rich**
-  - Navegação visual por menus, tabelas formatadas, edição direta de valores e cheats rápidos
-  - Fallback automático para terminal quando executado via SSH ou em ambientes sem servidor gráfico (headless)
-- **Integração com Desktop Linux:**
-  - Menus de contexto no botão direito para gerenciadores de arquivos (**Nautilus**, **Nemo**, **Dolphin**)
-  - Associação de tipos MIME e atalhos de terminal globais (`save-maker`, `savemaker`, `rpg-save-editor`, `save-editor`, `rse`, `sm`)
+  ```sh
+  # Iniciar a GUI padrão
+  make gui
+  # Ou diretamente via Python:
+  ./.venv/bin/python main.py
+
+  # Abrir diretamente um arquivo de save na GUI:
+  ./.venv/bin/python main.py /caminho/para/o/save/file1.rpgsave
+  ```
+
+- **Interface Interativa no Terminal (CLI / TUI):**
+  ```sh
+  # Iniciar no modo interativo
+  make run
+  # Ou diretamente via Python:
+  ./.venv/bin/python main.py --interactive
+  ```
+
+- **Exportação e Importação Direta (Linha de Comando):**
+  ```sh
+  # Exportar save suportado para JSON legível
+  ./.venv/bin/python main.py export save/file1.rpgsave save1.json
+
+  # Importar JSON de volta para o formato de save do jogo
+  ./.venv/bin/python main.py import save1.json save/file1_editado.rpgsave
+  ```
+
+- **Integração Global no Desktop Linux (Atalhos & Botão Direito):**
+  ```sh
+  # Instala atalhos de terminal e ações de contexto no Nautilus, Nemo e Dolphin
+  make install
+  ```
+
+- **Executar Testes Automatizados:**
+  ```sh
+  make test
+  ```
+
+# 🤝 Contribuidores
+ <a href="https://github.com/bgluis/save-maker/graphs/contributors">
+   <img src="https://contrib.rocks/image?repo=bgluis/save-maker"/>
+ </a>
 
 ---
 
-## 📦 Instalação
+## 🇺🇸 English
 
-### 1. Clonar o repositório
-```bash
-git clone https://github.com/BGLuis/save-maker.git
-cd save-maker
-```
+<p align="center">
+  <i>(A standalone English version is also available at <a href="README.en.md">README.en.md</a>)</i>
+</p>
 
-### 2. Configurar o ambiente virtual e dependências
-```bash
-make venv
-```
-Ou manualmente:
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
+# 📖 About
+**Save Maker** is a universal, modern, and high-performance save file editor and converter for games built with **RPG Maker** and related game engines. It is designed to inspect, modify, and recover save files using either a **Modern Graphical User Interface (GUI)** powered by CustomTkinter or an **Interactive Terminal User Interface (TUI)** built with Rich, alongside convenient command-line utilities for direct JSON export and import.
 
----
+### Key Features
+- **Universal Engine Support:**
+  - **RPG Maker MV** (`.rpgsave` — None, Zlib, Gzip compressions, and LZString)
+  - **RPG Maker MZ** (`.rmmzsave` — modern LZString format)
+  - **RPG Maker VX Ace** (`.rvdata2` — Ruby Marshal serialization)
+  - **RPG Maker VX** (`.rvdata` — Ruby Marshal)
+  - **RPG Maker XP** (`.rxdata` — Ruby Marshal)
+  - **RPG Maker 2000 / 2003** (`.lsd` — binary LcfSaveData format)
+  - **Wolf RPG Editor / ウディタ** (`.sav` — decoding and editing)
+  - **JSON & Web Saves** (`.json`, `.sav`, `.dat`, `.txt`)
+- **Smart Game Database Autodiscovery:**
+  - Automatically identifies game data folders (`data/`, `Data/`, `www/data/`) and correlates numeric IDs with real in-game names for items, weapons, armor, heroes, switches, and variables.
+- **Multiple Ways to Run:**
+  - **Modern GUI:** Native Drag & Drop, Dark and Light mode toggle, specialized tabs for Overview, Inventory, Party, Switches & Variables, Quick Cheats, and Raw JSON Tree.
+  - **Interactive CLI / TUI:** Colorful terminal menus and tables directly in your terminal via Rich, with automatic fallback for SSH sessions or headless environments.
+  - **Command-Line Interface:** Direct conversion between save files and readable JSON.
+- **Native Linux Desktop Integration:**
+  - Right-click context menus for file managers (Nautilus, Nemo, Dolphin) and global CLI aliases (`save-maker`, `savemaker`, `rse`, etc.).
 
-## 🚀 Como Usar
+# 📋 Motivation
+Just a tool to edit saves when games bug out.
 
-### Interface Gráfica Moderna (GUI)
-```bash
-# Iniciar a GUI padrão
-make gui
-# Ou via Python
-./.venv/bin/python main.py
+# 💻 Getting Started
 
-# Abrir diretamente um arquivo de save na GUI
-./.venv/bin/python main.py /caminho/para/o/save/file1.rpgsave
-```
+### Requirements
+- [Python 3.10+](https://www.python.org/downloads/)
+- [Git](https://git-scm.com/)
+- [Tkinter / python3-tk](https://docs.python.org/3/library/tkinter.html) *(required for GUI on Linux: `sudo apt install python3-tk` or distribution equivalent)*
+- [GNU Make](https://www.gnu.org/software/make/) *(optional, for simplified Makefile execution)*
 
-### CLI Interativa no Terminal (TUI)
-```bash
-# Iniciar no modo interativo
-make run
-# ou
-./.venv/bin/python main.py --interactive
-# ou especificando o save
-./.venv/bin/python main.py cli /caminho/para/o/save/file1.rpgsave
-```
+### Installation
 
-### Exportação e Importação Direta (Linha de Comando)
-```bash
-# Exportar qualquer save suportado para JSON limpo
-./.venv/bin/python main.py export save/file1.rpgsave save1.json
+1. Clone the project repository:
+  ```sh
+  git clone https://github.com/bgluis/save-maker.git
+  ```
 
-# Importar JSON de volta para o formato de save do jogo
-./.venv/bin/python main.py import save1.json save/file1_editado.rpgsave
-```
+2. Navigate to the project directory:
+  ```sh
+  cd save-maker
+  ```
 
----
+3. Set up the virtual environment and install dependencies using one of the methods below:
 
-## 💻 Instalação Global no Linux (Atalhos & Botão Direito)
+  **Method 1: Automatic via Makefile (Recommended)**
+  ```sh
+  make venv
+  ```
 
-Você pode instalar os atalhos globais de terminal e integração com o sistema operacional com apenas um comando:
+  **Method 2: Manual via Python venv**
+  ```sh
+  python3 -m venv .venv
+  source .venv/bin/activate
+  pip install -r requirements.txt
+  ```
 
-```bash
-# Instala tudo (atalhos no terminal + menus de botão direito nos gerenciadores de arquivos)
-make install
-```
+### Usage
 
-Após instalado, você pode rodar em qualquer pasta:
-```bash
-# Atalhos disponíveis no terminal:
-save-maker [arquivo]
-savemaker [arquivo]
-save-editor [arquivo]
-rpg-save-editor [arquivo]
-rse [arquivo]
-sm [arquivo]
-```
+- **Modern Graphical User Interface (GUI):**
+  ```sh
+  # Start default GUI
+  make gui
+  # Or directly via Python:
+  ./.venv/bin/python main.py
 
-Para adicionar ou remover atalhos customizados:
-```bash
-make add-alias ALIAS=se
-make remove-alias ALIAS=se
-make list-aliases
-```
+  # Open a save file directly in the GUI:
+  ./.venv/bin/python main.py /path/to/save/file1.rpgsave
+  ```
 
-Para desinstalar as integrações:
-```bash
-make uninstall
-```
+- **Interactive Terminal Interface (CLI / TUI):**
+  ```sh
+  # Start in interactive mode
+  make run
+  # Or directly via Python:
+  ./.venv/bin/python main.py --interactive
+  ```
 
----
+- **Direct Export & Import (Command Line):**
+  ```sh
+  # Export supported save file to readable JSON
+  ./.venv/bin/python main.py export save/file1.rpgsave save1.json
 
-## 🧪 Testes Automatizados
+  # Import JSON back into game save format
+  ./.venv/bin/python main.py import save1.json save/file1_edited.rpgsave
+  ```
 
-O projeto possui uma suíte abrangente de testes automatizados:
-```bash
-make test
-```
+- **Linux Desktop Integration (Aliases & Right-Click Menus):**
+  ```sh
+  # Installs terminal shortcuts and file manager context menus (Nautilus, Nemo, Dolphin)
+  make install
+  ```
 
-Os testes cobrem:
-- Autodescoberta e resolução de bancos de dados (`test_database_autodiscovery.py`)
-- Compatibilidade roundtrip de todos os adaptadores e motores (`test_all_formats.py`)
-- CLI Interativa e comandos (`test_cli_interactive.py`)
-- Performance, latência de renderização e cache (`test_performance.py`)
-- Exportação e importação legado/core (`test_editor.py`)
+- **Run Automated Tests:**
+  ```sh
+  make test
+  ```
 
----
-
-## 📂 Estrutura do Projeto
-
-```text
-save-maker/
-├── main.py                  # Ponto de entrada universal (CLI / GUI / Export / Import)
-├── Makefile                 # Comandos para build, instalação, execução e testes
-├── requirements.txt         # Dependências do projeto
-├── scripts/
-│   ├── core/                # Adaptadores de motores (MV/MZ, Ruby/VX/XP, LSD/2000/2003, Generic)
-│   │   ├── base_adapter.py
-│   │   ├── database_manager.py
-│   │   ├── detector.py
-│   │   ├── generic_adapter.py
-│   │   ├── lsd_adapter.py
-│   │   ├── mv_mz_adapter.py
-│   │   ├── ruby_adapter.py
-│   │   ├── wolf_adapter.py  # Wolf RPG Editor (.sav) - experimental
-│   │   └── wolf_database.py # Schema CDataBase.project do Wolf RPG Editor
-│   ├── cli/                 # Interface de linha de comando rica (TUI com Rich)
-│   │   └── interactive.py
-│   ├── ui/                  # Interface Gráfica Moderna (CustomTkinter)
-│   │   ├── modern_app.py
-│   │   └── theme.py
-│   ├── rpg-save-editor      # Wrapper executável para PATH global
-│   ├── install_linux_integration.sh
-│   └── uninstall_linux_integration.sh
-├── tests/                   # Bateria de testes unitários e de performance
-└── save/                    # Amostras e dados para desenvolvimento/testes
-```
-
----
-
-## ⚠️ Limitações Conhecidas
-
-### Wolf RPG Editor (`.sav`)
-
-O suporte ao Wolf RPG Editor é **experimental**. O formato de save deste motor não é
-documentado oficialmente — esta implementação é um port do único parser de referência
-conhecido publicamente ([Sinflower/WolfSave](https://github.com/Sinflower/WolfSave)). Antes de
-confiar nos dados, esteja ciente de que:
-
-- A semântica da maioria dos campos internos do save é **desconhecida**. Eles são preservados
-  estruturalmente (permitindo round-trip sem corromper o arquivo), mas só ficam visíveis na
-  aba "Avançado" como blocos genéricos, sem nomes amigáveis.
-- **Ouro, tempo de jogo, personagens e inventário** são resolvidos por uma heurística de
-  melhor esforço: o editor procura, no banco de dados do jogo (`CDataBase.project`), campos
-  cujo nome contenha palavras-chave como "Gold"/"所持金", "Actor"/"アクター" etc. Isso pode
-  falhar ou retornar vazio em jogos com nomenclatura diferente.
-- **Switches globais não são suportados** — o Wolf RPG Editor não tem esse conceito neste
-  nível de dados (só self-switches por evento/mapa). Limitação intencional, não um bug.
-- **Nenhum save real do Wolf RPG Editor foi usado para validar esta implementação.** Os testes
-  automatizados usam apenas fixtures sintéticas construídas em memória. Faça backup do seu
-  save antes de editá-lo e testes com cautela.
-- Apenas o esquema de criptografia mais simples (XOR) é suportado. O **Wolf RPG Pro** (3.5+)
-  usa criptografia mais forte (AES/ChaCha20) para os arquivos de banco de dados do projeto e
-  não é suportado — a resolução de nomes amigáveis falha graciosamente (IDs numéricos) nesse
-  caso, mas a leitura/escrita do próprio save `.sav` deve funcionar independentemente da
-  versão do motor, desde que use o esquema XOR simples.
-- Apenas o schema do projeto (`CDataBase.project`, nomes de tipos/campos/linhas) é lido — os
-  valores fixos de referência (`DataBase.dat`, equivalente a `Items.json` do RPG Maker) ainda
-  não são analisados.
-
-## 📄 Licença
-
-Distribuído sob a licença MIT. Veja `LICENSE` para mais detalhes.
+# 🤝 Contributors
+ <a href="https://github.com/bgluis/save-maker/graphs/contributors">
+   <img src="https://contrib.rocks/image?repo=bgluis/save-maker"/>
+ </a>
