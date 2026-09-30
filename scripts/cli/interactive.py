@@ -372,12 +372,20 @@ class InteractiveCliSession:
         query = Prompt.ask("\nFiltrar itens por nome ou ID (Enter para ver todos)", default="").strip().lower()
         filtered = [it for it in inv if not query or query in it["name"].lower() or query in str(it["id"])]
 
-        table = Table(title=f"Inventário: {kind.capitalize()} ({len(filtered)} exibidos de {len(inv)})", header_style="bold green")
+        displayed = min(len(filtered), 100)
+        if displayed < len(filtered):
+            if len(filtered) < len(inv):
+                title = f"Inventário: {kind.capitalize()} ({displayed} de {len(filtered)} exibidos de {len(inv)} - use o filtro)"
+            else:
+                title = f"Inventário: {kind.capitalize()} ({displayed} de {len(inv)} exibidos - use o filtro)"
+        else:
+            title = f"Inventário: {kind.capitalize()} ({len(filtered)} exibidos de {len(inv)})"
+        table = Table(title=title, header_style="bold green")
         table.add_column("ID", width=6, justify="right")
         table.add_column("Nome Real do Item", style="bold")
         table.add_column("Quantidade", width=12, justify="right")
 
-        for it in filtered[:100]:  # Limita para não inundar o terminal
+        for it in filtered[:displayed]:
             table.add_row(f"#{it['id']}", it["name"], str(it["quantity"]))
 
         self.console.print(table)
@@ -409,12 +417,17 @@ class InteractiveCliSession:
         query = Prompt.ask("\nFiltrar switches por nome ou ID (Enter para ver todos)", default="").strip().lower()
 
         filtered = [s for s in switches if not query or query in s["name"].lower() or query in str(s["id"])]
-        table = Table(title=f"Switches ({len(filtered)} exibidos)", header_style="bold cyan")
+        displayed = min(len(filtered), 50)
+        if displayed < len(filtered):
+            title = f"Switches ({displayed} de {len(filtered)} exibidos - use o filtro)"
+        else:
+            title = f"Switches ({len(filtered)} exibidos)"
+        table = Table(title=title, header_style="bold cyan")
         table.add_column("ID", width=6, justify="right")
         table.add_column("Nome da Switch", style="bold")
         table.add_column("Estado", width=10, justify="center")
 
-        for s in filtered[:50]:
+        for s in filtered[:displayed]:
             state_str = "[bold green]LIGADO[/bold green]" if s["value"] else "[dim red]DESLIGADO[/dim red]"
             table.add_row(f"#{s['id']}", s["name"], state_str)
 
@@ -435,12 +448,17 @@ class InteractiveCliSession:
         query = Prompt.ask("\nFiltrar variáveis por nome ou ID (Enter para ver todos)", default="").strip().lower()
 
         filtered = [v for v in variables if not query or query in v["name"].lower() or query in str(v["id"])]
-        table = Table(title=f"Variáveis ({len(filtered)} exibidas)", header_style="bold cyan")
+        displayed = min(len(filtered), 50)
+        if displayed < len(filtered):
+            title = f"Variáveis ({displayed} de {len(filtered)} exibidas - use o filtro)"
+        else:
+            title = f"Variáveis ({len(filtered)} exibidas)"
+        table = Table(title=title, header_style="bold cyan")
         table.add_column("ID", width=6, justify="right")
         table.add_column("Nome da Variável", style="bold")
         table.add_column("Valor Atual", width=18)
 
-        for v in filtered[:50]:
+        for v in filtered[:displayed]:
             table.add_row(f"#{v['id']}", v["name"], str(v["value"]))
 
         self.console.print(table)

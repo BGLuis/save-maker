@@ -14,7 +14,10 @@ import shutil
 import tempfile
 import subprocess
 import unittest
+from unittest.mock import Mock, patch
 from pathlib import Path
+
+from rich.console import Console
 
 # Configura sys.path
 TESTS_DIR = Path(__file__).resolve().parent
@@ -151,6 +154,68 @@ class TestCliInteractive(unittest.TestCase):
         res = subprocess.run([str(wrapper), "--remove-alias", "se-test"], env=env, capture_output=True, text=True)
         self.assertEqual(res.returncode, 0)
         self.assertFalse((custom_bin / "se-test").exists())
+
+
+    def test_switch_list_discloses_truncated_count(self):
+        session = InteractiveCliSession()
+        session.console = Console(record=True, width=120)
+        session.adapter = Mock()
+        session.adapter.get_switches.return_value = [
+            {"id": switch_id, "name": f"Switch {switch_id}", "value": False}
+            for switch_id in range(1, 779)
+        ]
+
+        with patch(
+            "scripts.cli.interactive.Prompt.ask",
+            side_effect=["", "0", ""],
+        ):
+            session._action_switches()
+
+        output = session.console.export_text()
+        self.assertIn("50 de 778", output)
+        self.assertIn("Switch 50", output)
+        self.assertNotIn("Switch 51", output)
+
+    def test_inventory_list_discloses_truncated_count(self):
+        session = InteractiveCliSession()
+        session.console = Console(record=True, width=120)
+        session.adapter = Mock()
+        session.adapter.get_inventory.return_value = [
+            {"id": item_id, "name": f"Item {item_id}", "quantity": 1}
+            for item_id in range(1, 151)
+        ]
+
+        with patch(
+            "scripts.cli.interactive.Prompt.ask",
+            side_effect=["1", "", "0", ""],
+        ):
+            session._action_inventory()
+
+        output = session.console.export_text()
+        self.assertIn("100 de 150", output)
+        self.assertIn("Item 100", output)
+        self.assertNotIn("Item 101", output)
+
+    def test_variable_list_discloses_truncated_count(self):
+        session = InteractiveCliSession()
+        session.console = Console(record=True, width=120)
+        session.adapter = Mock()
+        session.adapter.get_variable_name.return_value = "Var"
+        session.adapter.get_variables.return_value = [
+            {"id": var_id, "name": f"Variable {var_id}", "value": 0}
+            for var_id in range(1, 121)
+        ]
+
+        with patch(
+            "scripts.cli.interactive.Prompt.ask",
+            side_effect=["", "0", ""],
+        ):
+            session._action_variables()
+
+        output = session.console.export_text()
+        self.assertIn("50 de 120", output)
+        self.assertIn("Variable 50", output)
+        self.assertNotIn("Variable 51", output)
 
 
 if __name__ == "__main__":
