@@ -135,8 +135,11 @@ def main():
         gui_classic_main()
         return 0
 
-    # Verifica se há display disponível
-    has_display = bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"))
+    # Verifica se há display disponível.
+    # No Windows, DISPLAY/WAYLAND_DISPLAY nunca existem; sys.platform é suficiente.
+    has_display = sys.platform == "win32" or bool(
+        os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")
+    )
     if not has_display and not parsed_args.cmd == "gui":
         # Em ambiente sem display gráfico (ex: SSH / console puro), inicia modo interativo
         print("[Info] Nenhum display gráfico detectado. Iniciando modo interativo no terminal...")

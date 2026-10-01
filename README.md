@@ -12,6 +12,7 @@
 <!-- Badges das Tecnologias Utilizadas -->
 ![Python](https://shieldcn.dev/badge/Python-3.10+-3776AB.svg?logo=python&variant=branded&size=sm)
 ![Linux](https://shieldcn.dev/badge/Linux-FCC624.svg?logo=linux&variant=branded&size=sm)
+![Windows](https://shieldcn.dev/badge/Windows-10%2F11-0078D4.svg?logo=windows&variant=branded&size=sm)
 
   <h3>Save Maker</h3>
   Editor e conversor universal de saves para jogos de RPG Maker e correlatos com GUI e TUI interativa.
@@ -122,6 +123,52 @@ Apenas uma ferramenta para editar saves quando jogos bugam.
   ```sh
   make test
   ```
+
+# 💻 Como iniciar no Windows
+
+### Requisitos
+- [Python 3.10+](https://www.python.org/downloads/) — marque **"Add Python to PATH"** durante a instalação
+- [Git](https://git-scm.com/)
+
+### Instalação
+
+1. Clone o repositório:
+  ```powershell
+  git clone https://github.com/bgluis/save-maker.git
+  cd save-maker
+  ```
+
+2. Crie o ambiente virtual e instale as dependências:
+  ```powershell
+  python -m venv .venv
+  .\.venv\Scripts\activate
+  pip install -r requirements.txt
+  ```
+
+3. *(Opcional)* Instalação global com atalhos no terminal:
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File scripts\install_windows.ps1
+  ```
+
+### Como Usar no Windows
+
+- **Interface Gráfica Moderna (GUI):**
+  ```powershell
+  .\.venv\Scripts\python.exe main.py
+  ```
+
+- **Interface Interativa no Terminal (CLI / TUI):**
+  ```powershell
+  .\.venv\Scripts\python.exe main.py --interactive
+  ```
+
+- **Exportação e Importação Direta:**
+  ```powershell
+  .\.venv\Scripts\python.exe main.py export save\file1.rpgsave save1.json
+  .\.venv\Scripts\python.exe main.py import save1.json save\file1_editado.rpgsave
+  ```
+
+> **Nota sobre terminal:** Para melhor experiência com a CLI/TUI (cores e Unicode), use o **Windows Terminal** ou **PowerShell 7+**. No CMD legado, execute `chcp 65001` antes de iniciar.
 
 # 🤝 Contribuidores
  <a href="https://github.com/bgluis/save-maker/graphs/contributors">
