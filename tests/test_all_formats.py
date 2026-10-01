@@ -29,7 +29,7 @@ from core.generic_adapter import GenericJsonAdapter
 from core.wolf_adapter import WolfAdapter
 
 try:
-    from rubymarshal.writer import writes as ruby_writes
+    from rubymarshal.writer import writes as ruby_writes, write as ruby_write
     from rubymarshal.classes import RubyObject, Symbol
     _RUBY = True
 except Exception:
@@ -92,18 +92,34 @@ def test_mv_adapter_roundtrip():
 
 
 def test_ruby_adapter_roundtrip():
-    """Testa suporte a Ruby Marshal (.rvdata2, .rvdata, .rxdata)."""
+    """
+    Testa RubyAdapter com fixtures que refletem o formato real do RPG Maker.
+
+    VX Ace (.rvdata2): 2 objetos Marshal em sequência — make_save_header +
+                       make_save_contents (hash com party, actors, switches...).
+    XP (.rxdata):     12 objetos Marshal em sequência, na ordem do Scene_Save.rb.
+
+    NOTA: A fixture anterior usava ruby_writes([party, actors, ...]), que gera
+    um único Array — formato inexistente em saves reais. Era um falso-positivo
+    estrutural que não detectava o bug da issue #1.
+    """
     if not _RUBY:
         print("⚠ rubymarshal não disponível, pulando teste Ruby.")
         return
 
-    # Constrói objetos simulados de RGSS
+    # --- Sub-teste 1: VX Ace (2 objetos Marshal em sequência) ---
+    # Critérios de aceite da issue #1:
+    #   - get_gold() == 1500 (gold lido do segundo objeto, não do cabeçalho)
+    #   - após save, arquivo tem 2 objetos e gold alterado persiste
+    header = RubyObject("RPG::SaveHeader", {
+        "@characters": [], "@playtime_s": "00:00"
+    })
     party = RubyObject("Game_Party", {
         "@gold": 1500,
         "@items": {1: 5, 2: 10},
         "@weapons": {3: 1},
         "@armors": {4: 2},
-        "@steps": 350
+        "@steps": 350,
     })
     actor = RubyObject("Game_Actor", {
         "@actor_id": 1,
@@ -114,45 +130,47 @@ def test_ruby_adapter_roundtrip():
         "@mp": 100,
         "@maxmp": 100,
         "@atk": 35,
-        "@def": 25
+        "@def": 25,
     })
-    actors = RubyObject("Game_Actors", {
-        "@data": [None, actor]
-    })
-    switches = RubyObject("Game_Switches", {
-        "@data": [False, True, False, True]
-    })
-    variables = RubyObject("Game_Variables", {
-        "@data": [0, 10, 20, 30]
-    })
-
-    save_payload = [party, actors, switches, variables]
-    blob = ruby_writes(save_payload)
+    actors_obj = RubyObject("Game_Actors", {"@data": [None, actor]})
+    switches_obj = RubyObject("Game_Switches", {"@data": [False, True, False, True]})
+    variables_obj = RubyObject("Game_Variables", {"@data": [0, 10, 20, 30]})
+    contents = {
+        "party": party,
+        "actors": actors_obj,
+        "switches": switches_obj,
+        "variables": variables_obj,
+    }
 
     with tempfile.TemporaryDirectory() as tmpdir:
         test_file = Path(tmpdir) / "Save01.rvdata2"
-        test_file.write_bytes(blob)
+        # Formato real: 2 objetos Marshal independentes em sequência
+        with open(test_file, "wb") as f:
+            ruby_write(f, header)
+            ruby_write(f, contents)
 
         adapter = RubyAdapter()
         adapter.load(test_file)
 
         assert adapter.engine_name == "RPG Maker VX Ace"
-        assert adapter.get_gold() == 1500
+        # Critério de aceite #1: gold lido do segundo objeto (make_save_contents)
+        assert adapter.get_gold() == 1500, \
+            f"[Issue #1] get_gold()={adapter.get_gold()} (esperado 1500 — second Marshal object)"
 
-        # Modifica
         adapter.set_gold(99999)
         adapter.update_actor(1, {"hp": 9999, "level": 99})
         adapter.set_item_quantity("items", 1, 99)
         adapter.set_switch(2, True)
         adapter.set_variable(1, 888)
 
-        # Salva
         edited_file = Path(tmpdir) / "Save01_edited.rvdata2"
         adapter.save(edited_file, backup=False)
 
-        # Re-lê
         reloaded = RubyAdapter()
         reloaded.load(edited_file)
+        # Critério de aceite #2: save preserva os 2 objetos Marshal originais
+        assert len(reloaded._marshal_objects) == 2, \
+            f"[Issue #1] save() gerou {len(reloaded._marshal_objects)} objeto(s) (esperado 2)"
         assert reloaded.get_gold() == 99999
         assert reloaded.get_actors()[0]["hp"] == 9999
         assert reloaded.get_actors()[0]["level"] == 99
@@ -160,7 +178,53 @@ def test_ruby_adapter_roundtrip():
         assert reloaded.get_switches()[1]["value"] is True
         assert reloaded.get_variables()[0]["value"] == 888
 
+    # --- Sub-teste 2: XP (.rxdata — 12 objetos sequenciais) ---
+    xp_objects = [
+        RubyObject("Game_Timer", {}),
+        RubyObject("Game_System", {"@timer": 0}),
+        RubyObject("Game_Map", {}),
+        RubyObject("Game_Player", {}),
+        RubyObject("Game_Switches", {"@data": [False, True, False]}),
+        RubyObject("Game_Variables", {"@data": [0, 42, 0]}),
+        RubyObject("Game_SelfSwitches", {}),
+        RubyObject("Game_Actors", {"@data": [None, RubyObject("Game_Actor", {
+            "@actor_id": 1, "@name": "Hero", "@level": 10,
+            "@hp": 300, "@maxhp": 300, "@mp": 50, "@maxmp": 50,
+        })]}),
+        RubyObject("Game_Party", {"@gold": 777, "@items": {1: 3}}),
+        RubyObject("Game_Troop", {}),
+        RubyObject("Game_Screen", {}),
+        RubyObject("Game_Pictures", {}),
+    ]
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        xp_file = Path(tmpdir) / "Save01.rxdata"
+        with open(xp_file, "wb") as f:
+            for obj in xp_objects:
+                ruby_write(f, obj)
+
+        xp_adapter = RubyAdapter()
+        xp_adapter.load(xp_file)
+
+        assert xp_adapter.engine_name == "RPG Maker XP"
+        assert xp_adapter.get_gold() == 777, \
+            f"[XP] get_gold()={xp_adapter.get_gold()} (esperado 777)"
+        assert len(xp_adapter._marshal_objects) == len(xp_objects)
+
+        xp_adapter.set_gold(5000)
+        xp_edited = Path(tmpdir) / "Save01_edited.rxdata"
+        xp_adapter.save(xp_edited, backup=False)
+
+        xp_reloaded = RubyAdapter()
+        xp_reloaded.load(xp_edited)
+        # Contrato de integridade: save preserva o número exato de objetos Marshal
+        assert len(xp_reloaded._marshal_objects) == len(xp_objects), \
+            f"[XP] save() alterou contagem de objetos: " \
+            f"{len(xp_reloaded._marshal_objects)} != {len(xp_objects)}"
+        assert xp_reloaded.get_gold() == 5000
+
     print("✔ test_ruby_adapter_roundtrip passou com sucesso!")
+
 
 
 def test_lsd_adapter_roundtrip():

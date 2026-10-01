@@ -13,16 +13,14 @@ from typing import Any, Dict, List, Optional, Tuple
 from .base_adapter import BaseSaveAdapter
 
 try:
-    from rubymarshal.reader import load as ruby_load, loads as ruby_loads
-    from rubymarshal.writer import write as ruby_write, writes as ruby_writes
     from rubymarshal.classes import RubyObject, Symbol
     _RUBY_AVAILABLE = True
 except Exception:
-    ruby_load = None
-    ruby_write = None
     RubyObject = None
     Symbol = None
     _RUBY_AVAILABLE = False
+
+from .marshal_io import marshal_read_file, marshal_write_file, ruby_available
 
 
 class RubyAdapter(BaseSaveAdapter):
@@ -30,6 +28,7 @@ class RubyAdapter(BaseSaveAdapter):
 
     def __init__(self, db_manager=None):
         super().__init__(db_manager)
+        self._marshal_objects: list = []
         self.game_party_obj = None
         self.game_actors_obj = None
         self.game_switches_obj = None
@@ -37,12 +36,16 @@ class RubyAdapter(BaseSaveAdapter):
         self.game_system_obj = None
 
     def load(self, path: Path | str) -> Any:
-        if not _RUBY_AVAILABLE:
-            raise RuntimeError("Biblioteca rubymarshal não está disponível no ambiente (pip install rubymarshal)")
+        if not ruby_available():
+            raise RuntimeError(
+                "Biblioteca rubymarshal não está disponível no ambiente (pip install rubymarshal)"
+            )
 
         self.file_path = Path(path).resolve()
-        with open(self.file_path, "rb") as fd:
-            self.raw_data = ruby_load(fd)
+        # Lê todos os objetos Marshal em sequência até EOF.
+        # VX Ace / VX gravam 2 objetos; XP grava 12. ruby_load sozinho lê só o 1.º.
+        self._marshal_objects = marshal_read_file(self.file_path)
+        self.raw_data = self._marshal_objects  # preserva compatibilidade com get_by_path
 
         ext = self.file_path.suffix.lower()
         if ext == ".rvdata2":
@@ -60,53 +63,64 @@ class RubyAdapter(BaseSaveAdapter):
         return self.raw_data
 
     def save(self, dst: Path | str, backup: bool = True) -> bool:
-        if not _RUBY_AVAILABLE:
+        if not ruby_available():
             raise RuntimeError("Biblioteca rubymarshal não está disponível")
 
         dst_path = Path(dst).resolve()
         if backup and dst_path.exists():
             self.create_backup_if_needed(dst_path)
 
-        with open(dst_path, "wb") as fd:
-            ruby_write(fd, self.raw_data)
+        # Grava todos os objetos Marshal em sequência, preservando o formato original.
+        # marshal_write_file lança ValueError se _marshal_objects estiver vazio.
+        marshal_write_file(dst_path, self._marshal_objects)
 
         self.clear_pending_changes()
         return True
 
     def _locate_rgss_objects(self):
-        """Varre os objetos desserializados para encontrar Game_Party, Game_Actors, etc."""
+        """
+        Varre todos os objetos Marshal lidos para localizar Game_Party, Game_Actors, etc.
+
+        Cada objeto top-level em _marshal_objects pode ser:
+          - RubyObject diretamente (ex.: Game_Party no XP, Game_System, cabeçalho)
+          - dict/hash com valores RubyObject (ex.: make_save_contents no VX Ace)
+          - list de RubyObjects (formato legado single-stream)
+        """
         self.game_party_obj = None
         self.game_actors_obj = None
         self.game_switches_obj = None
         self.game_variables_obj = None
         self.game_system_obj = None
 
-        def check_candidate(candidate):
+        def _assign(candidate) -> None:
             if candidate is None:
                 return
-            c_name = getattr(candidate, "ruby_class_name", "")
-            if "Game_Party" in c_name:
+            name = getattr(candidate, "ruby_class_name", "")
+            if not name:
+                return
+            if "Game_Party" in name and self.game_party_obj is None:
                 self.game_party_obj = candidate
-            elif "Game_Actors" in c_name:
+            elif "Game_Actors" in name and self.game_actors_obj is None:
                 self.game_actors_obj = candidate
-            elif "Game_Switches" in c_name:
+            elif "Game_Switches" in name and self.game_switches_obj is None:
                 self.game_switches_obj = candidate
-            elif "Game_Variables" in c_name:
+            elif "Game_Variables" in name and self.game_variables_obj is None:
                 self.game_variables_obj = candidate
-            elif "Game_System" in c_name:
+            elif "Game_System" in name and self.game_system_obj is None:
                 self.game_system_obj = candidate
 
-        # Se for lista (padrão XP e VX)
-        if isinstance(self.raw_data, list):
-            for item in self.raw_data:
-                check_candidate(item)
-        # Se for dict / hash (padrão VX Ace)
-        elif isinstance(self.raw_data, dict):
-            for v in self.raw_data.values():
-                check_candidate(v)
-        # Se for objeto individual
-        else:
-            check_candidate(self.raw_data)
+        def _scan(top) -> None:
+            if isinstance(top, dict):
+                for v in top.values():
+                    _assign(v)
+            elif isinstance(top, list):
+                for item in top:
+                    _assign(item)
+            else:
+                _assign(top)
+
+        for obj in self._marshal_objects:
+            _scan(obj)
 
     def _get_attr(self, obj: Any, key: str, default: Any = None) -> Any:
         if obj is None or not hasattr(obj, "attributes"):
