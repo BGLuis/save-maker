@@ -24,7 +24,7 @@ from core.database_manager import GameDatabaseManager
 from core.detector import detect_and_create_adapter
 from core.mv_mz_adapter import MvMzAdapter
 from core.ruby_adapter import RubyAdapter
-from core.lsd_adapter import LsdAdapter, write_ber_int
+from core.lsd_adapter import LsdAdapter, write_ber_int, read_ber_int
 from core.generic_adapter import GenericJsonAdapter
 from core.wolf_adapter import WolfAdapter
 
@@ -238,12 +238,12 @@ def test_lsd_adapter_roundtrip():
     sub.write(write_ber_int(0x15))
     sub.write(write_ber_int(len(gold_bytes)))
     sub.write(gold_bytes)
-    party_chunk_data = sub.getvalue()
+    inv_chunk_data = sub.getvalue()
 
-    # Escreve chunk de Party (id 104)
-    out.write(write_ber_int(104))
-    out.write(write_ber_int(len(party_chunk_data)))
-    out.write(party_chunk_data)
+    # Escreve chunk SaveInventory (id 0x6D — liblcf/EasyRPG)
+    out.write(write_ber_int(0x6D))
+    out.write(write_ber_int(len(inv_chunk_data)))
+    out.write(inv_chunk_data)
 
     payload = out.getvalue()
 
@@ -473,12 +473,87 @@ def test_detector():
     print("✔ test_detector passou com sucesso!")
 
 
+def test_lsd_bug_chunks():
+    """
+    Critério de aceite da issue #2 (U-02):
+    1. get_gold() == 2500 quando ouro está em 0x6D/0x15
+    2. após set_gold(99999) + save(), apenas o campo 0x15 de 0x6D muda;
+       o chunk 0x67 permanece byte a byte idêntico ao original.
+    """
+    out = io.BytesIO()
+    out.write(b"\x0bLcfSaveData")
+
+    # Chunk 0x67 (pictures) com dados arbitrários — NÃO deve ser tocado pelo save()
+    pictures_payload = b"\x01\x02dummy_pictures_data"
+    out.write(write_ber_int(0x67))
+    out.write(write_ber_int(len(pictures_payload)))
+    out.write(pictures_payload)
+
+    # Chunk 0x6D (SaveInventory) com ouro 2500 em sub-campo 0x15
+    sub = io.BytesIO()
+    gold_bytes = (2500).to_bytes(4, "little")
+    sub.write(write_ber_int(0x15))
+    sub.write(write_ber_int(len(gold_bytes)))
+    sub.write(gold_bytes)
+    inventory_data = sub.getvalue()
+    out.write(write_ber_int(0x6D))
+    out.write(write_ber_int(len(inventory_data)))
+    out.write(inventory_data)
+
+    original_bytes = out.getvalue()
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        lsd_file = Path(tmpdir) / "SaveBug.lsd"
+        lsd_file.write_bytes(original_bytes)
+
+        adapter = LsdAdapter()
+        adapter.load(lsd_file)
+
+        # Critério 1: get_gold() deve retornar 2500
+        assert adapter.get_gold() == 2500, \
+            f"[Issue #2] get_gold()={adapter.get_gold()} (esperado 2500)"
+
+        # Critério 2a: setar ouro e salvar
+        adapter.set_gold(99999)
+        edited = Path(tmpdir) / "SaveBug_edited.lsd"
+        adapter.save(edited, backup=False)
+
+        # Critério 2b: chunk 0x67 deve ser idêntico byte a byte
+        edited_bytes = edited.read_bytes()
+
+        def _extract_chunk(data: bytes, target_id: int):
+            """Extrai os bytes de dados de um chunk pelo seu ID."""
+            stream = io.BytesIO(data[len(b"\x0bLcfSaveData"):])
+            while stream.tell() < len(data) - len(b"\x0bLcfSaveData"):
+                cid = read_ber_int(stream)
+                clen = read_ber_int(stream)
+                cdata = stream.read(clen)
+                if cid == target_id:
+                    return cdata
+            return None
+
+        orig_pictures = _extract_chunk(original_bytes, 0x67)
+        edit_pictures = _extract_chunk(edited_bytes, 0x67)
+        assert orig_pictures == edit_pictures, \
+            "[Issue #2] chunk 0x67 (pictures) foi modificado — devia permanecer intacto"
+
+        # Critério 2c: novo ouro persiste após reload
+        reloaded = LsdAdapter()
+        reloaded.load(edited)
+        assert reloaded.get_gold() == 99999, \
+            f"[Issue #2] ouro não persiste: {reloaded.get_gold()} (esperado 99999)"
+
+    print("✔ test_lsd_bug_chunks (U-02) passou com sucesso!")
+
+
 if __name__ == "__main__":
     test_mv_adapter_roundtrip()
     test_ruby_adapter_roundtrip()
     test_lsd_adapter_roundtrip()
+    test_lsd_bug_chunks()
     test_generic_json_adapter()
     test_wolf_adapter_roundtrip()
     test_wolf_version_gating_roundtrip()
     test_detector()
     print("\nTODOS OS TESTES DE FORMATO PASSARAM COM SUCESSO!")
+

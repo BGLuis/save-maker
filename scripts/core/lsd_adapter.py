@@ -42,6 +42,32 @@ def write_ber_int(val: int) -> bytes:
     return bytes(bytes_arr)
 
 
+# ---------------------------------------------------------------------------
+# IDs de chunk top-level do LcfSaveData (referência: liblcf / EasyRPG)
+# ---------------------------------------------------------------------------
+CHUNK_SAVE_ACTOR  = 0x64  # SaveActor  — repete para cada ator da party
+CHUNK_SAVE_SYSTEM = 0x65  # SaveSystem — switches e variáveis globais
+CHUNK_PICTURES    = 0x67  # pictures   — dados de imagens (NÃO é inventário)
+CHUNK_PARTY_LOC   = 0x68  # party_location (NÃO é inventário)
+CHUNK_SAVE_INV    = 0x6D  # SaveInventory — ouro e itens da party
+
+# Subchunks dentro de SaveInventory (0x6D)
+SUB_GOLD         = 0x15   # gold        — Int32 little-endian
+SUB_ITEM_IDS     = 0x0C   # item_ids    — array de Int16 LE
+SUB_ITEM_COUNTS  = 0x0D   # item_counts — array de Int16 LE
+
+# Subchunks dentro de SaveSystem (0x65)
+SUB_SWITCHES     = 0x20   # switches[]  — 1 byte por switch (0 = OFF, 1 = ON)
+SUB_VARIABLES    = 0x22   # variables[] — Int32 LE por variável
+
+# Subchunks dentro de SaveActor (0x64)
+SUB_ACTOR_NAME   = 0x01
+SUB_ACTOR_LEVEL  = 0x0B
+SUB_ACTOR_EXP    = 0x0C
+SUB_ACTOR_HP     = 0x0D
+SUB_ACTOR_MP     = 0x0E
+
+
 class LsdAdapter(BaseSaveAdapter):
     """Adaptador para arquivos de save .lsd (RPG Maker 2000/2003)."""
 
@@ -56,6 +82,7 @@ class LsdAdapter(BaseSaveAdapter):
         self._switches: Dict[int, bool] = {}
         self._variables: Dict[int, int] = {}
         self._items: Dict[int, int] = {}
+        self._actors: List[Dict[str, Any]] = []
 
     def load(self, path: Path | str) -> Any:
         self.file_path = Path(path).resolve()
@@ -69,6 +96,7 @@ class LsdAdapter(BaseSaveAdapter):
         self._switches.clear()
         self._variables.clear()
         self._items.clear()
+        self._actors.clear()
 
         # Lê chunks BER
         while True:
@@ -94,25 +122,84 @@ class LsdAdapter(BaseSaveAdapter):
         return self.raw_data
 
     def _parse_chunk(self, chunk_id: int, data: bytes):
-        """Extrai dados conhecidos de chunks de Party e System."""
+        """Extrai dados conhecidos de SaveInventory, SaveSystem e SaveActor."""
         s = io.BytesIO(data)
         try:
-            # Chunk 104 (SaveParty) geralmente contém o ouro
-            if chunk_id in (103, 104, 0x67, 0x68):
+            if chunk_id == CHUNK_SAVE_INV:        # 0x6D — SaveInventory
+                item_ids: List[int] = []
+                item_counts: Dict[int, int] = {}
                 while s.tell() < len(data):
                     sub_id = read_ber_int(s)
                     sub_len = read_ber_int(s)
                     sub_val = s.read(sub_len)
-                    # Subchunk 0x15 (21) em SaveParty é o Ouro
-                    if sub_id in (0x15, 21):
+                    if sub_id == SUB_GOLD:            # 0x15 — gold (Int32 LE)
                         self._gold = int.from_bytes(sub_val, byteorder="little", signed=False)
-                    elif sub_id in (0x0B, 11):
-                        # Lista de IDs de itens
-                        for i in range(0, len(sub_val), 2):
-                            if i + 2 <= len(sub_val):
-                                item_id = int.from_bytes(sub_val[i:i+2], "little")
-                                if item_id > 0:
-                                    self._items[item_id] = self._items.get(item_id, 0) + 1
+                    elif sub_id == SUB_ITEM_IDS:      # 0x0C — item_ids
+                        item_ids = [
+                            int.from_bytes(sub_val[i:i + 2], "little")
+                            for i in range(0, len(sub_val), 2)
+                            if i + 2 <= len(sub_val)
+                        ]
+                    elif sub_id == SUB_ITEM_COUNTS:   # 0x0D — item_counts
+                        counts_raw = [
+                            int.from_bytes(sub_val[i:i + 2], "little")
+                            for i in range(0, len(sub_val), 2)
+                            if i + 2 <= len(sub_val)
+                        ]
+                        item_counts = dict(enumerate(counts_raw))
+                # Cruza item_ids + item_counts após ler todos os subchunks
+                for idx, item_id in enumerate(item_ids):
+                    if item_id > 0:
+                        qty = item_counts.get(idx, 1)
+                        self._items[item_id] = qty
+
+            elif chunk_id == CHUNK_SAVE_SYSTEM:   # 0x65 — SaveSystem
+                while s.tell() < len(data):
+                    sub_id = read_ber_int(s)
+                    sub_len = read_ber_int(s)
+                    sub_val = s.read(sub_len)
+                    if sub_id == SUB_SWITCHES:        # 0x20 — switches (1 byte each)
+                        for i, byte in enumerate(sub_val):
+                            self._switches[i + 1] = bool(byte)
+                    elif sub_id == SUB_VARIABLES:     # 0x22 — variables (Int32 LE)
+                        for i in range(0, len(sub_val), 4):
+                            if i + 4 <= len(sub_val):
+                                val = int.from_bytes(sub_val[i:i + 4], "little", signed=True)
+                                self._variables[i // 4 + 1] = val
+
+            elif chunk_id == CHUNK_SAVE_ACTOR:    # 0x64 — SaveActor (repete por ator)
+                actor: Dict[str, Any] = {
+                    "id": len(self._actors) + 1,
+                    "name": f"Herói #{len(self._actors) + 1}",
+                    "level": 1, "exp": 0,
+                    "hp": 0, "max_hp": 0,
+                    "mp": 0, "max_mp": 0,
+                    "raw": {},
+                }
+                while s.tell() < len(data):
+                    sub_id = read_ber_int(s)
+                    sub_len = read_ber_int(s)
+                    sub_val = s.read(sub_len)
+                    actor["raw"][sub_id] = sub_val
+                    if sub_id == SUB_ACTOR_NAME:
+                        try:
+                            actor["name"] = sub_val.rstrip(b"\x00").decode("utf-8", errors="replace")
+                        except Exception:
+                            pass
+                    elif sub_id == SUB_ACTOR_LEVEL and len(sub_val) >= 4:
+                        actor["level"] = int.from_bytes(sub_val, "little", signed=False)
+                    elif sub_id == SUB_ACTOR_EXP and len(sub_val) >= 4:
+                        actor["exp"] = int.from_bytes(sub_val, "little", signed=False)
+                    elif sub_id == SUB_ACTOR_HP and len(sub_val) >= 4:
+                        v = int.from_bytes(sub_val, "little", signed=False)
+                        actor["hp"] = v
+                        actor["max_hp"] = v
+                    elif sub_id == SUB_ACTOR_MP and len(sub_val) >= 4:
+                        v = int.from_bytes(sub_val, "little", signed=False)
+                        actor["mp"] = v
+                        actor["max_mp"] = v
+                self._actors.append(actor)
+
         except Exception:
             pass
 
@@ -126,9 +213,9 @@ class LsdAdapter(BaseSaveAdapter):
 
         # Reconstrói os chunks preservando os dados binários
         for chunk_id, chunk_data in self.chunks:
-            # Atualiza chunk de Party com o novo ouro
-            if chunk_id in (103, 104, 0x67, 0x68) and self._gold >= 0:
-                updated_chunk = self._rebuild_party_chunk(chunk_data)
+            # Atualiza apenas o chunk SaveInventory (0x6D) com o novo ouro
+            if chunk_id == CHUNK_SAVE_INV and self._gold >= 0:
+                updated_chunk = self._rebuild_inventory_chunk(chunk_data)
                 out.write(write_ber_int(chunk_id))
                 out.write(write_ber_int(len(updated_chunk)))
                 out.write(updated_chunk)
@@ -141,8 +228,8 @@ class LsdAdapter(BaseSaveAdapter):
         self.clear_pending_changes()
         return True
 
-    def _rebuild_party_chunk(self, original_data: bytes) -> bytes:
-        """Substitui o valor do ouro dentro do chunk binário de Party."""
+    def _rebuild_inventory_chunk(self, original_data: bytes) -> bytes:
+        """Substitui o valor do ouro dentro do chunk SaveInventory (0x6D)."""
         s = io.BytesIO(original_data)
         out = io.BytesIO()
         gold_written = False
@@ -152,7 +239,7 @@ class LsdAdapter(BaseSaveAdapter):
             sub_len = read_ber_int(s)
             sub_val = s.read(sub_len)
 
-            if sub_id in (0x15, 21):
+            if sub_id == SUB_GOLD:     # 0x15
                 gold_bytes = self._gold.to_bytes(4, byteorder="little")
                 out.write(write_ber_int(sub_id))
                 out.write(write_ber_int(len(gold_bytes)))
@@ -164,9 +251,9 @@ class LsdAdapter(BaseSaveAdapter):
                 out.write(sub_val)
 
         if not gold_written:
-            # Anexa subchunk de ouro
+            # Subchunk de ouro ausente no arquivo original — acrescenta
             gold_bytes = self._gold.to_bytes(4, byteorder="little")
-            out.write(write_ber_int(0x15))
+            out.write(write_ber_int(SUB_GOLD))
             out.write(write_ber_int(len(gold_bytes)))
             out.write(gold_bytes)
 
@@ -184,33 +271,46 @@ class LsdAdapter(BaseSaveAdapter):
         return "N/A", 0
 
     def get_actors(self) -> List[Dict[str, Any]]:
-        # No RPG Maker 2000/2003 os atores costumam ter IDs 1..4
+        if self._actors:
+            return [
+                {
+                    "id": a.get("id", i + 1),
+                    "name": a.get("name", self.db.get_actor_name(a.get("id", i + 1)) if self.db else f"Herói #{i + 1}"),
+                    "level": a.get("level", 1),
+                    "hp": a.get("hp", 0),
+                    "max_hp": a.get("max_hp", 0),
+                    "mp": a.get("mp", 0),
+                    "max_mp": a.get("max_mp", 0),
+                    "tp": 0,
+                    "atk": 0, "def": 0, "mat": 0, "mdf": 0, "agi": 0, "luk": 0,
+                    "exp": a.get("exp", 0),
+                    "raw": a.get("raw", {}),
+                }
+                for i, a in enumerate(self._actors)
+            ]
+        # Fallback: nenhum chunk 0x64 encontrado no arquivo
         results = []
         for i in range(1, 5):
             name = self.db.get_actor_name(i) if self.db else f"Herói #{i}"
             results.append({
-                "id": i,
-                "name": name,
-                "level": 1,
-                "hp": 999,
-                "max_hp": 999,
-                "mp": 99,
-                "max_mp": 99,
-                "tp": 0,
-                "atk": 50,
-                "def": 50,
-                "mat": 50,
-                "mdf": 50,
-                "agi": 50,
-                "luk": 50,
-                "exp": 0,
-                "raw": {}
+                "id": i, "name": name, "level": 1,
+                "hp": 0, "max_hp": 0, "mp": 0, "max_mp": 0,
+                "tp": 0, "atk": 0, "def": 0, "mat": 0, "mdf": 0, "agi": 0, "luk": 0,
+                "exp": 0, "raw": {}
             })
         return results
 
     def update_actor(self, actor_id: int | str, stats: Dict[str, Any]) -> bool:
-        self.mark_dirty(f"Ator {actor_id} atualizado")
-        return True
+        aid = int(actor_id)
+        for actor in self._actors:
+            if actor.get("id") == aid:
+                for key in ("level", "hp", "max_hp", "mp", "max_mp", "exp"):
+                    if key in stats:
+                        actor[key] = stats[key]
+                self.mark_dirty(f"Ator {actor_id} atualizado")
+                return True
+        self.mark_dirty(f"Ator {actor_id} atualizado (não encontrado no save)")
+        return False
 
     def get_inventory(self, kind: str = "items") -> List[Dict[str, Any]]:
         results = []
