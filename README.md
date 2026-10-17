@@ -27,22 +27,29 @@
 # 📖 Sobre
 O **Save Maker** é um editor e conversor universal, moderno e de alto desempenho para arquivos de save de jogos desenvolvidos em **RPG Maker** e motores correlatos. Ele foi projetado para permitir a visualização, modificação e recuperação de saves tanto através de uma **Interface Gráfica Moderna (GUI)** construída com CustomTkinter quanto por uma **Interface Interativa no Terminal (TUI)** desenvolvida com Rich, além de utilitários de linha de comando para exportação e importação direta.
 
+### 🎮 Motores e Formatos Suportados
+
+| Motor / Formato | Extensões | Nível de Suporte | Status de Verificação |
+|---|---|---|---|
+| **RPG Maker MV** | `.rpgsave` | Suporte Completo | ✅ Verificado com saves reais e fixtures de banco de dados (`Classes.json` curvas de atributos, wrappers `@a` de arrays do `JsonEx`, compressões LZString/None/Zlib/Gzip). |
+| **RPG Maker MZ** | `.rmmzsave` | Suportado | ✅ Verificado para compressões `zlib`, `zlib-utf8` (`pako`) e `LZString`. |
+| **RPG Maker VX Ace / VX / XP** | `.rvdata2`, `.rvdata`, `.rxdata` | Suportado | ✅ Preservação da stream multi-objeto Ruby Marshal 4.8 via `marshal_io.py`. |
+| **RPG Maker 2000 / 2003** | `.lsd` | Básico / Experimental | ⚠️ Suporte a chunk `0x6D` (`SaveInventory` ouro e itens) em formato binário `LcfSaveData`. |
+| **Generic JSON / Web Saves** | `.json`, `.sav`, `.dat`, `.txt` | Suportado | ✅ Parsing e manipulação de saves estruturados em JSON ou texto codificado. |
+| **Wolf RPG Editor / ウディタ** | `.sav` | Experimental | ⚠️ Suporte experimental para decodificação e edição básica. |
+
 ### Recursos Principais
-- **Suporte Universal a Motores de Jogos:**
-  - **RPG Maker MV** (`.rpgsave` — compressões None, Zlib, Gzip e LZString)
-  - **RPG Maker MZ** (`.rmmzsave` — formato LZString moderno)
-  - **RPG Maker VX Ace** (`.rvdata2` — serialização Ruby Marshal)
-  - **RPG Maker VX** (`.rvdata` — Ruby Marshal)
-  - **RPG Maker XP** (`.rxdata` — Ruby Marshal)
-  - **RPG Maker 2000 / 2003** (`.lsd` — formato binário LcfSaveData)
-  - **Wolf RPG Editor / ウディタ** (`.sav` — decodificação e edição)
-  - **Saves em JSON e Web** (`.json`, `.sav`, `.dat`, `.txt`)
+- **Interface Gráfica Moderna (GUI):**
+  - Desenvolvida com **CustomTkinter** com suporte completo a temas Dark e Light.
+  - Drag & Drop nativo de arquivos de save.
+  - Abas especializadas para **Visão Geral**, **Inventário**, **Grupo / Heróis**, **Switches & Variáveis**, **Cheats Rápidos** e **Árvore JSON Raw**.
+  - Arquitetura de performance responsiva: `ttk.Treeview` com renderização lazy de abas (renderiza apenas ao alternar), paginação na árvore JSON (200 itens por lote sob demanda) e operações de I/O em thread de segundo plano (background thread) para interface suave e não-bloqueante.
 - **Autodescoberta Inteligente de Banco de Dados:**
   - Identifica automaticamente pastas de dados do jogo (`data/`, `Data/`, `www/data/`) e correlaciona IDs numéricos com os nomes reais de itens, armas, armaduras, heróis, switches e variáveis.
-- **Múltiplas Formas de Utilização:**
-  - **GUI Moderna:** Drag & Drop nativo de arquivos, alternância entre temas Dark e Light, abas para Visão Geral, Inventário, Grupo, Switches & Variáveis, Cheats Rápidos e Árvore JSON Raw.
-  - **CLI / TUI Interativa:** Menus visuais e coloridos diretamente no terminal via Rich, com fallback automático para conexões SSH e ambientes headless.
-  - **Linha de Comando:** Conversão direta ou em lote entre arquivos de save de RPG Maker e JSON legível.
+- **CLI / TUI Interativa:**
+  - Menus visuais e coloridos diretamente no terminal via Rich, com fallback automático para conexões SSH e ambientes headless.
+- **Linha de Comando:**
+  - Conversão direta ou em lote entre arquivos de save de RPG Maker e JSON legível (`export` e `import`).
 - **Integração Nativa com o Desktop Linux:**
   - Menus de contexto no botão direito para gerenciadores de arquivos (Nautilus, Nemo, Dolphin) e atalhos de terminal globais (`save-maker`, `savemaker`, `rse`, etc.).
 
@@ -122,6 +129,8 @@ Apenas uma ferramenta para editar saves quando jogos bugam.
 - **Executar Testes Automatizados:**
   ```sh
   make test
+  # Ou diretamente via pytest:
+  ./.venv/bin/python -m pytest -v
   ```
 
 # 💻 Como iniciar no Windows

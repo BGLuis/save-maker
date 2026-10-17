@@ -26,22 +26,29 @@
 # 📖 About
 **Save Maker** is a universal, modern, and high-performance save file editor and converter for games built with **RPG Maker** and related game engines. It is designed to inspect, modify, and recover save files using either a **Modern Graphical User Interface (GUI)** powered by CustomTkinter or an **Interactive Terminal User Interface (TUI)** built with Rich, alongside convenient command-line utilities for direct JSON export and import.
 
+### 🎮 Supported Engines and Formats
+
+| Engine / Format | Extensions | Support Level | Verification Status |
+|---|---|---|---|
+| **RPG Maker MV** | `.rpgsave` | Full Support | ✅ Verified with real saves and database fixtures (`Classes.json` stat curves, `JsonEx` `@a` array wrappers, LZString/None/Zlib/Gzip compressions). |
+| **RPG Maker MZ** | `.rmmzsave` | Supported | ✅ Verified for `zlib`, `zlib-utf8` (`pako`), and `LZString` compressions. |
+| **RPG Maker VX Ace / VX / XP** | `.rvdata2`, `.rvdata`, `.rxdata` | Supported | ✅ Multi-object Ruby Marshal 4.8 stream preservation via `marshal_io.py`. |
+| **RPG Maker 2000 / 2003** | `.lsd` | Basic / Experimental | ⚠️ Support for chunk `0x6D` (`SaveInventory` gold and items) in binary `LcfSaveData` format. |
+| **Generic JSON / Web Saves** | `.json`, `.sav`, `.dat`, `.txt` | Supported | ✅ Parsing and manipulation of JSON-structured or encoded web saves. |
+| **Wolf RPG Editor / ウディタ** | `.sav` | Experimental | ⚠️ Experimental support for decoding and basic editing. |
+
 ### Key Features
-- **Universal Engine Support:**
-  - **RPG Maker MV** (`.rpgsave` — None, Zlib, Gzip compressions, and LZString)
-  - **RPG Maker MZ** (`.rmmzsave` — modern LZString format)
-  - **RPG Maker VX Ace** (`.rvdata2` — Ruby Marshal serialization)
-  - **RPG Maker VX** (`.rvdata` — Ruby Marshal)
-  - **RPG Maker XP** (`.rxdata` — Ruby Marshal)
-  - **RPG Maker 2000 / 2003** (`.lsd` — binary LcfSaveData format)
-  - **Wolf RPG Editor / ウディタ** (`.sav` — decoding and editing)
-  - **JSON & Web Saves** (`.json`, `.sav`, `.dat`, `.txt`)
+- **Modern Graphical User Interface (GUI):**
+  - Built with **CustomTkinter** with full Dark and Light mode support.
+  - Native Drag & Drop for save files.
+  - Specialized tabs for **Overview**, **Inventory**, **Party / Heroes**, **Switches & Variables**, **Quick Cheats**, and **Raw JSON Tree**.
+  - Responsive performance architecture: `ttk.Treeview` with lazy tab rendering (renders only on tab switch), paginated JSON tree (200 items per batch on demand), and background thread I/O to keep the interface smooth and non-blocking.
 - **Smart Game Database Autodiscovery:**
   - Automatically identifies game data folders (`data/`, `Data/`, `www/data/`) and correlates numeric IDs with real in-game names for items, weapons, armor, heroes, switches, and variables.
-- **Multiple Ways to Run:**
-  - **Modern GUI:** Native Drag & Drop, Dark and Light mode toggle, specialized tabs for Overview, Inventory, Party, Switches & Variables, Quick Cheats, and Raw JSON Tree.
-  - **Interactive CLI / TUI:** Colorful terminal menus and tables directly in your terminal via Rich, with automatic fallback for SSH sessions or headless environments.
-  - **Command-Line Interface:** Direct conversion between save files and readable JSON.
+- **Interactive CLI / TUI:**
+  - Colorful terminal menus and tables directly in your terminal via Rich, with automatic fallback for SSH sessions or headless environments.
+- **Command-Line Interface:**
+  - Direct conversion between save files and readable JSON (`export` and `import`).
 - **Native Linux Desktop Integration:**
   - Right-click context menus for file managers (Nautilus, Nemo, Dolphin) and global CLI aliases (`save-maker`, `savemaker`, `rse`, etc.).
 
@@ -121,7 +128,55 @@ Just a tool to edit saves when games bug out.
 - **Run Automated Tests:**
   ```sh
   make test
+  # Or directly via pytest:
+  ./.venv/bin/python -m pytest -v
   ```
+
+# 💻 Getting Started on Windows
+
+### Requirements
+- [Python 3.10+](https://www.python.org/downloads/) — check **"Add Python to PATH"** during setup
+- [Git](https://git-scm.com/)
+
+### Installation
+
+1. Clone the repository:
+  ```powershell
+  git clone https://github.com/bgluis/save-maker.git
+  cd save-maker
+  ```
+
+2. Create the virtual environment and install dependencies:
+  ```powershell
+  python -m venv .venv
+  .\.venv\Scripts\activate
+  pip install -r requirements.txt
+  ```
+
+3. *(Optional)* Global system installation with terminal aliases:
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File scripts\install_windows.ps1
+  ```
+
+### Usage on Windows
+
+- **Modern Graphical User Interface (GUI):**
+  ```powershell
+  .\.venv\Scripts\python.exe main.py
+  ```
+
+- **Interactive Terminal Interface (CLI / TUI):**
+  ```powershell
+  .\.venv\Scripts\python.exe main.py --interactive
+  ```
+
+- **Direct Export & Import:**
+  ```powershell
+  .\.venv\Scripts\python.exe main.py export save\file1.rpgsave save1.json
+  .\.venv\Scripts\python.exe main.py import save1.json save\file1_edited.rpgsave
+  ```
+
+> **Terminal note:** For the best CLI/TUI experience (colors and Unicode), use **Windows Terminal** or **PowerShell 7+**. In legacy CMD, run `chcp 65001` before starting.
 
 # 🤝 Contributors
  <a href="https://github.com/bgluis/save-maker/graphs/contributors">
