@@ -8,9 +8,12 @@ Permite que a interface gráfica trate todos os jogos de forma consistente e ele
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
+import json
+import os
 from pathlib import Path
 import shutil
-from typing import Any, Dict, List, Optional, Tuple
+import tempfile
+from typing import Any, Dict, List, Optional, Tuple, Set
 
 
 class BaseSaveAdapter(ABC):
@@ -24,23 +27,32 @@ class BaseSaveAdapter(ABC):
         self.engine_name: str = "Unknown"
         self.db = db_manager
         self.dirty: bool = False
+        self.changes_count: int = 0
         self._pending_changes: List[str] = []
+        self._backed_up_paths: Set[Path] = set()
+        self._mutation_seq: int = 0
+        self._already_loaded_path: Optional[Path] = None
 
     def bind_database(self, db_manager):
         """Conecta um gerenciador de banco de dados para resolução de nomes."""
         self.db = db_manager
 
-    def mark_dirty(self, description: str):
+    def mark_dirty(self, description: str = ""):
         """Marca que há alterações não salvas no arquivo."""
         self.dirty = True
-        self._pending_changes.append(description)
+        self._mutation_seq += 1
+        self.changes_count += 1
+        if description:
+            self._pending_changes.append(description)
 
     def get_pending_changes_count(self) -> int:
-        return len(self._pending_changes)
+        return self.changes_count if self.changes_count else len(self._pending_changes)
 
-    def clear_pending_changes(self):
-        self.dirty = False
-        self._pending_changes.clear()
+    def clear_pending_changes(self, expected_seq: Optional[int] = None):
+        if expected_seq is None or self._mutation_seq == expected_seq:
+            self.dirty = False
+            self.changes_count = 0
+            self._pending_changes.clear()
 
     # --- Operações de Carregamento e Escrita ---
 
@@ -54,14 +66,51 @@ class BaseSaveAdapter(ABC):
         """Serializa e salva o arquivo de save de volta no formato esperado pelo motor."""
         pass
 
-    def create_backup_if_needed(self, dst: Path):
+    def create_backup_if_needed(self, dst: Path | str) -> bool:
         """Gera backup .bak antes de sobrescrever arquivo existente."""
-        if dst.exists():
-            bak_path = dst.with_name(f"{dst.name}.bak")
-            try:
-                shutil.copy2(dst, bak_path)
-            except Exception as e:
-                print(f"[Backup] Falha ao criar backup: {e}")
+        dst_resolved = Path(dst).resolve()
+        if dst_resolved.exists():
+            bak_path = dst_resolved.with_name(f"{dst_resolved.name}.bak")
+            if dst_resolved in self._backed_up_paths and bak_path.exists():
+                return True
+            shutil.copy2(dst_resolved, bak_path)
+            self._backed_up_paths.add(dst_resolved)
+            return True
+        return False
+
+    def atomic_write_bytes(self, dst: Path | str, data: bytes) -> None:
+        dst_path = Path(dst).resolve()
+        dst_path.parent.mkdir(parents=True, exist_ok=True)
+        fd, tmp_name = tempfile.mkstemp(
+            prefix=f".{dst_path.name}.", suffix=".tmp", dir=str(dst_path.parent)
+        )
+        tmp_path = Path(tmp_name)
+        try:
+            with os.fdopen(fd, "wb") as f:
+                f.write(data)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(tmp_path, dst_path)
+        except Exception:
+            if tmp_path.exists():
+                tmp_path.unlink(missing_ok=True)
+            raise
+
+    def export_to_json(self, dst: Path | str) -> bool:
+        dst_path = Path(dst).resolve()
+        out = {
+            "format": "json",
+            "engine": self.engine_name,
+            "compression": getattr(self, "compression", "none"),
+            "encoding": getattr(self, "encoding", "utf-8"),
+            "data": self.raw_data,
+        }
+        try:
+            payload = json.dumps(out, ensure_ascii=False, indent=2).encode("utf-8")
+        except TypeError:
+            payload = json.dumps(out, ensure_ascii=False, indent=2, default=str).encode("utf-8")
+        self.atomic_write_bytes(dst_path, payload)
+        return True
 
     # --- Métodos de Leitura / Escrita Normalizados ---
 

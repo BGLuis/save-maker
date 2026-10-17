@@ -7,6 +7,7 @@ os objetos de jogo nativos do RGSS (Game_Party, Game_Actors, Game_Switches, Game
 """
 
 from __future__ import annotations
+import io
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -20,7 +21,7 @@ except Exception:
     Symbol = None
     _RUBY_AVAILABLE = False
 
-from .marshal_io import marshal_read_file, marshal_write_file, ruby_available
+from .marshal_io import marshal_read_file, marshal_write_file, marshal_write_all, ruby_available
 
 
 class RubyAdapter(BaseSaveAdapter):
@@ -42,6 +43,8 @@ class RubyAdapter(BaseSaveAdapter):
             )
 
         self.file_path = Path(path).resolve()
+        self._backed_up_paths = set()
+        self._mutation_seq = 0
         # Lê todos os objetos Marshal em sequência até EOF.
         # VX Ace / VX gravam 2 objetos; XP grava 12. ruby_load sozinho lê só o 1.º.
         self._marshal_objects = marshal_read_file(self.file_path)
@@ -67,12 +70,13 @@ class RubyAdapter(BaseSaveAdapter):
             raise RuntimeError("Biblioteca rubymarshal não está disponível")
 
         dst_path = Path(dst).resolve()
-        if backup and dst_path.exists():
+        if backup:
             self.create_backup_if_needed(dst_path)
 
         # Grava todos os objetos Marshal em sequência, preservando o formato original.
-        # marshal_write_file lança ValueError se _marshal_objects estiver vazio.
-        marshal_write_file(dst_path, self._marshal_objects)
+        buf = io.BytesIO()
+        marshal_write_all(buf, self._marshal_objects)
+        self.atomic_write_bytes(dst_path, buf.getvalue())
 
         self.clear_pending_changes()
         return True

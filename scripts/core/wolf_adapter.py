@@ -1583,6 +1583,8 @@ class WolfAdapter(BaseSaveAdapter):
 
     def load(self, path: Path | str) -> Any:
         self.file_path = Path(path).resolve()
+        self._backed_up_paths = set()
+        self._mutation_seq = 0
         raw = self.file_path.read_bytes()
         info = try_parse_wolf_header(raw)
         if info is None:
@@ -1647,7 +1649,7 @@ class WolfAdapter(BaseSaveAdapter):
         buf[2] = checksum
         _xor_crypt(buf, start=START_OFFSET)
 
-        dst_path.write_bytes(bytes(buf))
+        self.atomic_write_bytes(dst_path, bytes(buf))
         self.clear_pending_changes()
         return True
 

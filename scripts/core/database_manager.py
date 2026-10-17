@@ -84,6 +84,7 @@ class GameDatabaseManager:
         Varre automaticamente as pastas vizinhas e ascendentes do save
         para encontrar a pasta de dados do jogo.
         """
+        self.clear()
         p = Path(save_path).resolve()
         save_dir = p if p.is_dir() else p.parent
 
@@ -91,7 +92,6 @@ class GameDatabaseManager:
             # Subpastas da pasta do save
             save_dir / "data",
             save_dir / "Data",
-            save_dir / "save" / "data",
             # Pasta pai (ex: Game/save -> Game/data)
             save_dir.parent / "data",
             save_dir.parent / "Data",
@@ -109,11 +109,6 @@ class GameDatabaseManager:
             save_dir.parent / "data" / "BasicData",
             save_dir / "Data" / "BasicData",
         ]
-
-        # Adiciona pasta interna de dados do projeto como fallback
-        root_dir = Path(__file__).resolve().parent.parent.parent
-        candidate_dirs.append(root_dir / "save" / "data")
-        candidate_dirs.append(root_dir / "data")
 
         for cand in candidate_dirs:
             if cand.is_dir() and self._is_rpg_data_dir(cand):
@@ -214,6 +209,39 @@ class GameDatabaseManager:
         if s_id in self.classes and self.classes[s_id].get("name"):
             return self.classes[s_id]["name"]
         return default if default is not None else f"Classe #{s_id}"
+
+    def get_class_param_base(self, class_id: int | str, param_id: int, level: int) -> int:
+        try:
+            raw_cls = self.classes.get(str(class_id), {}).get("raw")
+            if isinstance(raw_cls, dict) and isinstance(raw_cls.get("params"), list):
+                params = raw_cls["params"]
+                p_id = int(param_id)
+                if 0 <= p_id < len(params) and isinstance(params[p_id], list) and len(params[p_id]) > 0:
+                    p_list = params[p_id]
+                    idx = max(1, min(int(level), len(p_list) - 1))
+                    val = p_list[idx]
+                    return int(val) if val is not None else 0
+        except Exception:
+            pass
+        return 0
+
+    def get_exp_for_level(self, class_id: int | str, level: int) -> int:
+        try:
+            lvl = int(level)
+            if lvl <= 1:
+                return 0
+            raw_cls = self.classes.get(str(class_id), {}).get("raw")
+            exp_params = raw_cls.get("expParams") if isinstance(raw_cls, dict) else None
+            if not isinstance(exp_params, list) or len(exp_params) < 4:
+                exp_params = [30, 20, 30, 30]
+            basis, extra, acc_a, acc_b = (float(exp_params[i]) for i in range(4))
+            if acc_b == 0:
+                acc_b = 1.0
+            num = basis * ((lvl - 1) ** (0.9 + acc_a / 250.0)) * lvl * (lvl + 1)
+            den = 6.0 + (lvl ** 2) / 50.0 / acc_b
+            return int(round(num / den + (lvl - 1) * extra))
+        except Exception:
+            return 0
 
     def get_skill_name(self, skill_id: int | str, default: Optional[str] = None) -> str:
         s_id = str(skill_id)

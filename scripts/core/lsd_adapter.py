@@ -86,6 +86,8 @@ class LsdAdapter(BaseSaveAdapter):
 
     def load(self, path: Path | str) -> Any:
         self.file_path = Path(path).resolve()
+        self._backed_up_paths = set()
+        self._mutation_seq = 0
         data = self.file_path.read_bytes()
 
         if not data.startswith(self.HEADER_MAGIC):
@@ -205,7 +207,7 @@ class LsdAdapter(BaseSaveAdapter):
 
     def save(self, dst: Path | str, backup: bool = True) -> bool:
         dst_path = Path(dst).resolve()
-        if backup and dst_path.exists():
+        if backup:
             self.create_backup_if_needed(dst_path)
 
         out = io.BytesIO()
@@ -224,7 +226,7 @@ class LsdAdapter(BaseSaveAdapter):
                 out.write(write_ber_int(len(chunk_data)))
                 out.write(chunk_data)
 
-        dst_path.write_bytes(out.getvalue())
+        self.atomic_write_bytes(dst_path, out.getvalue())
         self.clear_pending_changes()
         return True
 

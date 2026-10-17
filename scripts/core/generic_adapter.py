@@ -21,9 +21,17 @@ class GenericJsonAdapter(BaseSaveAdapter):
         super().__init__(db_manager)
         self.engine_name = "JSON / Generic Save"
         self.compression = "none"
+        self.encoding = "utf-8"
 
     def load(self, path: Path | str) -> Any:
-        self.file_path = Path(path).resolve()
+        file_path = Path(path).resolve()
+        if getattr(self, "_already_loaded_path", None) == file_path and self.raw_data is not None:
+            self._already_loaded_path = None
+            return True
+
+        self.file_path = file_path
+        self._backed_up_paths = set()
+        self._mutation_seq = 0
         raw_text = self.file_path.read_text(encoding="utf-8-sig")
 
         try:
@@ -40,9 +48,9 @@ class GenericJsonAdapter(BaseSaveAdapter):
         self.clear_pending_changes()
         return self.raw_data
 
-    def save(self, dst: Path | str, backup: bool = True) -> bool:
+    def save(self, dst: Path | str, backup: bool = True, **kwargs) -> bool:
         dst_path = Path(dst).resolve()
-        if backup and dst_path.exists():
+        if backup:
             self.create_backup_if_needed(dst_path)
 
         text = json.dumps(self.raw_data, ensure_ascii=False, indent=2)
@@ -51,7 +59,8 @@ class GenericJsonAdapter(BaseSaveAdapter):
         else:
             payload = text
 
-        dst_path.write_text(payload, encoding="utf-8")
+        encoding = getattr(self, "encoding", "utf-8") or "utf-8"
+        self.atomic_write_bytes(dst_path, payload.encode(encoding))
         self.clear_pending_changes()
         return True
 
@@ -134,9 +143,17 @@ class GenericJsonAdapter(BaseSaveAdapter):
             inv = self.raw_data.get(kind, self.raw_data.get(f"_{kind}", {}))
             if isinstance(inv, dict):
                 for k, qty in inv.items():
+                    name = None
+                    if self.db:
+                        if kind == "weapons":
+                            name = self.db.get_weapon_name(k)
+                        elif kind == "armors":
+                            name = self.db.get_armor_name(k)
+                        else:
+                            name = self.db.get_item_name(k)
                     results.append({
                         "id": str(k),
-                        "name": self.db.get_item_name(k) if self.db else f"{kind.capitalize()} #{k}",
+                        "name": name if name else f"{kind.capitalize()} #{k}",
                         "quantity": int(qty),
                         "kind": kind
                     })
@@ -158,13 +175,21 @@ class GenericJsonAdapter(BaseSaveAdapter):
         if isinstance(self.raw_data, dict):
             inv = self.raw_data.setdefault(kind, {})
             if self.db:
-                for item in self.db.get_all_known_items():
+                if kind == "weapons":
+                    source = self.db.get_all_known_weapons()
+                elif kind == "armors":
+                    source = self.db.get_all_known_armors()
+                else:
+                    source = self.db.get_all_known_items()
+                for item in source:
                     inv[str(item["id"])] = qty
                     count += 1
             else:
                 for k in list(inv.keys()):
                     inv[k] = qty
                     count += 1
+            if count > 0:
+                self.mark_dirty(f"Desbloqueados {count} {kind}")
         return count
 
     def get_switches(self) -> List[Dict[str, Any]]:
