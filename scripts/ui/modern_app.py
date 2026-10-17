@@ -68,6 +68,7 @@ class ModernSaveEditorApp(CtkDndApp):
         self.minsize(960, 620)
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
+        self.protocol("WM_DELETE_WINDOW", self._on_close_window)
 
         # Estado da Aplicação
         self.db = GLOBAL_DB
@@ -75,8 +76,10 @@ class ModernSaveEditorApp(CtkDndApp):
         self.current_file: Optional[Path] = None
         self.gui_queue = queue.Queue()
         self.selected_actor_id: Optional[Any] = None
+        self.actor_buttons: Dict[str, ctk.CTkButton] = {}
         self.current_inv_kind: str = "items"
         self.current_system_tab: str = "switches"
+        self.tree_page_size: int = 200
 
         # Performance, Cache e Ordenação
         self.tabs_need_refresh = {
@@ -114,6 +117,66 @@ class ModernSaveEditorApp(CtkDndApp):
 
         # Loop de mensagens de UI thread-safe
         self._check_gui_queue()
+
+    @property
+    def selected_inv_item_id(self) -> Optional[str]:
+        return self._selected_inv_id
+
+    @selected_inv_item_id.setter
+    def selected_inv_item_id(self, val: Optional[str]):
+        self._selected_inv_id = val
+
+    @property
+    def entry_inv_qty(self) -> Optional[ctk.CTkEntry]:
+        return getattr(self, "ent_inv_qty", None)
+
+    @entry_inv_qty.setter
+    def entry_inv_qty(self, val: ctk.CTkEntry):
+        self.ent_inv_qty = val
+
+    @property
+    def adv_tree(self) -> Optional[ttk.Treeview]:
+        return getattr(self, "tree", None)
+
+    @adv_tree.setter
+    def adv_tree(self, val: ttk.Treeview):
+        self.tree = val
+
+    @property
+    def tree_paths(self) -> Dict[str, Any]:
+        if not hasattr(self, "_tree_item_to_path"):
+            self._tree_item_to_path = {}
+        return self._tree_item_to_path
+
+    @tree_paths.setter
+    def tree_paths(self, val: Dict[str, Any]):
+        self._tree_item_to_path = val
+
+    def _on_close_window(self):
+        if self.adapter and getattr(self.adapter, "dirty", False):
+            changes = getattr(self.adapter, "changes_count", None)
+            if changes is None and hasattr(self.adapter, "get_pending_changes_count"):
+                changes = self.adapter.get_pending_changes_count()
+            if changes is None:
+                changes = 0
+            ans = messagebox.askyesnocancel(
+                "Alterações Não Salvas",
+                f"Existem {changes} alteração(ões) não salva(s).\nDeseja salvar antes de sair?"
+            )
+            if ans is None:
+                return
+            if ans is True:
+                if self.current_file:
+                    try:
+                        self.adapter.save(self.current_file, backup=True)
+                    except Exception as e:
+                        messagebox.showerror("Erro ao Salvar", f"Não foi possível salvar:\n{e}")
+                        return
+                else:
+                    self.save_as_dialog()
+                    if getattr(self.adapter, "dirty", False):
+                        return
+        self.destroy()
 
     def _check_gui_queue(self):
         try:
@@ -682,6 +745,9 @@ class ModernSaveEditorApp(CtkDndApp):
         ttk.Button(ed_frame, text="Salvar Valor do Campo", command=self._save_tree_val).pack(fill="x", pady=4)
 
         self._tree_item_to_path = {}
+        self.adv_tree = self.tree
+        self.tree_paths = self._tree_item_to_path
+        self.tree_page_size = 200
         self._selected_tree_node = None
 
     # --- Ações de Arquivo & Carregamento ---
@@ -982,6 +1048,7 @@ class ModernSaveEditorApp(CtkDndApp):
 
         for w in self.actors_scroll.winfo_children():
             w.destroy()
+        self.actor_buttons.clear()
 
         actors = self.adapter.get_actors()
         query = self.search_var.get().strip().lower()
@@ -1011,6 +1078,7 @@ class ModernSaveEditorApp(CtkDndApp):
                 command=lambda act=a: self._select_actor(act)
             )
             btn.pack(fill="x", pady=3)
+            self.actor_buttons[str(aid)] = btn
 
         if not self.selected_actor_id and filtered_actors:
             self._select_actor(filtered_actors[0])
@@ -1021,7 +1089,11 @@ class ModernSaveEditorApp(CtkDndApp):
         aid = actor_dict["id"]
         self.lbl_selected_actor_name.configure(text=f"Herói: {name} (ID #{aid})")
 
+        for btn_id, btn in self.actor_buttons.items():
+            btn.configure(fg_color=PRIMARY_COLOR if str(btn_id) == str(aid) else "transparent")
+
         for key, ent in self.actor_entries.items():
+            ent.configure(border_color=BORDER_COLOR)
             val = actor_dict.get(key, 0)
             ent.delete(0, "end")
             ent.insert(0, str(val))
@@ -1031,10 +1103,47 @@ class ModernSaveEditorApp(CtkDndApp):
         stats = {}
         for k, ent in self.actor_entries.items():
             txt = ent.get().strip()
-            if txt.isdigit():
-                stats[k] = int(txt)
+            try:
+                val = int(txt)
+                if val < 0 and k in ("level", "hp", "mp", "tp"):
+                    raise ValueError("Negative value not allowed")
+            except ValueError:
+                ent.configure(border_color=DANGER_COLOR)
+                messagebox.showwarning(
+                    "Valor Inválido",
+                    f"O valor '{txt}' no campo '{k.upper()}' não é um número inteiro válido."
+                )
+                return
+            ent.configure(border_color=BORDER_COLOR)
+            stats[k] = val
+
         self.adapter.update_actor(self.selected_actor_id, stats)
-        self._refresh_actors()
+
+        # Atualiza apenas o botão do ator modificado sem recriar widgets
+        actors = self.adapter.get_actors()
+        updated_actor = None
+        for a in actors:
+            if str(a.get("id")) == str(self.selected_actor_id):
+                updated_actor = a
+                break
+
+        if updated_actor:
+            aid_str = str(self.selected_actor_id)
+            if aid_str in self.actor_buttons:
+                name = updated_actor.get("name", "")
+                lvl = updated_actor.get("level", 1)
+                self.actor_buttons[aid_str].configure(
+                    text=f"{name}\n(Nível {lvl})",
+                    command=lambda act=updated_actor: self._select_actor(act)
+                )
+            for k, ent in self.actor_entries.items():
+                if k in updated_actor:
+                    val_str = str(updated_actor[k])
+                    if ent.get() != val_str:
+                        ent.delete(0, "end")
+                        ent.insert(0, val_str)
+
+        self.tabs_need_refresh["advanced"] = True
         self._update_dirty_indicator()
         self._set_status(f"Atributos do herói #{self.selected_actor_id} salvos!")
 
@@ -1131,6 +1240,7 @@ class ModernSaveEditorApp(CtkDndApp):
         if not sel: return
         item_id = sel[0]
         self._selected_inv_id = item_id
+        self.ent_inv_qty.configure(border_color=BORDER_COLOR)
         values = self.tree_inv.item(item_id, "values")
         if values:
             id_fmt, name, qty = values
@@ -1144,12 +1254,22 @@ class ModernSaveEditorApp(CtkDndApp):
         self.ent_inv_qty.select_range(0, "end")
 
     def _apply_inv_qty_from_entry(self):
-        if not self.adapter or not self._selected_inv_id: return
-        txt = self.ent_inv_qty.get().strip()
-        if not txt.isdigit():
+        item_id = self.selected_inv_item_id or self._selected_inv_id
+        if not self.adapter or not item_id:
             return
-        new_q = int(txt)
-        self._set_selected_inv_qty(new_q)
+        entry = self.entry_inv_qty if hasattr(self, "entry_inv_qty") and self.entry_inv_qty is not None else self.ent_inv_qty
+        txt = entry.get().strip()
+        try:
+            qty = int(txt)
+            if qty < 0:
+                raise ValueError("Negative quantity not allowed")
+        except ValueError:
+            entry.configure(border_color=DANGER_COLOR)
+            messagebox.showwarning("Valor Inválido", "Digite uma quantidade inteira válida (>= 0).")
+            return
+
+        entry.configure(border_color=BORDER_COLOR)
+        self._set_selected_inv_qty(qty)
 
     def _step_inv_qty(self, delta: int):
         if not self.adapter or not self._selected_inv_id: return
@@ -1407,61 +1527,98 @@ class ModernSaveEditorApp(CtkDndApp):
 
     # --- Lógica da Aba: Árvore Avançada (Lazy Loading) ---
 
-    def _populate_tree(self):
-        self.tree.delete(*self.tree.get_children())
-        self._tree_item_to_path.clear()
-        self._tree_node_has_children.clear()
-        if not self.adapter or not self.adapter.raw_data:
-            return
+    def _get_container_by_path(self, path: List[Any]) -> Any:
+        if not path:
+            return self.adapter.raw_data if self.adapter else None
+        return self.adapter.get_by_path(path) if self.adapter else None
 
-        def insert_stub(parent, key, value, path):
-            is_container = isinstance(value, (dict, list))
+    def _populate_tree_node(self, parent_node: str, container: Any, path: List[Any], start_offset: int = 0):
+        if isinstance(container, dict):
+            all_items = list(container.items())
+        elif isinstance(container, list):
+            all_items = list(enumerate(container))
+        elif hasattr(container, "attributes") and isinstance(container.attributes, dict):
+            all_items = list(container.attributes.items())
+        else:
+            all_items = []
+
+        page_size = getattr(self, "tree_page_size", 200)
+        items_slice = all_items[start_offset : start_offset + page_size]
+
+        for key, value in items_slice:
+            is_container = isinstance(value, (dict, list)) or hasattr(value, "attributes")
             val_str = "{...}" if isinstance(value, dict) else (" [...]" if isinstance(value, list) else repr(value))
-            node = self.tree.insert(parent or "", "end", text=str(key), values=(val_str,))
-            self._tree_item_to_path[node] = list(path)
+            node = self.adv_tree.insert(parent_node, "end", text=str(key), values=(val_str,))
+            child_path = path + [key]
+            self.tree_paths[node] = child_path
             if is_container:
-                self.tree.insert(node, "end", text="...", values=("",))
+                self.adv_tree.insert(node, "end", text="...", values=("",))
                 self._tree_node_has_children[node] = value
 
-        if isinstance(self.adapter.raw_data, dict):
-            for k, v in self.adapter.raw_data.items():
-                insert_stub("", k, v, [k])
-        elif isinstance(self.adapter.raw_data, list):
-            for i, v in enumerate(self.adapter.raw_data):
-                insert_stub("", i, v, [i])
+        if start_offset + len(items_slice) < len(all_items):
+            next_offset = start_offset + len(items_slice)
+            remaining = len(all_items) - next_offset
+            more_node = self.adv_tree.insert(
+                parent_node, "end",
+                text=f"… mais {remaining} itens",
+                values=("...", f"Carregar mais ({remaining} restantes)")
+            )
+            self.adv_tree.insert(more_node, "end", text="Carregando...")
+            self.tree_paths[more_node] = {
+                "_is_more": True,
+                "parent_node": parent_node,
+                "path": path,
+                "next_offset": next_offset
+            }
+
+    def _populate_tree(self):
+        self.adv_tree.delete(*self.adv_tree.get_children())
+        self.tree_paths.clear()
+        self._tree_node_has_children.clear()
+        if not self.adapter or self.adapter.raw_data is None:
+            return
+
+        self._populate_tree_node("", self.adapter.raw_data, [], start_offset=0)
 
     def _on_tree_open(self, event):
-        sel = self.tree.focus()
-        if not sel or sel not in self._tree_node_has_children:
+        sel = self.adv_tree.focus()
+        if not sel:
+            selection = self.adv_tree.selection()
+            if selection:
+                sel = selection[0]
+        if not sel:
+            return
+
+        meta = self.tree_paths.get(sel)
+        if isinstance(meta, dict) and meta.get("_is_more"):
+            self.adv_tree.delete(sel)
+            if sel in self.tree_paths:
+                del self.tree_paths[sel]
+            container = self._get_container_by_path(meta["path"])
+            self._populate_tree_node(meta["parent_node"], container, meta["path"], start_offset=meta["next_offset"])
+            return
+
+        if sel not in self._tree_node_has_children:
             return
         container = self._tree_node_has_children.pop(sel)
-        for ch in self.tree.get_children(sel):
-            self.tree.delete(ch)
+        for ch in self.adv_tree.get_children(sel):
+            self.adv_tree.delete(ch)
 
-        path = self._tree_item_to_path.get(sel, [])
-
-        def insert_child(parent, key, value, p):
-            is_container = isinstance(value, (dict, list))
-            val_str = "{...}" if isinstance(value, dict) else (" [...]" if isinstance(value, list) else repr(value))
-            node = self.tree.insert(parent, "end", text=str(key), values=(val_str,))
-            self._tree_item_to_path[node] = list(p)
-            if is_container:
-                self.tree.insert(node, "end", text="...", values=("",))
-                self._tree_node_has_children[node] = value
-
-        if isinstance(container, dict):
-            for k, v in list(container.items())[:200]:
-                insert_child(sel, k, v, path + [k])
-        elif isinstance(container, list):
-            for idx, v in enumerate(container[:200]):
-                insert_child(sel, idx, v, path + [idx])
+        path = self.tree_paths.get(sel, [])
+        self._populate_tree_node(sel, container, path, start_offset=0)
 
     def _on_tree_select(self, event):
-        sel = self.tree.selection()
+        sel = self.adv_tree.selection()
         if not sel: return
         self._selected_tree_node = sel[0]
-        path = self._tree_item_to_path.get(self._selected_tree_node)
-        if path:
+        meta = self.tree_paths.get(self._selected_tree_node)
+        if isinstance(meta, dict) and meta.get("_is_more"):
+            self.entry_tree_val.delete(0, "end")
+            self.entry_tree_val.insert(0, "...")
+            return
+
+        path = meta
+        if isinstance(path, list):
             val = self.adapter.get_by_path(path)
             self.entry_tree_val.delete(0, "end")
             if not isinstance(val, (dict, list)):
@@ -1471,8 +1628,11 @@ class ModernSaveEditorApp(CtkDndApp):
 
     def _save_tree_val(self):
         if not self._selected_tree_node or not self.adapter: return
-        path = self._tree_item_to_path.get(self._selected_tree_node)
-        if not path: return
+        meta = self.tree_paths.get(self._selected_tree_node)
+        if isinstance(meta, dict) and meta.get("_is_more"):
+            return
+        path = meta
+        if not path or not isinstance(path, list): return
         txt = self.entry_tree_val.get().strip()
         import json
         try:
@@ -1481,7 +1641,7 @@ class ModernSaveEditorApp(CtkDndApp):
             newval = txt
 
         if self.adapter.set_by_path(path, newval):
-            self.tree.set(self._selected_tree_node, "value", repr(newval))
+            self.adv_tree.set(self._selected_tree_node, "value", repr(newval))
             self._update_dirty_indicator()
             self._set_status(f"Campo {path[-1]} atualizado com sucesso!")
 
@@ -1510,11 +1670,21 @@ class ModernSaveEditorApp(CtkDndApp):
             messagebox.showwarning("Aviso", "Nenhum save carregado para salvar.")
             return
 
+        expected_seq = getattr(self.adapter, "_mutation_seq", None)
+        had_existing = self.current_file.exists()
+        snapshot_bytes = self.adapter.serialize_snapshot() if hasattr(self.adapter, "serialize_snapshot") else None
+
         def task():
             self.queue_ui(self._set_status, f"Salvando {self.current_file.name}...", True)
             try:
-                self.adapter.save(self.current_file, backup=True)
-                self.queue_ui(self._on_save_success, str(self.current_file))
+                if snapshot_bytes is not None:
+                    try:
+                        self.adapter.save(self.current_file, backup=True, pre_serialized_json=snapshot_bytes, expected_seq=expected_seq)
+                    except TypeError:
+                        self.adapter.save(self.current_file, backup=True)
+                else:
+                    self.adapter.save(self.current_file, backup=True)
+                self.queue_ui(self._on_save_success, str(self.current_file), backup_created=had_existing)
             except Exception as e:
                 self.queue_ui(self._on_save_error, str(e))
 
@@ -1538,7 +1708,7 @@ class ModernSaveEditorApp(CtkDndApp):
             try:
                 self.adapter.save(p, backup=False)
                 self.current_file = Path(p)
-                self.queue_ui(self._on_save_success, p)
+                self.queue_ui(self._on_save_success, p, backup_created=False)
             except Exception as e:
                 self.queue_ui(self._on_save_error, str(e))
 
@@ -1558,22 +1728,27 @@ class ModernSaveEditorApp(CtkDndApp):
         if not p: return
 
         try:
-            import json
-            out = {
-                "engine": self.adapter.engine_name,
-                "compression": self.adapter.compression,
-                "data": self.adapter.raw_data
-            }
-            Path(p).write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+            self.adapter.export_to_json(p)
             self._set_status(f"Exportado com sucesso para {Path(p).name}!")
             messagebox.showinfo("Exportação Concluída", f"JSON exportado com sucesso em:\n{p}")
         except Exception as e:
             messagebox.showerror("Erro na exportação", f"Erro: {e}")
 
-    def _on_save_success(self, file_path_str: str):
+    def _on_save_success(self, dst_path: Path | str, backup_created: bool = True):
         self._update_dirty_indicator()
-        self._set_status(f"Arquivo '{Path(file_path_str).name}' salvo com sucesso! Backup .bak gerado.")
-        messagebox.showinfo("Salvo com Sucesso", f"O save foi salvo com sucesso!\nUm backup (.bak) de segurança foi gerado.")
+        dst = Path(dst_path)
+        if backup_created:
+            self._set_status(f"💾 Salvo com sucesso em {dst.name} (Backup .bak garantido)!")
+            messagebox.showinfo(
+                "Salvo com Sucesso",
+                f"Arquivo salvo com sucesso!\n\nDestino: {dst}\n\nUm backup (.bak) de segurança do arquivo original está preservado na mesma pasta."
+            )
+        else:
+            self._set_status(f"💾 Salvo com sucesso em {dst.name}!")
+            messagebox.showinfo(
+                "Salvo com Sucesso",
+                f"Arquivo salvo com sucesso!\n\nDestino: {dst}"
+            )
 
     def _on_save_error(self, err_msg: str):
         messagebox.showerror("Erro ao salvar", f"Ocorreu um erro ao tentar salvar:\n\n{err_msg}")
