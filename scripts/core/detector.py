@@ -29,7 +29,8 @@ def detect_and_create_adapter(path: Path | str, db_manager=None) -> BaseSaveAdap
     ext = fpath.suffix.lower()
     header = b""
     try:
-        header = fpath.read_bytes()[:16]
+        with open(fpath, "rb") as f:
+            header = f.read(16)
     except Exception:
         pass
 
@@ -76,8 +77,9 @@ def detect_and_create_adapter(path: Path | str, db_manager=None) -> BaseSaveAdap
         # Tenta MV/MZ primeiro
         try:
             adapter = MvMzAdapter(db_manager)
-            adapter.load(fpath)
-            return adapter
+            if adapter.load(fpath):
+                adapter._already_loaded_path = fpath.resolve()
+                return adapter
         except Exception:
             pass
 
@@ -86,8 +88,9 @@ def detect_and_create_adapter(path: Path | str, db_manager=None) -> BaseSaveAdap
         # Tenta MV/MZ primeiro caso seja um save MV/MZ renomeado
         try:
             adapter = MvMzAdapter(db_manager)
-            adapter.load(fpath)
-            return adapter
+            if adapter.load(fpath):
+                adapter._already_loaded_path = fpath.resolve()
+                return adapter
         except Exception:
             pass
 
@@ -98,7 +101,8 @@ def detect_and_create_adapter(path: Path | str, db_manager=None) -> BaseSaveAdap
     # Fallback padrão: Tenta MvMzAdapter tolerante, depois Generic
     try:
         adapter = MvMzAdapter(db_manager)
-        adapter.load(fpath)
-        return adapter
+        if adapter.load(fpath):
+            adapter._already_loaded_path = fpath.resolve()
+            return adapter
     except Exception:
         return GenericJsonAdapter(db_manager)

@@ -29,9 +29,17 @@ class MvMzAdapter(BaseSaveAdapter):
         super().__init__(db_manager)
         self.raw_json_wrapper: Optional[Dict[str, Any]] = None
         self.engine_name = "RPG Maker MV/MZ"
+        self._is_jsonex_wrapped: bool = False
 
-    def load(self, path: Path | str) -> Any:
-        self.file_path = Path(path).resolve()
+    def load(self, path: Path | str) -> bool:
+        resolved_path = Path(path).resolve()
+        if getattr(self, "_already_loaded_path", None) == resolved_path and self.raw_data is not None:
+            self._already_loaded_path = None
+            return True
+
+        self.file_path = resolved_path
+        self._backed_up_paths = set()
+        self._mutation_seq = 0
         raw_bytes = self.file_path.read_bytes()
 
         decompressed, comp = self._decompress(raw_bytes)
@@ -63,9 +71,15 @@ class MvMzAdapter(BaseSaveAdapter):
         if isinstance(parsed, dict) and "data" in parsed and "compression" in parsed:
             self.raw_json_wrapper = parsed
             self.raw_data = parsed["data"]
+            self._is_jsonex_wrapped = False
+        elif isinstance(parsed, dict) and parsed.get("@") == "JsonEx" and "data" in parsed:
+            self.raw_json_wrapper = None
+            self.raw_data = parsed["data"]
+            self._is_jsonex_wrapped = True
         else:
             self.raw_json_wrapper = None
             self.raw_data = parsed
+            self._is_jsonex_wrapped = False
 
         if self.file_path.suffix.lower() == ".rmmzsave":
             self.engine_name = "RPG Maker MZ"
@@ -73,36 +87,65 @@ class MvMzAdapter(BaseSaveAdapter):
             self.engine_name = "RPG Maker MV"
 
         self.clear_pending_changes()
-        return self.raw_data
+        return True
 
-    def save(self, dst: Path | str, backup: bool = True) -> bool:
+    def serialize_snapshot(self) -> bytes:
+        export_payload = self.raw_data
+        if getattr(self, "_is_jsonex_wrapped", False):
+            export_payload = {"@": "JsonEx", "data": self.raw_data}
+        enc = "utf-8" if getattr(self, "encoding", "none") in ("lzstring", "none") else getattr(self, "encoding", "utf-8")
+        return json.dumps(export_payload, ensure_ascii=False, separators=(",", ":")).encode(enc)
+
+    def save(
+        self,
+        dst: Path | str,
+        backup: bool = True,
+        pre_serialized_json: Optional[bytes] = None,
+        expected_seq: Optional[int] = None,
+    ) -> bool:
+        seq_at_start = expected_seq if expected_seq is not None else getattr(self, "_mutation_seq", 0)
         dst_path = Path(dst).resolve()
         if backup and dst_path.exists():
             self.create_backup_if_needed(dst_path)
 
-        # Prepara o JSON para escrita
-        if self.raw_json_wrapper is not None:
-            self.raw_json_wrapper["data"] = self.raw_data
-            export_payload = json.dumps(self.raw_data, ensure_ascii=False).encode("utf-8")
-        else:
-            export_payload = json.dumps(self.raw_data, ensure_ascii=False).encode("utf-8")
+        raw_json_bytes = pre_serialized_json if pre_serialized_json is not None else self.serialize_snapshot()
+        out_bytes = self._compress(raw_json_bytes, self.compression, self.encoding)
 
-        # Aplica compressão e encoding detectados
-        out_bytes = self._compress(export_payload, self.compression, self.encoding)
-        dst_path.write_bytes(out_bytes)
-        self.clear_pending_changes()
+        if hasattr(self, "atomic_write_bytes"):
+            self.atomic_write_bytes(dst_path, out_bytes)
+        else:
+            import os
+            tmp_f = dst_path.with_name(f"{dst_path.name}.tmp.{os.getpid()}")
+            tmp_f.write_bytes(out_bytes)
+            tmp_f.replace(dst_path)
+
+        current_bytes = self.serialize_snapshot()
+        if current_bytes != raw_json_bytes or getattr(self, "_mutation_seq", 0) != seq_at_start:
+            self.dirty = True
+            if getattr(self, "changes_count", 0) == 0:
+                self.changes_count = 1
+        else:
+            try:
+                self.clear_pending_changes(expected_seq=seq_at_start)
+            except TypeError:
+                self.clear_pending_changes()
         return True
 
     def export_to_json(self, dst: Path | str) -> bool:
         """Exporta o save como um arquivo JSON formatado legível."""
         dst_path = Path(dst).resolve()
         out = {
+            "format": "json",
             "engine": self.engine_name,
             "compression": self.compression,
             "encoding": self.encoding,
-            "data": self.raw_data
+            "data": self.raw_data,
         }
-        dst_path.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+        json_bytes = json.dumps(out, ensure_ascii=False, indent=2).encode("utf-8")
+        if hasattr(self, "atomic_write_bytes"):
+            self.atomic_write_bytes(dst_path, json_bytes)
+        else:
+            dst_path.write_bytes(json_bytes)
         return True
 
     # --- Implementações Normalizadas ---
@@ -145,6 +188,39 @@ class MvMzAdapter(BaseSaveAdapter):
 
         return playtime, steps
 
+    def _get_param_plus_list(self, act: Dict[str, Any], create: bool = False) -> List[int]:
+        raw_pp = act.get("_paramPlus")
+        if isinstance(raw_pp, dict) and isinstance(raw_pp.get("@a"), list):
+            target_list = raw_pp["@a"]
+            if create:
+                for k in list(raw_pp.keys()):
+                    if k not in ("@c", "@a", "@"):
+                        del raw_pp[k]
+                while len(target_list) < 8:
+                    target_list.append(0)
+                return target_list
+            else:
+                padded = list(target_list)
+                while len(padded) < 8:
+                    padded.append(0)
+                return padded
+        elif isinstance(raw_pp, list):
+            if create:
+                while len(raw_pp) < 8:
+                    raw_pp.append(0)
+                return raw_pp
+            else:
+                padded = list(raw_pp)
+                while len(padded) < 8:
+                    padded.append(0)
+                return padded
+        else:
+            if create:
+                new_list = [0] * 8
+                act["_paramPlus"] = new_list
+                return new_list
+            return [0] * 8
+
     def get_actors(self) -> List[Dict[str, Any]]:
         results = []
         if not isinstance(self.raw_data, dict):
@@ -173,21 +249,34 @@ class MvMzAdapter(BaseSaveAdapter):
             hp = act.get("_hp", 0)
             mp = act.get("_mp", 0)
             tp = act.get("_tp", 0)
-            param_plus = act.get("_paramPlus", [0] * 8)
-            if not isinstance(param_plus, list):
-                param_plus = [0] * 8
-            while len(param_plus) < 8:
-                param_plus.append(0)
+
+            class_id = act.get("_classId", 1)
+            param_plus = self._get_param_plus_list(act, create=False)
+
+            base_mhp = (self.db.get_class_param_base(class_id, 0, lvl) or 0) if (self.db and hasattr(self.db, "get_class_param_base")) else 0
+            base_mmp = (self.db.get_class_param_base(class_id, 1, lvl) or 0) if (self.db and hasattr(self.db, "get_class_param_base")) else 0
+
+            calc_max_hp = max(1, base_mhp + param_plus[0]) if base_mhp > 0 else (param_plus[0] if param_plus[0] > 0 else hp)
+            calc_max_mp = max(0, base_mmp + param_plus[1]) if base_mmp > 0 else (param_plus[1] if param_plus[1] > 0 else mp)
+
+            exp_dict = act.get("_exp", {})
+            if isinstance(exp_dict, dict):
+                exp_val = exp_dict.get(str(class_id), exp_dict.get(class_id, exp_dict.get("1", 0)))
+            else:
+                exp_val = 0
 
             # RPG Maker MV/MZ parâmetros: 0: mhp, 1: mmp, 2: atk, 3: def, 4: mat, 5: mdf, 6: agi, 7: luk
             results.append({
                 "id": aid,
                 "name": name,
+                "class_id": class_id,
                 "level": lvl,
                 "hp": hp,
-                "max_hp": param_plus[0] or hp,
+                "max_hp": calc_max_hp,
+                "mhp_bonus": param_plus[0],
                 "mp": mp,
-                "max_mp": param_plus[1] or mp,
+                "max_mp": calc_max_mp,
+                "mmp_bonus": param_plus[1],
                 "tp": tp,
                 "atk": param_plus[2],
                 "def": param_plus[3],
@@ -195,8 +284,8 @@ class MvMzAdapter(BaseSaveAdapter):
                 "mdf": param_plus[5],
                 "agi": param_plus[6],
                 "luk": param_plus[7],
-                "exp": act.get("_exp", {}).get("1", 0) if isinstance(act.get("_exp"), dict) else 0,
-                "raw": act
+                "exp": exp_val,
+                "raw": act,
             })
         return results
 
@@ -205,8 +294,57 @@ class MvMzAdapter(BaseSaveAdapter):
         for a in actors:
             if str(a["id"]) == str(actor_id):
                 act_raw = a["raw"]
+                class_id = act_raw.get("_classId", 1)
+
                 if "level" in stats:
-                    act_raw["_level"] = max(1, min(999, int(stats["level"])))
+                    new_lvl = max(1, min(999, int(stats["level"])))
+                    act_raw["_level"] = new_lvl
+
+                    if "exp" in stats:
+                        exp_val = int(stats["exp"])
+                    elif self.db and hasattr(self.db, "get_exp_for_level"):
+                        res = self.db.get_exp_for_level(class_id, new_lvl)
+                        if res is not None:
+                            exp_val = int(res)
+                        else:
+                            exp_val = (
+                                0
+                                if new_lvl <= 1
+                                else int(
+                                    round(
+                                        30.0
+                                        * ((new_lvl - 1) ** (0.9 + 30.0 / 250.0))
+                                        * new_lvl
+                                        * (new_lvl + 1)
+                                        / (6.0 + (new_lvl ** 2) / 50.0 / 30.0)
+                                        + (new_lvl - 1) * 20.0
+                                    )
+                                )
+                            )
+                    else:
+                        exp_val = (
+                            0
+                            if new_lvl <= 1
+                            else int(
+                                round(
+                                    30.0
+                                    * ((new_lvl - 1) ** (0.9 + 30.0 / 250.0))
+                                    * new_lvl
+                                    * (new_lvl + 1)
+                                    / (6.0 + (new_lvl ** 2) / 50.0 / 30.0)
+                                    + (new_lvl - 1) * 20.0
+                                )
+                            )
+                        )
+
+                    if not isinstance(act_raw.get("_exp"), dict):
+                        act_raw["_exp"] = {}
+                    act_raw["_exp"][str(class_id)] = exp_val
+                elif "exp" in stats:
+                    if not isinstance(act_raw.get("_exp"), dict):
+                        act_raw["_exp"] = {}
+                    act_raw["_exp"][str(class_id)] = int(stats["exp"])
+
                 if "hp" in stats:
                     act_raw["_hp"] = max(0, int(stats["hp"]))
                 if "mp" in stats:
@@ -215,11 +353,24 @@ class MvMzAdapter(BaseSaveAdapter):
                     act_raw["_tp"] = max(0, int(stats["tp"]))
 
                 # Atualiza paramPlus
-                param_keys = ["max_hp", "max_mp", "atk", "def", "mat", "mdf", "agi", "luk"]
-                param_plus = act_raw.setdefault("_paramPlus", [0] * 8)
-                for idx, k in enumerate(param_keys):
-                    if k in stats:
-                        param_plus[idx] = int(stats[k])
+                param_mapping = {
+                    "max_hp": 0,
+                    "mhp_bonus": 0,
+                    "max_mp": 1,
+                    "mmp_bonus": 1,
+                    "atk": 2,
+                    "def": 3,
+                    "mat": 4,
+                    "mdf": 5,
+                    "agi": 6,
+                    "luk": 7,
+                }
+                has_param_update = any(k in stats for k in param_mapping)
+                if has_param_update:
+                    target_pp = self._get_param_plus_list(act_raw, create=True)
+                    for k, idx in param_mapping.items():
+                        if k in stats:
+                            target_pp[idx] = int(stats[k])
 
                 self.mark_dirty(f"Ator {a['name']} atualizado")
                 return True
@@ -446,6 +597,27 @@ class MvMzAdapter(BaseSaveAdapter):
         except Exception:
             pass
 
+        # 4 & 5. Zlib / Raw-Zlib salvo como string UTF-8 (formato RPG Maker MZ)
+        try:
+            raw = data.decode("utf-8").encode("latin-1")
+        except UnicodeError:
+            raw = None
+
+        if raw is not None:
+            try:
+                decompressed = zlib.decompress(raw)
+                if decompressed:
+                    return decompressed, "zlib-utf8"
+            except Exception:
+                pass
+            try:
+                do = zlib.decompressobj(wbits=-zlib.MAX_WBITS)
+                decompressed = do.decompress(raw)
+                if decompressed:
+                    return decompressed, "raw-zlib-utf8"
+            except Exception:
+                pass
+
         return data, "none"
 
     def _parse_json(self, bytes_data: bytes) -> Optional[Any]:
@@ -468,6 +640,15 @@ class MvMzAdapter(BaseSaveAdapter):
 
         if "gzip" in compression:
             return gzip.compress(payload)
+        elif compression == "zlib-utf8":
+            # Formato RPG Maker MZ: comprime com zlib, depois cada byte do resultado
+            # é tratado como codepoint Unicode (0–255) e reencodado como UTF-8.
+            compressed_bytes = zlib.compress(payload)
+            return compressed_bytes.decode("latin-1").encode("utf-8")
+        elif compression == "raw-zlib-utf8":
+            # Variante sem cabeçalho zlib salva como UTF-8
+            compressed_bytes = zlib.compress(payload)[2:-4]  # remove header/checksum
+            return compressed_bytes.decode("latin-1").encode("utf-8")
         elif "zlib" in compression or "raw-zlib" in compression:
             return zlib.compress(payload)
         else:

@@ -97,25 +97,34 @@ def main():
         src_p = Path(parsed_args.src)
         dst_p = Path(parsed_args.dst)
 
+        print(f"⏳ Processando '{src_p.name}'...")
         GLOBAL_DB.discover_and_load(src_p)
         adapter = detect_and_create_adapter(src_p, GLOBAL_DB)
         adapter.load(src_p)
 
-        import json
-        out = {
-            "engine": adapter.engine_name,
-            "compression": adapter.compression,
-            "data": adapter.raw_data
-        }
-        dst_p.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+        if hasattr(adapter, "export_to_json"):
+            adapter.export_to_json(dst_p)
+        else:
+            import json
+            out = {
+                "format": "json",
+                "engine": adapter.engine_name,
+                "compression": getattr(adapter, "compression", "none"),
+                "encoding": getattr(adapter, "encoding", "utf-8"),
+                "data": adapter.raw_data,
+            }
+            dst_p.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"✔ Exportado com sucesso: {src_p} -> {dst_p} ({adapter.engine_name})")
         return 0
 
     elif parsed_args.cmd == "import":
         from import_json_to_rpgsave import import_json
+        src_p = Path(parsed_args.src)
+        dst_p = Path(parsed_args.dst)
+        print(f"⏳ Processando '{src_p.name}'...")
         import_json(
-            Path(parsed_args.src),
-            Path(parsed_args.dst),
+            src_p,
+            dst_p,
             forced_compression=parsed_args.compression,
             encoding=parsed_args.encoding
         )

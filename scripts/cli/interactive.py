@@ -482,13 +482,20 @@ class InteractiveCliSession:
         default_dst = self.save_file.with_suffix(".json")
         dst = Prompt.ask("Destino do arquivo JSON", default=str(default_dst))
         if dst:
-            import json
-            out = {
-                "engine": self.adapter.engine_name,
-                "compression": self.adapter.compression,
-                "data": self.adapter.raw_data
-            }
-            Path(dst).write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+            dst_p = Path(dst).resolve()
+            with self.console.status("[bold green]Exportando save para JSON..."):
+                if hasattr(self.adapter, "export_to_json"):
+                    self.adapter.export_to_json(dst_p)
+                else:
+                    import json
+                    out = {
+                        "format": "json",
+                        "engine": self.adapter.engine_name,
+                        "compression": self.adapter.compression,
+                        "encoding": getattr(self.adapter, "encoding", "utf-8"),
+                        "data": self.adapter.raw_data,
+                    }
+                    dst_p.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
             self.console.print(f"[bold green]✔ JSON exportado com sucesso em:[/bold green] {dst}")
         Prompt.ask("\n[dim]Pressione Enter para continuar...[/dim]", default="")
 
