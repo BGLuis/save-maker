@@ -68,9 +68,10 @@ class TestCliInteractive(unittest.TestCase):
         self.assertNotIn("readme.txt", tmp_names)
 
     def test_session_lifecycle(self):
-        # Cria cópia do save de teste
+        # Cria cópia do save de teste e banco de dados
         test_save = self.tmp_path / "test.rpgsave"
         shutil.copy2(self.sample_save, test_save)
+        shutil.copytree(PROJECT_ROOT / "tests" / "fixtures" / "data", self.tmp_path / "data")
 
         session = InteractiveCliSession(test_save)
         self.assertEqual(session.save_file, test_save.resolve())

@@ -1,0 +1,5418 @@
+﻿[
+    null,
+    {
+        "id": 1,
+        "atypeId": 1,
+        "description": "As configurações para remover roupas são definidas com MPP_RemovoEquipText",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2800,
+        "name": "Nu(Normal)",
+        "note": "itemMaxNum:1\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "Settings for removing clothes are set with MPP_RemovoEquipText",
+        "name_old": "Nude(Normal)"
+    },
+    {
+        "id": 2,
+        "atypeId": 1,
+        "description": "As configurações para remover roupas são definidas com MPP_RemovoEquipText",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2801,
+        "name": "Nu(transformado)",
+        "note": "itemMaxNum:1\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "Settings for removing clothes are set with MPP_RemovoEquipText",
+        "name_old": "Nude(Transformed)"
+    },
+    {
+        "id": 3,
+        "atypeId": 1,
+        "description": "O conjunto de lingerie rosa claro favorito de Iroha.\nÉ um pouco pequeno, mas ela não pode se desfazer dele porque adora.\\\\n[Equip Condition] Experiência de exposição n ou superior",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2802,
+        "name": "Roupa de baixo",
+        "note": "itemMaxNum:1\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "Iroha's favorite pale pink lingerie set.\nIt's a bit small, but she can't part with it because she loves it.\\\\n[Equip Condition] Exposure experience n or higher",
+        "name_old": "Underwear"
+    },
+    {
+        "id": 4,
+        "atypeId": 1,
+        "description": "\\V[332]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2803,
+        "name": "Uniforme da Academia dos Sonhos",
+        "note": "itemMaxNum:1\n<noSell>\n<SZLEQ:!s[15] &&(!s[253] || SceneManager._scene.constructor === Scene_Map)>\n<Sort Priority:201>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "Dream Academy Uniform"
+    },
+    {
+        "id": 5,
+        "atypeId": 1,
+        "description": "Um uniforme com braçadeira do comitê disciplinar que exala autoridade.\nIroha usa isso quando trabalha como membro do comitê disciplinar.\\\\n[Equip Condition] Equipado automaticamente durante eventos",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2803,
+        "name": "__Uniforme da Dream Academy(com braçadeira)",
+        "note": "itemMaxNum:0️\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A uniform with a disciplinary committee armband that exudes authority.\nIroha wears this when working as a disciplinary committee member.\\\\n[Equip Condition] Automatically equipped during events",
+        "name_old": "__Dream Academy Uniform(With Armband)"
+    },
+    {
+        "id": 6,
+        "atypeId": 1,
+        "description": "Um traje especial para lutar como contratante súcubo.\nEla não pode usar seu poder a menos que se transforme, mas grande poder vem com grande vergonha.\\\\n\\}\\C[16]«Condição de equipamento» \\C[7][\\I[2659]Só pode ser equipado durante eventos na realidade\\]\\C[0] \\C[0][\\I[2660]Nenhum\\]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2804,
+        "name": "Fantasia de Súcubo Lv.1",
+        "note": "itemMaxNum:1\n<noSell>\n<Sort Priority: 100>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10
+        ],
+        "price": 0,
+        "description_old": "A special costume for fighting as a succubus contractor.\nShe can't use its power unless she transforms, but great power comes with great shame.\\\\n\\}\\C[16]«Equip Condition» \\C[7][\\I[2659]Can only be equipped during events in reality\\]\\C[0] \\C[0][\\I[2660]None\\]\\C[0]",
+        "name_old": "Succubus Costume Lv.1"
+    },
+    {
+        "id": 7,
+        "atypeId": 1,
+        "description": "Um traje especial para lutar como contratante súcubo.\nO nível de exposição aumentou ainda mais para corresponder ao fetiche de Iroha por constrangimento.\\\\n\\}\\C[16]«Condição de equipamento» \\C[7][\\I[2659]Só pode ser equipado durante eventos na realidade\\]\\C[0] \\C[0][\\I[2660]Nenhum\\]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2805,
+        "name": "Fantasia de Súcubo Lv.2",
+        "note": "itemMaxNum:1\n<noSell>\n<Sort Priority: 101>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            50
+        ],
+        "price": 0,
+        "description_old": "A special costume for fighting as a succubus contractor.\nThe exposure level has increased even more to match Iroha's fetish for embarrassment.\\\\n\\}\\C[16]«Equip Condition» \\C[7][\\I[2659]Can only be equipped during events in reality\\]\\C[0] \\C[0][\\I[2660]None\\]\\C[0]",
+        "name_old": "Succubus Costume Lv.2"
+    },
+    {
+        "id": 8,
+        "atypeId": 1,
+        "description": "Um traje especial para lutar como contratante súcubo.\nCom todos os poderes da súcubo liberados, ela parece uma vagabunda total.\\\\n\\}\\C[16]«Condição de equipamento» \\C[7][\\I[2659]Só pode ser equipado durante eventos na realidade\\]\\C[0] \\C[0][\\I[2660]Nenhum\\]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2806,
+        "name": "Fantasia de Súcubo Lv.3",
+        "note": "itemMaxNum:1\n<noSell>\n<Sort Priority: 102>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            100
+        ],
+        "price": 0,
+        "description_old": "A special costume for fighting as a succubus contractor.\nWith all succubus powers unleashed, she looks like a total slut.\\\\n\\}\\C[16]«Equip Condition» \\C[7][\\I[2659]Can only be equipped during events in reality\\]\\C[0] \\C[0][\\I[2660]None\\]\\C[0]",
+        "name_old": "Succubus Costume Lv.3"
+    },
+    {
+        "id": 9,
+        "atypeId": 1,
+        "description": "Uma minissaia muito mais curta que o normal.\nSuas coxas saindo da saia chamam a atenção do sexo oposto.\\n[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2807,
+        "name": "Uniforme Dream Academy(minissaia)",
+        "note": "itemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20000>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A miniskirt much shorter than usual.\nHer thighs peeking out from the skirt catch the eyes of the opposite sex.\\n[942]",
+        "name_old": "Dream Academy Uniform(Miniskirt)"
+    },
+    {
+        "id": 10,
+        "atypeId": 1,
+        "description": "Sua calcinha foi confiscada por ordem de Kaneobara.\nSeus mamilos ligeiramente visíveis cativam o olhar de meninos adolescentes.\\\\n\\}\\C[16]«Equip Condition» \\C[0][\\I[2656]None]\\C[0]\\C[7][\\I[2658]Não pode ser equipado fora da academia]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2807,
+        "name": "Minissaia sem sutiã",
+        "note": "itemMaxNum:1\n<SZLEQ:!s[15] || SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 202>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "Her underwear was confiscated by Kaneobara's orders.\nHer slightly visible nipples captivate the gaze of adolescent boys.\\\\n\\}\\C[16]«Equip Condition» \\C[0][\\I[2656]None]\\C[0]\\C[7][\\I[2658]Cannot be equipped outside the academy]\\C[0]",
+        "name_old": "No Bra Miniskirt"
+    },
+    {
+        "id": 11,
+        "atypeId": 1,
+        "description": "Um uniforme pervertido que o gerente do AdultMart encomendou apenas para Iroha.\nExatamente o oposto de um uniforme de comitê disciplinar, ele satisfaz o lado masoquista de Iroha.\\\\n\\}\\C[16]«Condição de equipamento» \\C[7][\\I[2657]Não pode ser equipado no academia]\\C[0]\\C[0][\\I[2658]Experiência de exposição 1500 ou superior][\\C[31]Deve ter aprendido o lado secreto do Comitê Disciplinar\\C[0]]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2808,
+        "name": "Estudante americana",
+        "note": "itemMaxNum:1\n<SZLEQ:(!S[15] && !S[174] &&(1500<=V[109]) && $gameActors.actor(1).isLearnedSkill(260)) || SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 300>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 10000,
+        "description_old": "A perverted uniform the AdultMart manager ordered just for Iroha.\nThe exact opposite of a disciplinary committee uniform, it satisfies Iroha's masochistic side.\\\\n\\}\\C[16]«Equip Condition» \\C[7][\\I[2657]Cannot be equipped at the academy]\\C[0]\\C[0][\\I[2658]Exposure experience 1500 or higher][\\C[31]Must have learned Disciplinary Committee's Secret Side\\C[0]]\\C[0]",
+        "name_old": "American Schoolgirl"
+    },
+    {
+        "id": 12,
+        "atypeId": 0,
+        "description": "Um manto invisível que esconde sua aparência, mas não consegue mascarar seu perfume feminino ou gemidos.\nComo não pode torná-la completamente invisível, os masoquistas exibicionistas vão adorar.\\n[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2809,
+        "name": "Capa Nua",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20098>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "An invisible cloak that hides her appearance, but can't mask her feminine scent or moans.\nSince it can't make her completely invisible, exhibitionist masochists will love it.\\n[942]",
+        "name_old": "Naked Cape"
+    },
+    {
+        "id": 13,
+        "atypeId": 1,
+        "description": "Usando um cartão de membro do Lewd Bath pendurado no pescoço, necessário para o banho.\nVocê precisa do cartão para entrar na sauna.\\\\n\\}\\C[16]«Condição de equipamento» \\C[7][\\I[2657]Não pode ser equipado no academia]\\C[0]\\C[0][\\I[2658]Só pode ser equipado durante eventos de Banho Lewd]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2810,
+        "name": "Cartão de membro do banho lascivo",
+        "note": "itemMaxNum:1\n<SZLEQ:!s[15] || SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 301>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "Wearing a Lewd Bath membership card around her neck, required for bathing.\nYou need the card to enter the sauna.\\\\n\\}\\C[16]«Equip Condition» \\C[7][\\I[2657]Cannot be equipped at the academy]\\C[0]\\C[0][\\I[2658]Can only be equipped during Lewd Bath events]\\C[0]",
+        "name_old": "Lewd Bath Membership Card"
+    },
+    {
+        "id": 14,
+        "atypeId": 1,
+        "description": "Uma roupa de massagem usada no Nu・menume.\nO material torna-se facilmente transparente com óleo.\\n[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2817,
+        "name": "Roupa de tratamento",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20100>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A massage outfit worn at Nu・menume.\nThe material becomes see-through easily with oil.\\n[942]",
+        "name_old": "Treatment Outfit"
+    },
+    {
+        "id": 15,
+        "atypeId": 1,
+        "description": "Uma roupa de massagem usada no Nu・menume.\nModificado para massagear zonas erógenas com eficiência.\\n[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2817,
+        "name": "Equipamento de tratamento modificado",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20101>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A massage outfit worn at Nu・menume.\nModified to efficiently massage erogenous zones.\\n[942]",
+        "name_old": "Modified Treatment Outfit"
+    },
+    {
+        "id": 16,
+        "atypeId": 1,
+        "description": "Um avental pessoal usado para cozinhar.\nSe ela se curvar, até seus mamilos ficarão visíveis.\\n[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2813,
+        "name": "Avental",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20050>\n",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A personal apron used for cooking.\nIf she bends over, even her nipples become visible.\\n[942]",
+        "name_old": "Apron"
+    },
+    {
+        "id": 17,
+        "atypeId": 1,
+        "description": "Uma roupa de empregada obscena que Kaneobara a forçou a usar por meio de chantagem.\nA calcinha ainda tem um suporte vibrador embutido.\\\\n\\}\\C[16]«Condição de equipamento» \\C[7][\\I[2657]Não pode ser equipado no academia]\\C[0]\\C[0][\\I[2658]Experiência de exposição 1500 ou superior][\\C[31]Deve ter aprendido o lado secreto do Comitê Disciplinar\\C[0]]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2815,
+        "name": "Empregada lasciva",
+        "note": "itemMaxNum:1\n<SZLEQ:(!S[15] && !S[174] &&(1500<=V[109]) && $gameActors.actor(1).isLearnedSkill(260)) || SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 302>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A lewd maid outfit Kaneobara forced her to wear through blackmail.\nThe panties even have a built-in vibrator holder.\\\\n\\}\\C[16]«Equip Condition» \\C[7][\\I[2657]Cannot be equipped at the academy]\\C[0]\\C[0][\\I[2658]Exposure experience 1500 or higher][\\C[31]Must have learned Disciplinary Committee's Secret Side\\C[0]]\\C[0]",
+        "name_old": "Lewd Maid"
+    },
+    {
+        "id": 18,
+        "atypeId": 1,
+        "description": "[For standing pose switching only][Not selectable for standing pose viewing]\n(Vibrator included)",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2815,
+        "name": "Empregada lasciva",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\nローター用\n<SZLEQ:!s[15] || SceneManager._scene.constructor === Scene_Map>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "Lewd Maid"
+    },
+    {
+        "id": 19,
+        "atypeId": 1,
+        "description": "Uniforme usado ao trabalhar na loja para adultos AdultMart no distrito de entretenimento.\nQuaisquer partes faltantes da roupa são cobertas com pintura corporal.\\n[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2814,
+        "name": "Uniforme de mercado adulto",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20103>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "Uniform worn when working at the AdultMart adult shop in the entertainment district.\nAny missing parts of the outfit are covered with body paint.\\n[942]",
+        "name_old": "Adult Mart Uniform"
+    },
+    {
+        "id": 20,
+        "atypeId": 1,
+        "description": "Uniforme usado ao trabalhar na loja para adultos AdultMart no distrito de entretenimento.\nPartes embaraçosas são cobertas com tinta em vez de tecido.\\n[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2814,
+        "name": "Uniforme de mercado adulto(pintura de corpo inteiro)",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20104>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "Uniform worn when working at the AdultMart adult shop in the entertainment district.\nEmbarrassing parts are covered with paint instead of fabric.\\n[942]",
+        "name_old": "Adult Mart Uniform(Full Body Paint)"
+    },
+    {
+        "id": 21,
+        "atypeId": 1,
+        "description": "Um biquíni preto simples com um design ligeiramente maduro.\nO estilo sem ombros adiciona um toque feminino.\\\\n\\}\\C[16]«Condição de equipamento» \\C[7][\\I[2657]Não pode ser equipado no academia]\\C[0]\\C[0][\\I[2658]Charme 100 ou superior]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2816,
+        "name": "Biquíni Preto",
+        "note": "itemMaxNum:1\n<SZLEQ:(!S[15] && !S[174] &&(100<=$gameActors.actor(1).param(7))) || SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 231>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 4000,
+        "description_old": "A simple black bikini with a slightly mature design.\nThe off-shoulder style adds a girly touch.\\\\n\\}\\C[16]«Equip Condition» \\C[7][\\I[2657]Cannot be equipped at the academy]\\C[0]\\C[0][\\I[2658]Charm 100 or higher]\\C[0]",
+        "name_old": "Black Bikini"
+    },
+    {
+        "id": 22,
+        "atypeId": 1,
+        "description": "Um novo micro biquíni com meias impermeáveis ​​até os joelhos e luvas compridas para um look obsceno.\nParece ainda mais com roupa íntima e é ótimo para sexo cosplay.\\\\n\\}\\C[16]«Condição de equipamento» \\C[7][\\I[2657]Não pode ser equipado no academia]\\C[0]\\C[0][\\I[2658]Experiência de exposição 1000 ou superior][Pode ser equipado livremente dentro do Aqua Kingdom]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2817,
+        "name": "Microbiquíni",
+        "note": "itemMaxNum:1\n<SZLEQ:(!S[15] && !S[174] &&(1000<=V[109])) ||($gameMap.mapId()==183 && S[702]) || $gameMap.mapId()==184 || $gameMap.mapId()==271 || SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 232>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A new micro bikini with waterproof knee socks and long gloves for a lewd look.\nIt feels even more like underwear and is great for cosplay sex.\\\\n\\}\\C[16]«Equip Condition» \\C[7][\\I[2657]Cannot be equipped at the academy]\\C[0]\\C[0][\\I[2658]Exposure experience 1000 or higher][Can be freely equipped inside Aqua Kingdom]\\C[0]",
+        "name_old": "Micro Bikini"
+    },
+    {
+        "id": 23,
+        "atypeId": 1,
+        "description": "\\V[336]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2818,
+        "name": "Maiô escolar",
+        "note": "itemMaxNum:1\n<SZLEQ:!s[253] &&((!S[15] &&((S[174] &&(30<=$gameActors.actor(1).param(7))) ||(!S[174] &&(75<=$gameActors.actor(1).param(7)) ))) || SceneManager._scene.constructor === Scene_Map)>\n<noSell>\n<Sort Priority: 221>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 2000,
+        "name_old": "School Swimsuit"
+    },
+    {
+        "id": 24,
+        "atypeId": 1,
+        "description": "Um maiô escolar enfeitado pelas ameaças de Kaneobara.\nO contraste chama a atenção para suas partes mais embaraçosas.\\\\n\\}\\C[16]«Condição de equipamento» \\C[0][\\I[2656]Só pode ser equipado durante class]\\C[0]\\C[7][\\I[2658]Não pode ser equipado fora da academia]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2819,
+        "name": "Maiô escolar com virilha aberta",
+        "note": "itemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 222>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A school swimsuit trimmed by Kaneobara's threats.\nThe contrast draws attention to her most embarrassing parts.\\\\n\\}\\C[16]«Equip Condition» \\C[0][\\I[2656]Can only be equipped during class]\\C[0]\\C[7][\\I[2658]Cannot be equipped outside the academy]\\C[0]",
+        "name_old": "Open-Crotch School Swimsuit"
+    },
+    {
+        "id": 25,
+        "atypeId": 1,
+        "description": "\\v[337]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2820,
+        "name": "Maiô escolar modificado",
+        "note": "itemMaxNum:1\n<SZLEQ:!S[15] &&(S[253] ||(100<$gameVariables.value(24) && $gameActors.actor(1).isLearnedSkill(262) && 2000<=$gameVariables.value(109) && true) ||SceneManager._scene.constructor === Scene_Map)>\n<noSell>\n<Sort Priority: 223>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 4000,
+        "name_old": "Modified School Swimsuit"
+    },
+    {
+        "id": 26,
+        "atypeId": 1,
+        "description": "\\V[334]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2821,
+        "name": "Uniforme de ginástica",
+        "note": "itemMaxNum:1\n<SZLEQ:!S[253] &&((!S[15] &&(S[174] ||(!S[174] &&(50<=$gameActors.actor(1).param(7))))) || SceneManager._scene.constructor === Scene_Map)>\n<noSell>\n<Sort Priority: 211>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 2000,
+        "name_old": "Gym Uniform"
+    },
+    {
+        "id": 27,
+        "atypeId": 1,
+        "description": "Uniforme de ginástica sem sutiã ou calcinha porque Kaneobara confiscou sua calcinha.\nCada vez que ela corre, seus mamilos roçam o tecido, proporcionando-lhe um doce prazer.\\\\n\\}\\C[16]«Equip Condition» \\C[0][\\I[2656]None]\\C[0]\\C[7][\\I[2658]Não pode ser equipado fora da academia]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2822,
+        "name": "Uniforme de ginástica sem sutiã",
+        "note": "itemMaxNum:1\n<noSell>\n<SZLEQ:(!S[15] && S[174]) || SceneManager._scene.constructor === Scene_Map>\n<Sort Priority: 212>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 2000,
+        "description_old": "A gym uniform with no bra or panties because Kaneobara confiscated her underwear.\nEvery time she runs, her nipples brush against the fabric, giving her sweet pleasure.\\\\n\\}\\C[16]«Equip Condition» \\C[0][\\I[2656]None]\\C[0]\\C[7][\\I[2658]Cannot be equipped outside the academy]\\C[0]",
+        "name_old": "No Bra Gym Uniform"
+    },
+    {
+        "id": 28,
+        "atypeId": 1,
+        "description": "\\V[335]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2823,
+        "name": "Uniforme de ginástica modificado",
+        "note": "itemMaxNum:1\n<SZLEQ:!S[15] &&(S[253] ||(100<$gameVariables.value(24) && $gameActors.actor(1).isLearnedSkill(262) && 2000<=$gameVariables.value(109) && true) ||SceneManager._scene.constructor === Scene_Map)>\n<noSell>\n<Sort Priority: 213>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 4000,
+        "name_old": "Modified Gym Uniform"
+    },
+    {
+        "id": 29,
+        "atypeId": 1,
+        "description": "Um casaco do tamanho certo para esconder os segredos de uma donzela.\nIroha comprou pensando: 'Esse é o tipo que você vê em jogos de exposição.'\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2824,
+        "name": "Casaco de Exibicionista",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<noSell>\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<Sort Priority: 20051>\n",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A coat just the right size to hide a maiden's secrets.\nIroha bought it thinking, 'This is the kind you see in exposure play.'\\N[942]",
+        "name_old": "Exhibitionist's Coat"
+    },
+    {
+        "id": 30,
+        "atypeId": 1,
+        "description": "\\v[333]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2825,
+        "name": "Uniforme obsceno",
+        "note": "itemMaxNum:1\n<noSell>\n<SZLEQ:!S[15] &&(S[253] ||(100<$gameVariables.value(24) && $gameActors.actor(1).isLearnedSkill(262) && 2000<=$gameVariables.value(109) && true) ||SceneManager._scene.constructor === Scene_Map)>\n↑trueの部分に条件を足す（今は4章クリア後のみ）\n<Sort Priority: 203>\n",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "Lewd Uniform"
+    },
+    {
+        "id": 31,
+        "atypeId": 1,
+        "description": "Uma roupa para torcer pelos jovens que trabalham duro nas atividades do clube.\nPode ser usado para apoiar aliados ou sabotar inimigos.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2826,
+        "name": "Roupa de líder de torcida",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<noSell>\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<Sort Priority: 20005>\n",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "An outfit for cheering on young men working hard in their club activities.\nCan be used to support allies or sabotage enemies.\\N[942]",
+        "name_old": "Cheerleader Outfit"
+    },
+    {
+        "id": 32,
+        "atypeId": 1,
+        "description": "Um desenho de estilingue ridiculamente estúpido que nem mesmo uma cadela usaria.\nCom os mamilos e a buceta totalmente expostos, é fácil foder.\\\\n\\}\\C[16]«Condições de equipamento» \\C[7][\\I[2657]Não é possível equipar no academia]\\C[0]\\C[0][\\I[2658]Só pode ser equipado durante a rota de derrota do Capítulo 4]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2827,
+        "name": "Maiô Anel Coração",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<noSell>\n<SZLafadsfQ:!S[15] && SceneManager._scene.constructor === Scene_Map>\n<Sort Priority: 233>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A ridiculously stupid slingshot design that even a bitch wouldn't wear.\nWith both nipples and pussy fully exposed, it's easy to fuck in.\\\\n\\}\\C[16]«Equip Conditions» \\C[7][\\I[2657]Cannot equip at the academy]\\C[0]\\C[0][\\I[2658]Can only be equipped during Chapter 4 defeat route]\\C[0]",
+        "name_old": "Heart Ring Swimsuit"
+    },
+    {
+        "id": 33,
+        "atypeId": 1,
+        "description": "Um vestido chinês obsceno que deve ser usado durante a prostituição no distrito da luz vermelha.\nComo não há calcinha sob a aba frontal, apenas andar por aí é estressante.\\\\n\\}\\C[16]«Condições de equipamento» \\C[7][\\I[2657]Não é possível equipar no academia]\\C[0]\\C[0][\\I[2658]Só pode ser equipado durante a rota de derrota do Capítulo 2]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2828,
+        "name": "Vestido chinês super lascivo",
+        "note": "<noSell>\n<SZLEQ:!S[15] || SceneManager._scene.constructor === Scene_Map>\n<Sort Priority: 303>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A lewd Chinese dress that must be worn when prostituting in the red-light district.\nSince there's no panties under the front flap, just walking around is nerve-wracking.\\\\n\\}\\C[16]«Equip Conditions» \\C[7][\\I[2657]Cannot equip at the academy]\\C[0]\\C[0][\\I[2658]Can only be equipped during Chapter 2 defeat route]\\C[0]",
+        "name_old": "Super Lewd China Dress"
+    },
+    {
+        "id": 34,
+        "atypeId": 1,
+        "description": "Uma saia suéter usada para as punições de Lily.\nA saia é tão curta que é perfeita para treinar masoquistas exibicionistas.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2829,
+        "name": "Saia Jumper",
+        "note": "<noSell>\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<Sort Priority: 20048>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A jumper skirt used for Lily's punishments.\nThe skirt is so short, it's perfect for training exhibitionist masochists.\\N[942]",
+        "name_old": "Jumper Skirt"
+    },
+    {
+        "id": 35,
+        "atypeId": 1,
+        "description": "Roupas de trabalho exigidas em fábricas onde dentes-de-leão são colocados no sashimi.\nTrabalhadores de meio período experientes sentem-se vazios por dentro só de olhar para ele.\\n[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2830,
+        "name": "Roupas de trabalho",
+        "note": "■メモ：イベント専用装備\n<noSell>\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<Sort Priority: 20047>\n",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "Work clothes required at factories where dandelions are placed on sashimi.\nExperienced part-timers feel empty inside just by looking at it.\\n[942]",
+        "name_old": "Work Clothes"
+    },
+    {
+        "id": 36,
+        "atypeId": 1,
+        "description": "Avental entregue aos funcionários da Livraria Jerkdo.\nPara satisfazer os desejos do gerente, nada é usado por baixo.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2831,
+        "name": "Avental Nu",
+        "note": "■メモ：イベント専用装備\n<noSell>\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "An apron given to employees at Jerkdo Bookstore.\nTo satisfy the manager's desires, nothing is worn underneath.\\N[942]",
+        "name_old": "Naked Apron"
+    },
+    {
+        "id": 37,
+        "atypeId": 1,
+        "description": "Avental entregue aos funcionários da Livraria Jerkdo.\nApenas calcinha é usada por baixo.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2832,
+        "name": "Avental seminua",
+        "note": "■メモ：イベント専用装備\n<noSell>\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "An apron given to employees at Jerkdo Bookstore.\nOnly panties are worn underneath.\\N[942]",
+        "name_old": "Half-Naked Apron"
+    },
+    {
+        "id": 38,
+        "atypeId": 1,
+        "description": "Avental entregue aos funcionários da Livraria Jerkdo.\nComo a saia foi tirada, o bumbum ficou completamente exposto.\\n[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2833,
+        "name": "Avental de uniforme seminu",
+        "note": "■メモ：イベント専用装備\n<noSell>\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "An apron given to employees at Jerkdo Bookstore.\nSince the skirt was taken away, the butt is completely exposed.\\n[942]",
+        "name_old": "Half-Naked Uniform Apron"
+    },
+    {
+        "id": 39,
+        "atypeId": 1,
+        "description": "Avental entregue aos funcionários da Livraria Jerkdo.\nUm item feito sob medida com menos tecido nas costas para facilitar o assédio sexual.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2834,
+        "name": "Avental Uniforme",
+        "note": "■メモ：イベント専用装備\n<noSell>\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "An apron given to employees at Jerkdo Bookstore.\nA custom-made item with less fabric in the back to make sexual harassment easier.\\N[942]",
+        "name_old": "Uniform Apron"
+    },
+    {
+        "id": 40,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "--- Roupas de Lírio ---",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "---Lily Outfits ---"
+    },
+    {
+        "id": 41,
+        "atypeId": 2,
+        "description": "",
+        "etypeId": 2,
+        "traits": [],
+        "iconIndex": 0,
+        "name": "[Lily] Naked(Normal)",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 42,
+        "atypeId": 2,
+        "description": "",
+        "etypeId": 2,
+        "traits": [],
+        "iconIndex": 0,
+        "name": "[Lily] Succubus Outfit",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 43,
+        "atypeId": 2,
+        "description": "",
+        "etypeId": 2,
+        "traits": [],
+        "iconIndex": 0,
+        "name": "[Lily] Casual Clothes",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 44,
+        "atypeId": 2,
+        "description": "",
+        "etypeId": 2,
+        "traits": [],
+        "iconIndex": 0,
+        "name": "[Lily] Succubus Outfit(No Hairpin)",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 45,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 46,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 47,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 48,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 49,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 50,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "--- Roupas Aiba Yuna ---",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "---Aiba Yuna Outfits ---"
+    },
+    {
+        "id": 51,
+        "atypeId": 3,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Aiba Yuna] Naked",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 52,
+        "atypeId": 3,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Aiba Yuna] Underwear",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 53,
+        "atypeId": 3,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Aiba Yuna] Uniform",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 54,
+        "atypeId": 3,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Aiba Yuna] Transformation",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 55,
+        "atypeId": 3,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Aiba Yuna] Swimsuit",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 56,
+        "atypeId": 3,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Aiba Yuna] Lewd Uniform",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 57,
+        "atypeId": 3,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Aiba Yuna] Shrine Maiden-Normal",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 58,
+        "atypeId": 3,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Aiba Yuna] Shrine Maiden-Miniskirt",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 59,
+        "atypeId": 3,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Aiba Yuna] Shrine Maiden-Lewd Shrine Maiden",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 60,
+        "atypeId": 3,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Aiba Yuna] Dragon",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 61,
+        "atypeId": 4,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Suti] Naked",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 62,
+        "atypeId": 4,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Suti] Succubus Clothes",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 63,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 64,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 65,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "---Roupas Letícia ---",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "---Leticia Outfits ---"
+    },
+    {
+        "id": 66,
+        "atypeId": 5,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "Nua(Letícia)",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "Naked(Leticia)"
+    },
+    {
+        "id": 67,
+        "atypeId": 5,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "Roupas de Súcubo(Letícia)",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "Succubus Clothes(Leticia)"
+    },
+    {
+        "id": 68,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 69,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 70,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "--- Roupa Okane Nashi ---",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "---Okane Nashi Outfit ---"
+    },
+    {
+        "id": 71,
+        "atypeId": 6,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Okane Nashi] Naked",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 72,
+        "atypeId": 6,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Okane Nashi] Underwear",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 73,
+        "atypeId": 6,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Okane Nashi] Uniform",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 74,
+        "atypeId": 6,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "Golem",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 75,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 76,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "--- Roupa Kadona ---",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "---Kadona Outfit ---"
+    },
+    {
+        "id": 77,
+        "atypeId": 7,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "Nu(Kadona)",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "Naked(Kadona)"
+    },
+    {
+        "id": 78,
+        "atypeId": 7,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "Roupa de Súcubo(Kadona)",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "Succubus Outfit(Kadona)"
+    },
+    {
+        "id": 79,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 80,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 81,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "-Roupa Ratori-",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "-Ratori Outfit-"
+    },
+    {
+        "id": 82,
+        "atypeId": 8,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "Nu(Ratori)",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "Naked(Ratori)"
+    },
+    {
+        "id": 83,
+        "atypeId": 8,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "Roupa de Súcubo(Ratori)",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "Succubus Outfit(Ratori)"
+    },
+    {
+        "id": 84,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 85,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 86,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "■■Acessório[Mundo Demoníaco](equipamento de troca de Letícia)",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "■■Accessory[Demon World](Leticia Exchange Equipment)"
+    },
+    {
+        "id": 87,
+        "atypeId": 1,
+        "description": "Um anel amaldiçoado que esgota a força do usuário.\nPerfeito para masoquistas que querem apenas fingir que resistem.\\\\n\\}\\C[16]«Efeito»\\C[0][Todas as estatísticas-500][Dano recebido *5000%]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": -1
+            },
+            {
+                "code": 22,
+                "dataId": 4,
+                "value": -1
+            },
+            {
+                "code": 23,
+                "dataId": 6,
+                "value": 5
+            },
+            {
+                "code": 23,
+                "dataId": 6,
+                "value": 5
+            },
+            {
+                "code": 23,
+                "dataId": 7,
+                "value": 5
+            },
+            {
+                "code": 23,
+                "dataId": 7,
+                "value": 5
+            },
+            {
+                "code": 11,
+                "dataId": 1,
+                "value": 9.99
+            },
+            {
+                "code": 11,
+                "dataId": 2,
+                "value": 9.99
+            },
+            {
+                "code": 11,
+                "dataId": 3,
+                "value": 9.99
+            },
+            {
+                "code": 11,
+                "dataId": 4,
+                "value": 9.99
+            },
+            {
+                "code": 11,
+                "dataId": 5,
+                "value": 9.99
+            },
+            {
+                "code": 11,
+                "dataId": 6,
+                "value": 9.99
+            },
+            {
+                "code": 11,
+                "dataId": 7,
+                "value": 9.99
+            },
+            {
+                "code": 11,
+                "dataId": 8,
+                "value": 9.99
+            },
+            {
+                "code": 11,
+                "dataId": 9,
+                "value": 9.99
+            },
+            {
+                "code": 11,
+                "dataId": 10,
+                "value": 9.99
+            }
+        ],
+        "iconIndex": 2881,
+        "name": "Pulseira do Masoquismo",
+        "note": "<noSell>\n<Sort Priority: 2010>",
+        "params": [
+            0,
+            0,
+            -500,
+            -500,
+            -500,
+            -500,
+            -500,
+            -500
+        ],
+        "price": 0,
+        "description_old": "A cursed ring that drains the wearer's strength.\nPerfect for masochists who only want to pretend to resist.\\\\n\\}\\C[16]«Effect»\\C[0][All Stats-500][Damage Taken *5000%]",
+        "name_old": "Bracelet of Masochism"
+    },
+    {
+        "id": 88,
+        "atypeId": 1,
+        "description": "Um anel que aumenta seu poder mágico.\nNo entanto, diminui seu poder de ataque.\\\\n\\}\\C[16]«Efeito»\\C[0][Ataque-10][Magia +20]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2882,
+        "name": "Anel Mágico",
+        "note": "<noSell>\n<Sort Priority: 2011>\n",
+        "params": [
+            0,
+            0,
+            -10,
+            0,
+            20,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A ring that boosts your magic power.\nHowever, it lowers your attack power.\\\\n\\}\\C[16]«Effect»\\C[0][Attack-10][Magic +20]",
+        "name_old": "Magic Ring"
+    },
+    {
+        "id": 89,
+        "atypeId": 1,
+        "description": "Botas especializadas para movimentos rápidos e preventivos.\nVocê pode se mover em alta velocidade, mas é preciso habilidade para manter o equilíbrio.\\\\n\\}\\C[16]«Efeito»\\C[0][Ataque-5][Defesa-5][Agilidade +30]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2883,
+        "name": "Botas de corrida",
+        "note": "<noSell>\n<Sort Priority: 2013>",
+        "params": [
+            0,
+            0,
+            -5,
+            -5,
+            0,
+            0,
+            30,
+            0
+        ],
+        "price": 0,
+        "description_old": "Boots specialized for quick, preemptive movement.\nYou can move at high speed, but it takes skill to keep your balance.\\\\n\\}\\C[16]«Effect»\\C[0][Attack-5][Defense-5][Agility +30]",
+        "name_old": "Sprint Boots"
+    },
+    {
+        "id": 90,
+        "atypeId": 1,
+        "description": "Um anel que restaura gradualmente seu HP quando equipado.\nNo entanto, ele consome poder mágico, então use com cuidado.\\\\n\\}\\C[16]«Efeito»\\C[0][Regeneração de HP +3%][Regeneração de MP-1%]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 7,
+                "value": 0.03
+            },
+            {
+                "code": 22,
+                "dataId": 8,
+                "value": -0.01
+            }
+        ],
+        "iconIndex": 2884,
+        "name": "Anel de regeneração",
+        "note": "<noSell>\n<Sort Priority: 2014>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A ring that gradually restores your HP when equipped.\nHowever, it consumes magic power, so use with caution.\\\\n\\}\\C[16]«Effect»\\C[0][HP Regen +3%][MP Regen-1%]",
+        "name_old": "Regen Ring"
+    },
+    {
+        "id": 91,
+        "atypeId": 1,
+        "description": "Um colar que concede resistência a todos os ataques elementais.\nA única desvantagem é seu design extremamente brega.\\\\n\\}\\C[16]«Efeito»\\C[0][Todas as Resistências Elementais +10][Charme-30]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 11,
+                "dataId": 3,
+                "value": 0.9
+            },
+            {
+                "code": 11,
+                "dataId": 4,
+                "value": 0.9
+            },
+            {
+                "code": 11,
+                "dataId": 5,
+                "value": 0.9
+            },
+            {
+                "code": 11,
+                "dataId": 6,
+                "value": 0.9
+            },
+            {
+                "code": 11,
+                "dataId": 7,
+                "value": 0.9
+            },
+            {
+                "code": 11,
+                "dataId": 8,
+                "value": 0.9
+            },
+            {
+                "code": 11,
+                "dataId": 9,
+                "value": 0.9
+            },
+            {
+                "code": 11,
+                "dataId": 10,
+                "value": 0.9
+            }
+        ],
+        "iconIndex": 2885,
+        "name": "Colar Elemento",
+        "note": "<noSell>\n<Sort Priority: 2015>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            -30
+        ],
+        "price": 0,
+        "description_old": "A necklace that grants resistance to all elemental attacks.\nThe only downside is its extremely tacky design.\\\\n\\}\\C[16]«Effect»\\C[0][All Elemental Resistances +10][Charm-30]",
+        "name_old": "Element Necklace"
+    },
+    {
+        "id": 92,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 93,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 94,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "■■Acessório[Mundo Demoníaco]",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "■■Accessory[Demon World]"
+    },
+    {
+        "id": 95,
+        "atypeId": 1,
+        "description": "Uma aderência que evita escorregar das mãos suadas.\nAnexe-o a uma arma para ataques mais estáveis.\\\\n\\}\\C[16]«Efeito»\\C[0][Ataque +2]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2897,
+        "name": "Aderência antiderrapante",
+        "note": "<DreamOnly>\n入手場所：夢幻の回廊1-5\n<Sort Priority: 2000>",
+        "params": [
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 400,
+        "description_old": "A grip that prevents slipping from sweaty hands.\nAttach it to a weapon for more stable attacks.\\\\n\\}\\C[16]«Effect»\\C[0][Attack +2]",
+        "name_old": "Non-Slip Grip"
+    },
+    {
+        "id": 96,
+        "atypeId": 1,
+        "description": "Luvas pretas usadas por Gentle Hand.\nEquipá-los aumenta sua durabilidade.\\\\n\\}\\C[16]«Efeito»\\C[0][Defesa +2]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2898,
+        "name": "Luvas de mão suaves",
+        "note": "<DreamOnly>\n入手場所：夢幻の回廊1-5\n<Sort Priority: 2000>",
+        "params": [
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 400,
+        "description_old": "Black gloves worn by Gentle Hand.\nEquipping them increases your durability.\\\\n\\}\\C[16]«Effect»\\C[0][Defense +2]",
+        "name_old": "Gentle Hand Gloves"
+    },
+    {
+        "id": 97,
+        "atypeId": 1,
+        "description": "Um anel de metal permitido apenas para quem tem sabedoria.\nApenas tê-lo faz você parecer um pouco mais inteligente.\\\\n\\}\\C[16]«Efeito»\\C[0][Magia +30][Agilidade +20]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2899,
+        "name": "Anel da Sabedoria",
+        "note": "<DreamOnly>\n入手場所：夢幻の回廊5-16(試練)\n<Sort Priority: 2000>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            30,
+            0,
+            20,
+            0
+        ],
+        "price": 4000,
+        "description_old": "A metal ring allowed only for those with wisdom.\nJust having it makes you look a bit smarter.\\\\n\\}\\C[16]«Effect»\\C[0][Magic +30][Agility +20]",
+        "name_old": "Ring of Wisdom"
+    },
+    {
+        "id": 98,
+        "atypeId": 1,
+        "description": "Um fantoche de pose obscena controlado pelo Puppetmaster.\nEquipá-lo faz com que o boneco tome seu lugar, tornando você mais difícil de controlar.\\\\n\\}\\C[16]«Efeito»\\C[0][Resistência de Iroha a ataques de controle corporal +10%(sem empilhamento)]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2900,
+        "name": "Fantoche",
+        "note": "<DreamOnly>\n<Sort Priority: 2000>",
+        "params": [
+            0,
+            0,
+            0,
+            2,
+            0,
+            0,
+            -2,
+            0
+        ],
+        "price": 800,
+        "description_old": "A lewdly-posed puppet controlled by the Puppetmaster.\nEquipping it makes the puppet take your place, making you harder to control.\\\\n\\}\\C[16]«Effect»\\C[0][Iroha's resistance to body-controlling attacks +10%(no stacking)]",
+        "name_old": "Puppet"
+    },
+    {
+        "id": 99,
+        "atypeId": 1,
+        "description": "Um anel 3P com tentáculos dentro, reaproveitado como um anel normal.\nEle proporciona constantemente um leve prazer, tornando-o bom para treinamento de resistência de prazer.\\\\n\\}\\C[16]«Efeito»\\C[0][Prazer Máximo +5]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2901,
+        "name": "Anel do Prazer",
+        "note": "<DreamOnly>\n<TOES変数対象:82>\n<TOES変数設定値:5>\n<Sort Priority: 2000>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 800,
+        "description_old": "A 3P ring with tentacles inside, repurposed as a regular ring.\nIt constantly gives faint pleasure, making it good for pleasure endurance training.\\\\n\\}\\C[16]«Effect»\\C[0][Max Pleasure +5]",
+        "name_old": "Ring of Pleasure"
+    },
+    {
+        "id": 100,
+        "atypeId": 1,
+        "description": "Um chip misterioso que altera o dano de prazer que Iroha recebe.\nAumentar ou diminuir depende da sorte.\\\\n\\}\\C[16]«Efeito»\\C[0][50% de chance de Dano de Prazer +1][50% de chance de Dano de Prazer-1]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2902,
+        "name": "Ficha de jogo",
+        "note": "<DreamOnly>\n【入手】夢幻の回廊3F-マップ5-で入手\n<Sort Priority: 2000>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 1500,
+        "description_old": "A mysterious chip that changes the pleasure damage Iroha receives.\nWhether it increases or decreases depends on luck.\\\\n\\}\\C[16]«Effect»\\C[0][50% chance Pleasure Damage +1][50% chance Pleasure Damage-1]",
+        "name_old": "Gamble Chip"
+    },
+    {
+        "id": 101,
+        "atypeId": 1,
+        "description": "Um pote com uma fonte infinita de poder mágico.\nApenas estar perto dele permite que você absorva magia e recupere MP gradualmente.\\\\n\\}\\C[16]«Efeito»\\C[0][Regeneração de MP +2%]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 8,
+                "value": 0.02
+            }
+        ],
+        "iconIndex": 2903,
+        "name": "Pote de Poder Mágico",
+        "note": "<DreamOnly>\n【入手】夢幻の回廊4F-マップ12-で入手\n<Sort Priority: 2000>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 3000,
+        "description_old": "A pot with an endless source of magic power.\nJust being near it lets you absorb magic and gradually recover MP.\\\\n\\}\\C[16]«Effect»\\C[0][MP Regen +2%]",
+        "name_old": "Magic Power Pot"
+    },
+    {
+        "id": 102,
+        "atypeId": 1,
+        "description": "Uma chave mágica deixada por Clippy.\nNaturalmente atrai lixo dos arredores.\\\\n\\}\\C[16]«Efeito»\\C[0][Taxa de queda de item +50%]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 64,
+                "dataId": 5,
+                "value": 1
+            }
+        ],
+        "iconIndex": 2904,
+        "name": "Chave da Sorte",
+        "note": "<DreamOnly>\n<PARDropItemDouble:1.5>\n<Sort Priority: 2000>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 1400,
+        "description_old": "A magical key dropped by Clippy.\nIt naturally attracts junk from the surroundings.\\\\n\\}\\C[16]«Effect»\\C[0][Item Drop Rate +50%]",
+        "name_old": "Lucky Key"
+    },
+    {
+        "id": 103,
+        "atypeId": 1,
+        "description": "Um chapéu dourado brilhante.\nApenas usá-lo atrai dinheiro, mas é muito cafona.\\\\n\\}\\C[16]«Efeito»\\C[0][Dinheiro ganho de inimigos +200%][Charme-100]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2905,
+        "name": "Chapéu Dourado",
+        "note": "<DreamOnly>\n入手場所：夢幻の回廊5-16(試練)\n<Sort Priority: 2000>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            -100
+        ],
+        "price": 5000,
+        "description_old": "A shiny golden hat.\nJust wearing it attracts money, but it's very tacky.\\\\n\\}\\C[16]«Effect»\\C[0][Money Gained from Enemies +200%][Charm-100]",
+        "name_old": "Golden Hat"
+    },
+    {
+        "id": 104,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 105,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 106,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 107,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "---Acessório[Moderno] ---",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "---Accessory[Modern] ---"
+    },
+    {
+        "id": 108,
+        "atypeId": 1,
+        "description": "Uma pulseira em forma de trevo de quatro folhas.\nSó de ter isso você se sente um pouco mais sortudo.\\\\n\\}\\C[16]«Efeito»\\C[0][Defesa +1][Agilidade +2][Charme +2]",
+        "etypeId": 3,
+        "traits": [],
+        "iconIndex": 2913,
+        "name": "Alça de quatro folhas",
+        "note": "マーメイド-初期販売装備\n<RealOnly>\n<Sort Priority: 1000>",
+        "params": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            2,
+            2
+        ],
+        "price": 800,
+        "description_old": "A strap shaped like a four-leaf clover.\nJust having it makes you feel a little luckier.\\\\n\\}\\C[16]«Effect»\\C[0][Defense +1][Agility +2][Charm +2]",
+        "name_old": "Four-Leaf Strap"
+    },
+    {
+        "id": 109,
+        "atypeId": 1,
+        "description": "Um lindo pingente de coração rosa.\nUm acessório feminino que adiciona um toque feminino.\\\\n\\}\\C[16]«Efeito»\\C[0][Defesa +1][Agilidade +1][Charme +8][HP máximo +10]",
+        "etypeId": 3,
+        "traits": [],
+        "iconIndex": 2914,
+        "name": "Charme de Coração",
+        "note": "マーメイド-初期販売装備\n<RealOnly>\n<Sort Priority: 1001>",
+        "params": [
+            10,
+            0,
+            0,
+            1,
+            0,
+            0,
+            1,
+            8
+        ],
+        "price": 1200,
+        "description_old": "A cute pink heart charm.\nA girly accessory that adds a feminine touch.\\\\n\\}\\C[16]«Effect»\\C[0][Defense +1][Agility +1][Charm +8][Max HP +10]",
+        "name_old": "Heart Charm"
+    },
+    {
+        "id": 110,
+        "atypeId": 1,
+        "description": "Um produto popular entre algumas garotas da subcultura.\nNada fotogênico.\\\\n\\}\\C[16]«Efeito»\\C[0][Ataque +8][Defesa-8][Agilidade-8][Charme-4]",
+        "etypeId": 3,
+        "traits": [],
+        "iconIndex": 2915,
+        "name": "Soco inglês",
+        "note": "マーメイド-初期販売装備\n<RealOnly>\n<Sort Priority: 1002>",
+        "params": [
+            0,
+            0,
+            8,
+            -8,
+            0,
+            0,
+            -8,
+            -4
+        ],
+        "price": 1600,
+        "description_old": "A product that's popular among some subculture girls.\nNot photogenic at all.\\\\n\\}\\C[16]«Effect»\\C[0][Attack +8][Defense-8][Agility-8][Charm-4]",
+        "name_old": "Brass Knuckles"
+    },
+    {
+        "id": 111,
+        "atypeId": 1,
+        "description": "Uma gargantilha preta recomendada para meninas que querem ser contidas por alguém.\nAumenta o masoquismo e o sadismo.\\\\n\\}\\C[16]«Efeito»\\C[0][Ataque +5][Defesa +3][Agilidade +3][Charme +1][HP máximo +5]",
+        "etypeId": 3,
+        "traits": [],
+        "iconIndex": 2916,
+        "name": "Gargantilha Preta",
+        "note": "マーメイド-初期販売装備\n<RealOnly>\n<Sort Priority: 1003>",
+        "params": [
+            5,
+            0,
+            5,
+            3,
+            0,
+            0,
+            3,
+            1
+        ],
+        "price": 2400,
+        "description_old": "A jet-black choker recommended for girls who want to be restrained by someone.\nIncreases both masochism and sadism.\\\\n\\}\\C[16]«Effect»\\C[0][Attack +5][Defense +3][Agility +3][Charm +1][Max HP +5]",
+        "name_old": "Black Choker"
+    },
+    {
+        "id": 112,
+        "atypeId": 1,
+        "description": "Brincos feitos à mão com hipnotizantes decorações azuis.\nUm item popular na MerMaid.\\\\n\\}\\C[16]«Efeito»\\C[0][Ataque +3][Defesa +3][Agilidade +5][Charme +5][HP máximo +3]",
+        "etypeId": 3,
+        "traits": [],
+        "iconIndex": 2917,
+        "name": "Brincos de sereia",
+        "note": "マーメイド-初期販売装備\n<RealOnly>\n<Sort Priority: 1004>",
+        "params": [
+            3,
+            0,
+            3,
+            3,
+            0,
+            0,
+            5,
+            5
+        ],
+        "price": 3000,
+        "description_old": "Handmade earrings with mesmerizing blue decorations.\nA popular item at MerMaid.\\\\n\\}\\C[16]«Effect»\\C[0][Attack +3][Defense +3][Agility +5][Charm +5][Max HP +3]",
+        "name_old": "Mermaid Earrings"
+    },
+    {
+        "id": 113,
+        "atypeId": 1,
+        "description": "Um adesivo misterioso que torna você menos perceptível quando aplicado.\nMas você não pode escapar de olhares obscenos.\\\\n\\}\\C[16]«Efeito»\\C[0][Evasão +3%]",
+        "etypeId": 3,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0.03
+            }
+        ],
+        "iconIndex": 2918,
+        "name": "Selo Fantasma",
+        "note": "マーメイド-1章クリア後解禁\n<RealOnly>\n<Sort Priority: 1005>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 3500,
+        "description_old": "A mysterious sticker that makes you less noticeable when applied.\nBut you can't escape lewd stares.\\\\n\\}\\C[16]«Effect»\\C[0][Evasion +3%]",
+        "name_old": "Ghost Seal"
+    },
+    {
+        "id": 114,
+        "atypeId": 1,
+        "description": "Um pequeno amuleto de porco vermelho.\nApenas carregá-lo faz você se sentir como se pudesse voar.\\\\n\\}\\C[16]«Efeito»\\C[0][Ataque +5][Defesa +5][HP máximo +30]",
+        "etypeId": 3,
+        "traits": [],
+        "iconIndex": 2919,
+        "name": "Amuleto do Porco Vermelho",
+        "note": "マーメイド-1章クリア後解禁\n<RealOnly>\n<Sort Priority: 1006>",
+        "params": [
+            30,
+            0,
+            5,
+            5,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 3500,
+        "description_old": "A small red pig charm.\nJust carrying it makes you feel like you could fly.\\\\n\\}\\C[16]«Effect»\\C[0][Attack +5][Defense +5][Max HP +30]",
+        "name_old": "Red Pig Amulet"
+    },
+    {
+        "id": 115,
+        "atypeId": 1,
+        "description": "Um guarda-chuva versátil que pode ser usado tanto para defesa quanto para proteção contra a chuva.\nSua única falha é que ele é pesado e difícil de manusear.\\\\n\\}\\C[16]«Efeito»\\C[0][Defesa +12][Agilidade-5][Charme-3][Resistência à água +5%]",
+        "etypeId": 3,
+        "traits": [
+            {
+                "code": 11,
+                "dataId": 8,
+                "value": 0.95
+            }
+        ],
+        "iconIndex": 2920,
+        "name": "万能傘",
+        "note": "マーメイド-2章クリア後解禁\n<RealOnly>\n<Sort Priority: 1007>",
+        "params": [
+            0,
+            0,
+            0,
+            12,
+            0,
+            0,
+            -5,
+            -3
+        ],
+        "price": 4000,
+        "description_old": "A versatile umbrella that can be used for both defense and keeping out the rain.\nIts only flaw is that it's heavy and hard to handle.\\\\n\\}\\C[16]«Effect»\\C[0][Defense +12][Agility-5][Charm-3][Water Resistance +5%]"
+    },
+    {
+        "id": 116,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "__Poupar",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "__Spare"
+    },
+    {
+        "id": 117,
+        "atypeId": 1,
+        "description": "Um livro de subcultura sobre magia moderna.\nApenas segurá-lo faz você se sentir um pouco mais inteligente.\\\\n\\}\\C[16]«Efeito»\\C[0][M. Poder +3][M. Defesa +3][MP máx. +30]",
+        "etypeId": 3,
+        "traits": [
+            {
+                "code": 11,
+                "dataId": 8,
+                "value": 0.95
+            }
+        ],
+        "iconIndex": 2921,
+        "name": "Livro do Diabo",
+        "note": "マーメイド-3章クリア後解禁\n<RealOnly>\n<Sort Priority: 1008>",
+        "params": [
+            0,
+            30,
+            0,
+            0,
+            3,
+            3,
+            0,
+            0
+        ],
+        "price": 5000,
+        "description_old": "A subculture book about modern magic.\nJust holding it makes you feel a little smarter.\\\\n\\}\\C[16]«Effect»\\C[0][M. Power +3][M. Defense +3][Max MP +30]",
+        "name_old": "Devil's Book"
+    },
+    {
+        "id": 118,
+        "atypeId": 1,
+        "description": "Um pingente em forma de pintinho, simbolizando o crescimento.\nO filhote imaturo pretende se tornar um pássaro adulto.\\\\n\\}\\C[16]«Efeito»\\C[0][Todas as estatísticas-10%][Ganho de EXP +10%]",
+        "etypeId": 3,
+        "traits": [
+            {
+                "code": 21,
+                "dataId": 0,
+                "value": 0.9
+            },
+            {
+                "code": 21,
+                "dataId": 1,
+                "value": 0.9
+            },
+            {
+                "code": 21,
+                "dataId": 2,
+                "value": 0.9
+            },
+            {
+                "code": 21,
+                "dataId": 3,
+                "value": 0.9
+            },
+            {
+                "code": 21,
+                "dataId": 4,
+                "value": 0.9
+            },
+            {
+                "code": 21,
+                "dataId": 5,
+                "value": 0.9
+            },
+            {
+                "code": 21,
+                "dataId": 6,
+                "value": 0.9
+            },
+            {
+                "code": 21,
+                "dataId": 7,
+                "value": 0.9
+            },
+            {
+                "code": 23,
+                "dataId": 9,
+                "value": 1.1
+            }
+        ],
+        "iconIndex": 2922,
+        "name": "Pingente de pintinho",
+        "note": "マーメイド-3章クリア後解禁\n<RealOnly>\n<Sort Priority: 1009>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            3
+        ],
+        "price": 5000,
+        "description_old": "A pendant shaped like a chick, symbolizing growth.\nThe immature chick aims to become a full-grown bird.\\\\n\\}\\C[16]«Effect»\\C[0][All Stats-10%][EXP Gain +10%]",
+        "name_old": "Chick Pendant"
+    },
+    {
+        "id": 119,
+        "atypeId": 1,
+        "description": "Brincos teriam sido usados ​​como armas escondidas por uma princesa estrangeira.\nFácil de usar, mas não aumenta a contagem de ataques.\\\\n\\}\\C[16]«Efeito»\\C[0][Ataque +7][Agilidade +7][Taxa crítica +5%]",
+        "etypeId": 3,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 2,
+                "value": 0.05
+            }
+        ],
+        "iconIndex": 2924,
+        "name": "Brincos Assassinos",
+        "note": "マーメイド-4章クリア後解禁\n<RealOnly>\n<Sort Priority: 1010>",
+        "params": [
+            0,
+            0,
+            7,
+            0,
+            0,
+            0,
+            7,
+            0
+        ],
+        "price": 7500,
+        "description_old": "Earrings said to have been used as hidden weapons by a foreign princess.\nEasy to use, but doesn't increase attack count.\\\\n\\}\\C[16]«Effect»\\C[0][Attack +7][Agility +7][Crit Rate +5%]",
+        "name_old": "Killer Earrings"
+    },
+    {
+        "id": 120,
+        "atypeId": 1,
+        "description": "Uma gargantilha de aparência agressiva feita de engrenagens interligadas.\nÉ resistente, mas usá-lo faz seu pescoço doer.\\\\n\\}\\C[16]«Efeito»\\C[0][Ataque +12][Defesa +12][Charme-5][Resistência ao Trovão-10%]",
+        "etypeId": 3,
+        "traits": [
+            {
+                "code": 11,
+                "dataId": 5,
+                "value": 1.1
+            }
+        ],
+        "iconIndex": 2925,
+        "name": "Gargantilha de engrenagem",
+        "note": "マーメイド-4章クリア後解禁\n<RealOnly>\n<Sort Priority: 1011>",
+        "params": [
+            0,
+            0,
+            12,
+            12,
+            0,
+            0,
+            0,
+            -5
+        ],
+        "price": 7500,
+        "description_old": "An aggressive-looking choker made from interlocking gears.\nIt's sturdy, but wearing it makes your neck hurt.\\\\n\\}\\C[16]«Effect»\\C[0][Attack +12][Defense +12][Charm-5][Thunder Resistance-10%]",
+        "name_old": "Gear Choker"
+    },
+    {
+        "id": 121,
+        "atypeId": 1,
+        "description": "Uma fita fofa que é fácil de usar em qualquer situação.\nA única falha é que ele não concede resistência a status.\\\\n\\}\\C[16]«Efeito»\\C[0][Todas as estatísticas +9]",
+        "etypeId": 3,
+        "traits": [],
+        "iconIndex": 2926,
+        "name": "万能リボン",
+        "note": "マーメイド-5章クリア後解禁\n<RealOnly>\n<Sort Priority: 1012>",
+        "params": [
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9,
+            9
+        ],
+        "price": 9999,
+        "description_old": "A cute ribbon that's easy to use in any situation.\nThe only flaw is that it doesn't grant status resistance.\\\\n\\}\\C[16]«Effect»\\C[0][All Stats +9]"
+    },
+    {
+        "id": 122,
+        "atypeId": 1,
+        "description": "Um espanador de autodefesa com design ainda mais agressivo.\nÉ chocantemente pouco fotogênico.\\\\n\\}\\C[16]«Efeito»\\C[0][Ataque +24][Defesa-12][Agilidade-12][Charme-8]",
+        "etypeId": 3,
+        "traits": [],
+        "iconIndex": 2927,
+        "name": "Espanador",
+        "note": "マーメイド-5章クリア後解禁\n<RealOnly>\n<Sort Priority: 1013>",
+        "params": [
+            0,
+            0,
+            24,
+            -12,
+            0,
+            0,
+            -12,
+            -8
+        ],
+        "price": 10000,
+        "description_old": "A self-defense knuckle duster with an even more aggressive design.\nIt's shockingly unphotogenic.\\\\n\\}\\C[16]«Effect»\\C[0][Attack +24][Defense-12][Agility-12][Charm-8]",
+        "name_old": "Knuckle Duster"
+    },
+    {
+        "id": 123,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 124,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 125,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "--- Recompensa do Pesadelo ---",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "---Nightmare Reward ---"
+    },
+    {
+        "id": 126,
+        "atypeId": 1,
+        "description": "Um broche inspirado em flores de petúnia.\nSegurá-lo acalma seu coração.\\\\n\\}\\C[16]«Efeito»\\C[0][Prazer-5 após a batalha]",
+        "etypeId": 3,
+        "traits": [],
+        "iconIndex": 2907,
+        "name": "Broche Petúnia",
+        "note": "<RealOnly>\n<Sort Priority: 1021>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            3
+        ],
+        "price": 1000,
+        "description_old": "A brooch inspired by petunia flowers.\nHolding it calms your heart.\\\\n\\}\\C[16]«Effect»\\C[0][Pleasure-5 after battle]",
+        "name_old": "Petunia Brooch"
+    },
+    {
+        "id": 127,
+        "atypeId": 1,
+        "description": "Um cristal de cor ameaçadora que já pertenceu a um exorcista.\nUma aura sinistra emana do cristal.\\\\n\\}\\C[16]«Efeito»\\C[0][Poder de Habilidade Negra +25%]",
+        "etypeId": 3,
+        "traits": [],
+        "iconIndex": 2908,
+        "name": "Cristal dos Mortos",
+        "note": "<闇の知識:+25%>\n<RealOnly>\n<Sort Priority: 1022>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 2000,
+        "description_old": "An ominously colored crystal once owned by an exorcist.\nA sinister aura pours out from the crystal.\\\\n\\}\\C[16]«Effect»\\C[0][Dark Skill Power +25%]",
+        "name_old": "Crystal of the Dead"
+    },
+    {
+        "id": 128,
+        "atypeId": 1,
+        "description": "Algo como uma coroa adornada com uma joia em forma de tubarão.\nTão cafona que você não usaria nem mesmo para um jogo de punição.\\\\n\\}\\C[16]«Efeito»\\C[0][Defesa +5][Charme-20][Você pode ouvir a voz dos tubarões]",
+        "etypeId": 3,
+        "traits": [
+            {
+                "code": 11,
+                "dataId": 8,
+                "value": 0.8
+            }
+        ],
+        "iconIndex": 2909,
+        "name": "Coroa do Rei Tubarão",
+        "note": "<RealOnly>\n<Sort Priority: 1023>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            5,
+            0,
+            0,
+            0,
+            -20
+        ],
+        "price": 4500,
+        "description_old": "Something like a crown adorned with a shark-shaped jewel.\nSo tacky you wouldn't wear it even for a punishment game.\\\\n\\}\\C[16]«Effect»\\C[0][Defense +5][Charm-20][You can hear the voice of sharks]",
+        "name_old": "Shark King's Crown"
+    },
+    {
+        "id": 129,
+        "atypeId": 1,
+        "description": "Um distintivo raro concedido a alunos excepcionais.\nOriginalmente pertencia a Okane Nashi, mas foi devolvido à academia devido a uma correção histórica.\\\\n\\}\\C[16]«Efeito»\\C[0][+1 bônus quando a disciplina escolar muda]",
+        "etypeId": 3,
+        "traits": [],
+        "iconIndex": 2910,
+        "name": "Distintivo de Medalha de Estudante Modelo",
+        "note": "<RealOnly>\n<Sort Priority: 1024>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A rare badge awarded to outstanding students.\nIt originally belonged to Okane Nashi, but was returned to the academy due to a historical correction.\\\\n\\}\\C[16]«Effect»\\C[0][+1 bonus when school discipline changes]",
+        "name_old": "Model Student Medal Badge"
+    },
+    {
+        "id": 130,
+        "atypeId": 1,
+        "description": "Prova de ser masoquista, dada como agradecimento por salvar um delinquente de um pesadelo.\nUsá-lo faz você se sentir propriedade de alguém.\\\\n\\}\\C[16]«Efeito»\\C[0][-1 de penalidade quando a disciplina escolar muda]",
+        "etypeId": 3,
+        "traits": [],
+        "iconIndex": 2911,
+        "name": "Brincos Masomas",
+        "note": "<RealOnly>\n<Sort Priority: 1025>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "Proof of being a masochist, given as thanks for saving a delinquent from a nightmare.\nWearing it makes you feel like someone's property.\\\\n\\}\\C[16]«Effect»\\C[0][-1 penalty when school discipline changes]",
+        "name_old": "Masomes Earrings"
+    },
+    {
+        "id": 131,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 132,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "■■Acessório[Mundo Demoníaco](Equipamento da Masmorra do Pesadelo)",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "■■Accessory[Demon World](Nightmare Dungeon Equipment)"
+    },
+    {
+        "id": 133,
+        "atypeId": 1,
+        "description": "Um anel de metal com uma pedra vermelha embutida.\nProtege você de ataques de fogo.\\\\n\\}\\C[16]«Efeito»\\C[0][Resistência ao Fogo +10%]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 11,
+                "dataId": 3,
+                "value": 0.9
+            }
+        ],
+        "iconIndex": 2887,
+        "name": "Anel de Fogo",
+        "note": "<DreamOnly>\nA1-エリア4装備\n<Sort Priority: 2000>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A metal ring with a red gemstone embedded in it.\nProtects you from fire attacks.\\\\n\\}\\C[16]«Effect»\\C[0][Fire Resistance +10%]",
+        "name_old": "Ring of Fire"
+    },
+    {
+        "id": 134,
+        "atypeId": 1,
+        "description": "Um anel de metal com uma pedra roxa embutida.\nProtege você de ataques sombrios.\\\\n\\}\\C[16]«Efeito»\\C[0][Resistência às Trevas +10%]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 11,
+                "dataId": 7,
+                "value": 0.9
+            }
+        ],
+        "iconIndex": 2888,
+        "name": "Anel das Trevas",
+        "note": "<DreamOnly>\nA2-エリア4装備\n<Sort Priority: 2001>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A metal ring with a purple gemstone embedded in it.\nProtects you from dark attacks.\\\\n\\}\\C[16]«Effect»\\C[0][Dark Resistance +10%]",
+        "name_old": "Ring of Darkness"
+    },
+    {
+        "id": 135,
+        "atypeId": 1,
+        "description": "Um anel de metal com uma pedra preciosa azul clara embutida nele.\nProtege você de ataques de água.\\\\n\\}\\C[16]«Efeito»\\C[0][Resistência à água +10%]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 11,
+                "dataId": 8,
+                "value": 0.9
+            }
+        ],
+        "iconIndex": 2889,
+        "name": "Anel de Água",
+        "note": "<DreamOnly>\nA3-エリア6装備\n<Sort Priority: 2002>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A metal ring with a light blue gemstone embedded in it.\nProtects you from water attacks.\\\\n\\}\\C[16]«Effect»\\C[0][Water Resistance +10%]",
+        "name_old": "Ring of Water"
+    },
+    {
+        "id": 136,
+        "atypeId": 1,
+        "description": "Um anel de metal com uma pedra amarela embutida.\nProtege você de ataques de água.\\\\n\\}\\C[16]«Efeito»\\C[0][Resistência ao Trovão +10%]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 11,
+                "dataId": 5,
+                "value": 0.9
+            }
+        ],
+        "iconIndex": 2890,
+        "name": "Anel do Trovão",
+        "note": "<DreamOnly>\nA4-エリア4装備\n<Sort Priority: 2003>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A metal ring with a yellow gemstone embedded in it.\nProtects you from water attacks.\\\\n\\}\\C[16]«Effect»\\C[0][Thunder Resistance +10%]",
+        "name_old": "Ring of Thunder"
+    },
+    {
+        "id": 137,
+        "atypeId": 1,
+        "description": "Um anel de metal com uma pequena parte circular.\nComprimi-lo ajuda a parar o sangramento.\\\\n\\}\\C[16]«Efeito»\\C[0][Imunidade a sangramento][Imunidade a vazamento de mana]",
+        "etypeId": 5,
+        "traits": [
+            {
+                "code": 14,
+                "dataId": 32,
+                "value": 1
+            },
+            {
+                "code": 14,
+                "dataId": 163,
+                "value": 1
+            }
+        ],
+        "iconIndex": 2891,
+        "name": "Anel de Pressão",
+        "note": "<DreamOnly>\nA5-エリア2装備\n<Sort Priority: 2004>\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A metal ring with a small circular part.\nCompressing it helps stop bleeding.\\\\n\\}\\C[16]«Effect»\\C[0][Bleed Immunity][Mana Leak Immunity]",
+        "name_old": "Ring of Pressure"
+    },
+    {
+        "id": 138,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 139,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 140,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "--- Roupa Iroha 2(140 ~) ---",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "---Iroha Outfit 2(140~) ---"
+    },
+    {
+        "id": 141,
+        "atypeId": 1,
+        "description": "[For sprite change only][Not selectable in sprite viewer outfits]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "Avental Nu(Seios Expostos)",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "Naked Apron(Boobs Exposed)"
+    },
+    {
+        "id": 142,
+        "atypeId": 1,
+        "description": "[For sprite change only][Not selectable in sprite viewer outfits]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "Avental seminua(peitos expostos)",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "Half-Naked Apron(Boobs Exposed)"
+    },
+    {
+        "id": 143,
+        "atypeId": 1,
+        "description": "Um biquíni minúsculo com tecido mínimo que é fácil de tirar pela Gentle Hand.\n\\}\\C[16]«Condição de equipamento» \\C[7][\\I[2659]Não é possível equipar na realidade\\]\\C[0] \\C[0][\\I[2660]Só pode ser equipado em eventos\\]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2835,
+        "name": "Biquíni Súcubo",
+        "note": "itemMaxNum:1\n<noSell>\n<Sort Priority: 1000>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A tiny bikini with minimal fabric that's easy for Gentle Hand to take off.\n\\}\\C[16]«Equip Condition» \\C[7][\\I[2659]Cannot equip in reality\\]\\C[0] \\C[0][\\I[2660]Can only be equipped in events\\]\\C[0]",
+        "name_old": "Succubus Bikini"
+    },
+    {
+        "id": 144,
+        "atypeId": 1,
+        "description": "Roupa íntima obscena com tecido mínimo que exala vulgaridade.\n[Não selecionável em trajes de visualizador de sprites]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2807,
+        "name": "Lingerie erótica chamativa",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "Lewd underwear with minimal fabric that oozes vulgarity.\n[Not selectable in sprite viewer outfits]",
+        "name_old": "Flashy Erotic Lingerie"
+    },
+    {
+        "id": 145,
+        "atypeId": 1,
+        "description": "Um maiô escolar azul marinho usado para instrução.\nO design é um pouco diferente daqueles usados ​​nas aulas regulares da academia.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2839,
+        "name": "Maiô Instrutor(Marinha)",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20081>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A navy blue school swimsuit used for instruction.\nThe design is slightly different from the ones used in regular academy classes.\\N[942]",
+        "name_old": "Instructor Swimsuit(Navy)"
+    },
+    {
+        "id": 146,
+        "atypeId": 1,
+        "description": "Um maiô escolar branco usado para instrução.\nEle é fixado pela bunda, então por trás a bunda dela fica completamente exposta.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2840,
+        "name": "Fato de banho instrutor(branco)",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20082>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A white school swimsuit used for instruction.\nIt's fixed in place by the butt, so from behind her ass is completely exposed.\\N[942]",
+        "name_old": "Instructor Swimsuit(White)"
+    },
+    {
+        "id": 147,
+        "atypeId": 1,
+        "description": "Lingerie obscena feita para o chamado assédio sexual “instrucional”.\nTudo o que é importante está em plena exibição, agradando visualmente aos homens.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2841,
+        "name": "Instrutora Lingerie Erótica",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20083>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "Lewd lingerie made for so-called 'instructional' sexual harassment.\nEverything important is on full display, visually pleasing men.\\N[942]",
+        "name_old": "Instructor Erotic Lingerie"
+    },
+    {
+        "id": 148,
+        "atypeId": 1,
+        "description": "Um uniforme usado como treinamento após ser derrotado por um Sukemon no Corredor das Ilusões.\nA roupa íntima se transformou em uma armadura de tentáculos, atormentando implacavelmente as zonas erógenas de Iroha.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2803,
+        "name": "Uniforme Tentáculo",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20002>\n",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A uniform worn as training after being defeated by a Sukemon in the Corridor of Illusions.\nThe underwear has turned into tentacle armor, relentlessly tormenting Iroha's erogenous zones.\\N[942]",
+        "name_old": "Tentacle Uniform"
+    },
+    {
+        "id": 149,
+        "atypeId": 1,
+        "description": "Um biquíni com estampa de vaca que converte poder mágico em leite materno.\nSe você amamentar demais, o efeito persistirá mesmo depois de desequipá-lo.\\\\n\\}\\C[16]«Condições de equipamento» \\C[7][\\I[2659]Não é possível equipar na realidade\\]\\C[0] \\C[0][\\I[2660]Só pode ser equipado durante eventos\\]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2842,
+        "name": "Biquíni estampado de vaca",
+        "note": "itemMaxNum:1\n<noSell>\n<Sort Priority: 1000>\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A cow-print bikini that converts magic power into breast milk.\nIf you lactate too much, the effect will persist even after unequipping it.\\\\n\\}\\C[16]«Equip Conditions» \\C[7][\\I[2659]Cannot equip in reality\\]\\C[0] \\C[0][\\I[2660]Can only be equipped during events\\]\\C[0]",
+        "name_old": "Cow Print Bikini"
+    },
+    {
+        "id": 150,
+        "atypeId": 1,
+        "description": "[For standing pose switching only][Not selectable as a standing pose outfit]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2843,
+        "name": "Maiô americano(sem protetores de mamilo)",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "American Swimsuit(No Nipple Covers)"
+    },
+    {
+        "id": 151,
+        "atypeId": 1,
+        "description": "[For standing pose switching only][Not selectable as a standing pose outfit]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2844,
+        "name": "Maiô americano(capa para um mamilo)",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<noSell>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "American Swimsuit(One Nipple Cover)"
+    },
+    {
+        "id": 152,
+        "atypeId": 1,
+        "description": "Uma roupa de estilo moderno dada por Suti para o evento Boob Donation.\nSeus seios parecem que estão prestes a vazar, então não é adequado para o uso diário.\\\\n\\}\\C[16]«Condições de equipamento» \\C[7][\\I[2657]Não é possível equipar no academia]\\C[0]\\C[0][\\I[2658]Requer mais de 2.000 experiência de exposição][Deve ver o evento de movimento especial 5]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2845,
+        "name": "Roupas casuais obscenas",
+        "note": "itemMaxNum:1\n<SZLEQ:(!S[15] && !S[174] && S[436] &&(2000<=v[109])) || SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 306>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A modern-style outfit given by Suti for the Boob Donation event.\nHer boobs look like they're about to spill out, so it's not suitable for everyday use.\\\\n\\}\\C[16]«Equip Conditions» \\C[7][\\I[2657]Cannot equip at the academy]\\C[0]\\C[0][\\I[2658]Requires 2000+ exposure experience][Must view Special Move Event 5]\\C[0]",
+        "name_old": "Lewd Casual Clothes"
+    },
+    {
+        "id": 153,
+        "atypeId": 1,
+        "description": "Um maiô desavergonhado preparado para atender ao pedido de Suti.\nCombinado com o corpo obsceno de Iroha, é mais que suficiente para destruir o autocontrole de um homem.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2846,
+        "name": "Biquíni estilingue",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20097>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A shameless swimsuit prepared to fulfill Suti's request.\nCombined with Iroha's lewd body, it's more than enough to shatter a man's self-control.\\N[942]",
+        "name_old": "Slingshot Bikini"
+    },
+    {
+        "id": 154,
+        "atypeId": 1,
+        "description": "Uma roupa que Iroha usou no mundo dos sonhos para satisfazer os desejos dos homens.\nApenas se movimentar faz com que as cortinas dos seios se levantem, expondo seus mamilos.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2847,
+        "name": "Cosplay de Jiangshi",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 25000>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "An outfit Iroha wore in the dream world to satisfy men's desires.\nJust moving around causes the breast curtains to flip up, exposing her nipples.\\N[942]",
+        "name_old": "Jiangshi Cosplay"
+    },
+    {
+        "id": 155,
+        "atypeId": 1,
+        "description": "Uma roupa que Iroha usou no mundo dos sonhos para satisfazer os desejos dos homens.\nApenas usá-lo pode permitir que você finja seu gênero(supostamente).\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2848,
+        "name": "Maiô masculino",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 25001>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "An outfit Iroha wore in the dream world to satisfy men's desires.\nJust wearing it might let you fake your gender(allegedly).\\N[942]",
+        "name_old": "Men's Swimsuit"
+    },
+    {
+        "id": 156,
+        "atypeId": 1,
+        "description": "Uma roupa que Iroha usou no mundo dos sonhos para satisfazer os desejos dos homens.\nUma blusa fina e minissaia que desperta a luxúria masculina.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2849,
+        "name": "Uniforme de escritório feminino",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 25002>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "An outfit Iroha wore in the dream world to satisfy men's desires.\nA thin blouse and miniskirt that stirs up men's lust.\\N[942]",
+        "name_old": "Female Office Uniform"
+    },
+    {
+        "id": 157,
+        "atypeId": 1,
+        "description": "Traje exclusivo de Iroha para trabalhar no Girls in the MagicMirror.\nO tecido é transparente e desenhado para despertar os homens.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2850,
+        "name": "Uniforme transparente",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20105>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "Iroha's exclusive costume for working at Girls in the MagicMirror.\nThe fabric is see-through and designed to arouse men.\\N[942]",
+        "name_old": "See-Through Uniform"
+    },
+    {
+        "id": 158,
+        "atypeId": 1,
+        "description": "Um babador que Iroha foi obrigado a usar durante uma disputa de lance livre com Kaneobara.\nÉ tão curto que seus mamilos ficam facilmente visíveis quando ela pula.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2851,
+        "name": "Mini babador",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20004>\n",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A bib Iroha was ordered to wear during a free throw contest with Kaneobara.\nIt's so short that her nipples are easily visible when she jumps.\\N[942]",
+        "name_old": "Mini Bib"
+    },
+    {
+        "id": 159,
+        "atypeId": 1,
+        "description": "A roupa do lendário masoquista, selada quando eles se aposentaram do exibicionismo.\nAo infundir magia, ele restringe o usuário e o torna incapaz de se mover.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2852,
+        "name": "Traje Masoquista Selado",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20150>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "The legendary masochist's outfit, sealed away when they retired from exhibitionism.\nBy infusing it with magic, it restrains the wearer and makes them unable to move.\\N[942]",
+        "name_old": "Sealed Masochist Outfit"
+    },
+    {
+        "id": 160,
+        "atypeId": 1,
+        "description": "A roupa do lendário masoquista, selada quando eles se aposentaram do exibicionismo.\nAo infundir magia, ele restringe o usuário e o torna incapaz de se mover.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2853,
+        "name": "Traje Masoquista Selado(Bondage)",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20151>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "The legendary masochist's outfit, sealed away when they retired from exhibitionism.\nBy infusing it with magic, it restrains the wearer and makes them unable to move.\\N[942]",
+        "name_old": "Sealed Masochist Outfit(Bondage)"
+    },
+    {
+        "id": 161,
+        "atypeId": 1,
+        "description": "Uma fantasia de coelho usada pelos funcionários do Bunny Pub.\nComo não cabe, seus seios estão sempre prestes a vazar.\\\\n\\}\\C[16]«Condições de equipamento» \\C[7][\\I[2657]Não é possível equipar no academia]\\C[0]\\C[0][\\I[2658]Requer mais de 750 experiência de exposição]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2854,
+        "name": "Fato de coelho",
+        "note": "itemMaxNum:1\n<SZLEQ:(!S[15] && !S[174] &&(750<=v[109])) || SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 304>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A bunny suit worn by employees at Bunny Pub.\nSince it doesn't fit, her boobs are always on the verge of spilling out.\\\\n\\}\\C[16]«Equip Conditions» \\C[7][\\I[2657]Cannot equip at the academy]\\C[0]\\C[0][\\I[2658]Requires 750+ exposure experience]\\C[0]",
+        "name_old": "Bunny Suit"
+    },
+    {
+        "id": 162,
+        "atypeId": 1,
+        "description": "Uma roupa personalizada dada a Iroha por um frequentador regular do Bunny Pub depois que ela perdeu um jogo.\nAté mesmo o membro afetado e adequado do comitê disciplinar se transforma em uma vagabunda total.\\\\n\\}\\C[16]«Condições de equipamento» \\C[7][\\I[2657]Não é possível equipar no academia]\\C[0]\\C[0][\\I[2658]Requer mais de 2.000 experiência de exposição]\\C[0]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2855,
+        "name": "Coelho reverso",
+        "note": "itemMaxNum:1\n<SZLEQ:(!S[15] && !S[174] &&(2000<=v[109])) || SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 305>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A custom outfit given to Iroha by a Bunny Pub regular after she lost a game.\nEven the prim and proper disciplinary committee member turns into a total slut.\\\\n\\}\\C[16]«Equip Conditions» \\C[7][\\I[2657]Cannot equip at the academy]\\C[0]\\C[0][\\I[2658]Requires 2000+ exposure experience]\\C[0]",
+        "name_old": "Reverse Bunny"
+    },
+    {
+        "id": 163,
+        "atypeId": 1,
+        "description": "De agora em diante, estes são apenas para verificação de pose em pé.\n\\C[16]\\}※Roupas de verificação de pose em pé não podem ser equipadas",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2856,
+        "name": "▼▼ Roupa de teste de arte permanente ▼▼",
+        "note": "itemMaxNum:1\n<SZLEQ:false>\n<noSell>\n<Sort Priority: 19900>\n",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "From here on, these are for standing pose checking only.\n\\C[16]\\}※Standing pose check outfits cannot be equipped",
+        "name_old": "▼▼ Standing Art Test Outfit ▼▼"
+    },
+    {
+        "id": 164,
+        "atypeId": 1,
+        "description": "Sua calcinha foi confiscada por ordem de Kaneobara.\nSeus mamilos ligeiramente transparentes cativam os olhos dos meninos adolescentes.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2807,
+        "name": "Minissaia sem sutiã",
+        "note": "itemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20001>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "Her underwear was confiscated on Kaneobara's orders.\nHer slightly see-through nipples captivate the eyes of adolescent boys.\\N[942]",
+        "name_old": "No Bra Mini Skirt"
+    },
+    {
+        "id": 165,
+        "atypeId": 1,
+        "description": "Um maiô escolar cortado sob as ameaças de Kaneobara.\nO contraste chama a atenção para todas as suas partes embaraçosas.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2819,
+        "name": "Maiô escolar com virilha aberta",
+        "note": "itemMaxNum:1\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<noSell>\n<Sort Priority: 20004>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A school swimsuit trimmed under Kaneobara's threats.\nThe contrast draws attention to all her embarrassing parts.\\N[942]",
+        "name_old": "Open-Crotch School Swimsuit"
+    },
+    {
+        "id": 166,
+        "atypeId": 1,
+        "description": "Roupas de ginástica sem sutiã ou calcinha depois que Kaneobara confiscou sua calcinha.\nCada vez que ela corre, seus mamilos roçam o tecido, enviando um doce prazer através dela.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2822,
+        "name": "Uniforme de ginástica sem sutiã",
+        "note": "itemMaxNum:1\n<noSell>\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<Sort Priority: 20003>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 2000,
+        "description_old": "Gym clothes with no bra or panties after Kaneobara confiscated her underwear.\nEvery time she runs, her nipples brush against the fabric, sending sweet pleasure through her.\\N[942]",
+        "name_old": "No Bra Gym Uniform"
+    },
+    {
+        "id": 167,
+        "atypeId": 1,
+        "description": "Um biquíni minúsculo que é fácil de tirar pela Gentle Hand.\n\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2835,
+        "name": "Biquíni Súcubo",
+        "note": "itemMaxNum:1\n<noSell>\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<Sort Priority: 24900>\n",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A tiny bikini that's easy for Gentle Hand to take off.\n\\N[942]",
+        "name_old": "Succubus Bikini"
+    },
+    {
+        "id": 168,
+        "atypeId": 1,
+        "description": "Um biquíni com estampa de vaca que converte poder mágico em leite materno.\nSe você amamentar demais, o efeito persistirá mesmo depois de desequipá-lo.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2842,
+        "name": "Biquíni estampado de vaca",
+        "note": "itemMaxNum:1\n<noSell>\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<Sort Priority: 24910>\n",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A cow-print bikini that converts magic power into breast milk.\nIf you lactate too much, the effect will persist even after unequipping it.\\N[942]",
+        "name_old": "Cow Print Bikini"
+    },
+    {
+        "id": 169,
+        "atypeId": 1,
+        "description": "Um desenho de estilingue ridiculamente estúpido que nem mesmo uma cadela usaria.\nTanto os mamilos quanto a buceta ficam totalmente expostos, tornando mais fácil transar com ela.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2827,
+        "name": "Maiô Anel Coração",
+        "note": "■メモ：イベント専用装備\nitemMaxNum:1\n<noSell>\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<Sort Priority: 20080>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A ridiculously stupid slingshot design that even a bitch wouldn't wear.\nBoth her nipples and pussy are fully exposed, making it easy to fuck her.\\N[942]",
+        "name_old": "Heart Ring Swimsuit"
+    },
+    {
+        "id": 170,
+        "atypeId": 1,
+        "description": "Um vestido chinês vulgar que ela foi obrigada a usar quando se prostituísse no distrito da luz vermelha.\nComo ela não está usando calcinha por baixo da aba frontal, só andar por aí a deixa nervosa.\\N[942]",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 2828,
+        "name": "Vestido chinês super lascivo",
+        "note": "<noSell>\n<SZLEQ:SceneManager._scene.constructor === Scene_Map>\n<Sort Priority: 20081>",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "description_old": "A vulgar Chinese dress she's ordered to wear when prostituting in the red-light district.\nSince she's not wearing panties under the front flap, just walking around makes her nervous.\\N[942]",
+        "name_old": "Super Lewd China Dress"
+    },
+    {
+        "id": 171,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 172,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 173,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 174,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 175,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 176,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 177,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 178,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 179,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 180,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 181,
+        "atypeId": 9,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "--- Roupa Erisumi Shizuku(originalmente 195 está nu) ---",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "name_old": "---Erisumi Shizuku Outfit(Originally 195 is Naked) ---"
+    },
+    {
+        "id": 182,
+        "atypeId": 9,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Erisumi Shizuku] Naked",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 183,
+        "atypeId": 9,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Erisumi Shizuku] Maid",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 184,
+        "atypeId": 9,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Erisumi Shizuku] Transforming Maid",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 185,
+        "atypeId": 9,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Erisumi Shizuku] Battle Pose",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 186,
+        "atypeId": 9,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "[Erisumi Shizuku] Disguised Maid-Face Covered",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 187,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 188,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 189,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    },
+    {
+        "id": 190,
+        "atypeId": 0,
+        "description": "",
+        "etypeId": 2,
+        "traits": [
+            {
+                "code": 22,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0
+    }
+]

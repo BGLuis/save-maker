@@ -546,6 +546,48 @@ def test_lsd_bug_chunks():
     print("✔ test_lsd_bug_chunks (U-02) passou com sucesso!")
 
 
+def test_d01_all_supported_engines_fixtures():
+    """
+    D-01 (Issue #19): Cada motor listado como suportado no README tem ao menos
+    um teste com save real em tests/fixtures/.
+    """
+    fixtures_dir = ROOT_DIR / "tests" / "fixtures"
+    expected_fixtures = {
+        "file2.rpgsave": ("RPG Maker MV", MvMzAdapter),
+        "sample.rmmzsave": ("RPG Maker MZ", MvMzAdapter),
+        "sample.rvdata2": ("RPG Maker VX Ace", RubyAdapter),
+        "sample.rvdata": ("RPG Maker VX", RubyAdapter),
+        "sample.rxdata": ("RPG Maker XP", RubyAdapter),
+        "sample.lsd": ("RPG Maker 2000/2003 (.lsd)", LsdAdapter),
+        "sample.json": ("JSON / Generic Save", GenericJsonAdapter),
+        "sample.sav": ("Wolf RPG Editor", WolfAdapter),
+    }
+
+    for filename, (engine_prefix, adapter_cls) in expected_fixtures.items():
+        fixture_path = fixtures_dir / filename
+        assert fixture_path.exists(), f"Fixture {filename} não encontrada em {fixtures_dir}"
+
+        adapter = detect_and_create_adapter(fixture_path)
+        assert isinstance(adapter, adapter_cls), f"Adapter incorreto para {filename}: {type(adapter)}"
+        assert engine_prefix in adapter.engine_name, f"Engine name inesperado para {filename}: {adapter.engine_name}"
+
+        adapter.load(fixture_path)
+        gold = adapter.get_gold()
+        assert gold is not None, f"get_gold retornou None para {filename}"
+
+        # Roundtrip de escrita e releitura
+        with tempfile.TemporaryDirectory() as tmpdir:
+            out_file = Path(tmpdir) / filename
+            adapter.save(out_file, backup=False)
+            assert out_file.exists(), f"Falha ao salvar fixture {filename}"
+
+            reloaded = detect_and_create_adapter(out_file)
+            reloaded.load(out_file)
+            assert reloaded.get_gold() == gold, f"Ouro diferiu após reload para {filename}"
+
+    print("✔ test_d01_all_supported_engines_fixtures passou com sucesso!")
+
+
 if __name__ == "__main__":
     test_mv_adapter_roundtrip()
     test_ruby_adapter_roundtrip()
@@ -555,5 +597,6 @@ if __name__ == "__main__":
     test_wolf_adapter_roundtrip()
     test_wolf_version_gating_roundtrip()
     test_detector()
+    test_d01_all_supported_engines_fixtures()
     print("\nTODOS OS TESTES DE FORMATO PASSARAM COM SUCESSO!")
 

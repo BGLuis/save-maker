@@ -1,0 +1,477 @@
+﻿[
+    null,
+    {
+        "id": 1,
+        "animationId": 0,
+        "description": "",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 1,
+                "value": 0
+            },
+            {
+                "code": 22,
+                "dataId": 0,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "---Lança ---",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "wtypeId": 0,
+        "name_old": "---Spear ---"
+    },
+    {
+        "id": 2,
+        "animationId": 11,
+        "description": "Uma lança curta recomendada para iniciantes que não têm habilidade em técnicas de lança.\n\\}\\C[16]«Efeito»\\C[0][Ataque +5][Agilidade +3]",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 842,
+        "name": "Lança Curta",
+        "note": "<DreamOnly>",
+        "params": [
+            0,
+            0,
+            5,
+            0,
+            0,
+            0,
+            3,
+            0
+        ],
+        "price": 130,
+        "wtypeId": 4,
+        "description_old": "A short spear recommended for beginners who aren't skilled in spear techniques.\n\\}\\C[16]«Effect»\\C[0][Attack +5][Agility +3]",
+        "name_old": "Short Spear"
+    },
+    {
+        "id": 3,
+        "animationId": 11,
+        "description": "Uma lança que funciona como um catalisador para aprimorar a magia do usuário, como um cajado.\n\\}\\C[16]«Efeito»\\C[0][Ataque +2][Defesa-2][M. Poder +11][MP máx. +25]",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 842,
+        "name": "Haste de lança",
+        "note": "<DreamOnly>",
+        "params": [
+            0,
+            25,
+            2,
+            -2,
+            11,
+            0,
+            0,
+            0
+        ],
+        "price": 880,
+        "wtypeId": 4,
+        "description_old": "A spear that functions as a catalyst to enhance the user's magic, like a staff.\n\\}\\C[16]«Effect»\\C[0][Attack +2][Defense-2][M. Power +11][Max MP +25]",
+        "name_old": "Lance Rod"
+    },
+    {
+        "id": 4,
+        "animationId": 11,
+        "description": "Um tridente que evoluiu de uma ferramenta agrícola.\n\\}\\C[16]«Efeito»\\C[0][Ataque +18]",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 842,
+        "name": "Tridente",
+        "note": "<DreamOnly>",
+        "params": [
+            0,
+            0,
+            18,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 2050,
+        "wtypeId": 4,
+        "description_old": "A trident that evolved from a farming tool.\n\\}\\C[16]«Effect»\\C[0][Attack +18]",
+        "name_old": "Trident"
+    },
+    {
+        "id": 5,
+        "animationId": 11,
+        "description": "Uma longa lança de aço com lâmina larga.\n\\}\\C[16]«Efeito»\\C[0][Ataque +24][Defesa +10][Agilidade-4]",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 842,
+        "name": "Partidário",
+        "note": "<DreamOnly>",
+        "params": [
+            0,
+            0,
+            24,
+            10,
+            0,
+            0,
+            -4,
+            0
+        ],
+        "price": 4000,
+        "wtypeId": 4,
+        "description_old": "A long steel spear with a wide blade.\n\\}\\C[16]«Effect»\\C[0][Attack +24][Defense +10][Agility-4]",
+        "name_old": "Partisan"
+    },
+    {
+        "id": 6,
+        "animationId": 11,
+        "description": "Uma lança de prata com o poder de repelir os mortos-vivos.\n\\}\\C[16]«Efeito»\\C[0][Ataque +26][M. Poder +5][Charme-8][Anti-Mortos-Vivos +20%]",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 1,
+                "value": 0
+            },
+            {
+                "code": 31,
+                "dataId": 9,
+                "value": 0
+            }
+        ],
+        "iconIndex": 842,
+        "name": "Lança de Prata",
+        "note": "<DreamOnly>",
+        "params": [
+            0,
+            0,
+            26,
+            0,
+            5,
+            0,
+            0,
+            -8
+        ],
+        "price": 8800,
+        "wtypeId": 4,
+        "description_old": "A silver spear with the power to repel the undead.\n\\}\\C[16]«Effect»\\C[0][Attack +26][M. Power +5][Charm-8][Anti-Undead +20%]",
+        "name_old": "Silver Lance"
+    },
+    {
+        "id": 7,
+        "animationId": 11,
+        "description": "Uma lança fácil de manusear com um pequeno machado preso na ponta.\n\\}\\C[16]«Efeito»\\C[0][Ataque +32][Defesa +2][Agilidade +20]",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 842,
+        "name": "Alabarda",
+        "note": "<DreamOnly>",
+        "params": [
+            0,
+            0,
+            32,
+            2,
+            0,
+            0,
+            20,
+            0
+        ],
+        "price": 16500,
+        "wtypeId": 4,
+        "description_old": "An easy-to-handle spear with a small axe attached to the tip.\n\\}\\C[16]«Effect»\\C[0][Attack +32][Defense +2][Agility +20]",
+        "name_old": "Halberd"
+    },
+    {
+        "id": 8,
+        "animationId": 11,
+        "description": "Uma lança estilosa que realça o charme de seu portador.\n\\}\\C[16]«Efeito»\\C[0][Ataque +39][Agilidade +12][Charme +21]",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 842,
+        "name": "Lança Radiante",
+        "note": "<DreamOnly>",
+        "params": [
+            0,
+            0,
+            39,
+            0,
+            0,
+            0,
+            12,
+            21
+        ],
+        "price": 28000,
+        "wtypeId": 4,
+        "description_old": "A stylish spear that enhances the charm of its wielder.\n\\}\\C[16]«Effect»\\C[0][Attack +39][Agility +12][Charm +21]",
+        "name_old": "Radiant Spear"
+    },
+    {
+        "id": 9,
+        "animationId": 11,
+        "description": "Uma lança mágica incrustada com uma gema que aumenta o poder mágico.\n\\}\\C[16]«Efeito»\\C[0][Ataque +22][M. Poder +44][Agilidade +6][MP máx. +36]",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 842,
+        "name": "Lança Mágica",
+        "note": "<DreamOnly>",
+        "params": [
+            0,
+            36,
+            22,
+            0,
+            44,
+            0,
+            6,
+            0
+        ],
+        "price": 40000,
+        "wtypeId": 4,
+        "description_old": "A magic spear embedded with a gem that boosts magical power.\n\\}\\C[16]«Effect»\\C[0][Attack +22][M. Power +44][Agility +6][Max MP +36]",
+        "name_old": "Magic Spear"
+    },
+    {
+        "id": 10,
+        "animationId": 11,
+        "description": "Uma lança que pode ser arremessada e pode perfurar até as asas dos inimigos.\n\\}\\C[16]«Efeito»\\C[0][Ataque +35][Anti-Aéreo +30%]",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 1,
+                "value": 0
+            },
+            {
+                "code": 31,
+                "dataId": 10,
+                "value": 0
+            }
+        ],
+        "iconIndex": 842,
+        "name": "Dardo",
+        "note": "<DreamOnly>",
+        "params": [
+            0,
+            0,
+            35,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 56000,
+        "wtypeId": 4,
+        "description_old": "A throwable spear that can pierce even the wings of enemies.\n\\}\\C[16]«Effect»\\C[0][Attack +35][Anti-Air +30%]",
+        "name_old": "Javelin"
+    },
+    {
+        "id": 11,
+        "animationId": 11,
+        "description": "Uma lança mágica que envia seu alvo para o céu antes mesmo de sentir dor.\n\\}\\C[16]«Efeito»\\C[0][Ataque +33][M. Poder +12][Charme +7][Taxa crítica +15%]",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 1,
+                "value": 0
+            },
+            {
+                "code": 22,
+                "dataId": 2,
+                "value": 0.15
+            }
+        ],
+        "iconIndex": 842,
+        "name": "Elísio",
+        "note": "<DreamOnly>",
+        "params": [
+            0,
+            0,
+            33,
+            0,
+            12,
+            0,
+            0,
+            7
+        ],
+        "price": 64000,
+        "wtypeId": 4,
+        "description_old": "A magical spear that sends its target to heaven before they even feel pain.\n\\}\\C[16]«Effect»\\C[0][Attack +33][M. Power +12][Charm +7][Crit Rate +15%]",
+        "name_old": "Elysium"
+    },
+    {
+        "id": 12,
+        "animationId": 11,
+        "description": "Uma lança sagrada com o poder de banir o mal.\n\\}\\C[16]«Efeito»\\C[0][Ataque +62][M. Poder +32][MP máx. +45][Anti-Mortos-vivos +20%]",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 9,
+                "value": 0
+            }
+        ],
+        "iconIndex": 842,
+        "name": "Lança Sagrada",
+        "note": "<DreamOnly>",
+        "params": [
+            0,
+            45,
+            62,
+            0,
+            32,
+            0,
+            0,
+            0
+        ],
+        "price": 72000,
+        "wtypeId": 4,
+        "description_old": "A holy spear with the power to banish evil.\n\\}\\C[16]«Effect»\\C[0][Attack +62][M. Power +32][Max MP +45][Anti-Undead +20%]",
+        "name_old": "Holy Lance"
+    },
+    {
+        "id": 13,
+        "animationId": 11,
+        "description": "Uma lança versátil e fácil de usar, perfeita para estocar, cortar ou varrer.\n\\}\\C[16]«Efeito»\\C[0][Ataque +88][Agilidade +60][Charme-10]",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 1,
+                "value": 0
+            }
+        ],
+        "iconIndex": 842,
+        "name": "Guisarme",
+        "note": "<DreamOnly>",
+        "params": [
+            0,
+            0,
+            88,
+            0,
+            0,
+            0,
+            60,
+            -10
+        ],
+        "price": 85000,
+        "wtypeId": 4,
+        "description_old": "A versatile and easy-to-use spear, perfect for thrusting, slashing, or sweeping.\n\\}\\C[16]«Effect»\\C[0][Attack +88][Agility +60][Charm-10]"
+    },
+    {
+        "id": 14,
+        "animationId": 0,
+        "description": "",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 1,
+                "value": 0
+            },
+            {
+                "code": 22,
+                "dataId": 0,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "wtypeId": 0
+    },
+    {
+        "id": 15,
+        "animationId": 0,
+        "description": "",
+        "etypeId": 1,
+        "traits": [
+            {
+                "code": 31,
+                "dataId": 1,
+                "value": 0
+            },
+            {
+                "code": 22,
+                "dataId": 0,
+                "value": 0
+            }
+        ],
+        "iconIndex": 0,
+        "name": "",
+        "note": "",
+        "params": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "price": 0,
+        "wtypeId": 0
+    }
+]

@@ -1,0 +1,16 @@
+{
+  "gold": 1234,
+  "items": {
+    "1": 10
+  },
+  "weapons": {},
+  "armors": {},
+  "switches": [
+    false,
+    true
+  ],
+  "variables": [
+    0,
+    42
+  ]
+}

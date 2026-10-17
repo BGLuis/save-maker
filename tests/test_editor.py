@@ -15,6 +15,8 @@ sys.path.insert(0, str(ROOT_DIR))
 
 from export_rpgsave_to_json import export_rpgsave
 from import_json_to_rpgsave import import_json
+from core.generic_adapter import GenericJsonAdapter
+from core.mv_mz_adapter import MvMzAdapter
 
 
 def test_export_and_import_roundtrip():
@@ -83,7 +85,7 @@ def test_database_mappings_load():
 
 
 def test_path_navigation_and_helpers():
-    """Testa a lógica de navegação por caminho get_by_path / set_by_path."""
+    """Testa a lógica de navegação por caminho get_by_path / set_by_path usando BaseSaveAdapter."""
     sample = {
         "data": {
             "party": {
@@ -98,41 +100,65 @@ def test_path_navigation_and_helpers():
         }
     }
 
-    # Simula get_by_path
-    def get_by_path(root, path):
-        cur = root
-        for p in path:
-            if isinstance(cur, dict): cur = cur.get(p)
-            elif isinstance(cur, list): cur = cur[int(p)]
-            else: return None
-        return cur
+    adapter = GenericJsonAdapter()
+    adapter.raw_data = sample
 
-    # Simula set_by_path
-    def set_by_path(root, path, value):
-        cur = root
-        for i, p in enumerate(path):
-            if i == len(path) - 1:
-                if isinstance(cur, dict): cur[p] = value
-                elif isinstance(cur, list): cur[int(p)] = value
-                return True
-            else:
-                if isinstance(cur, dict): cur = cur[p]
-                elif isinstance(cur, list): cur = cur[int(p)]
-        return False
+    assert adapter.get_by_path(["data", "party", "_gold"]) == 1234
+    assert adapter.set_by_path(["data", "party", "_gold"], 9999) is True
+    assert adapter.get_by_path(["data", "party", "_gold"]) == 9999
 
-    assert get_by_path(sample, ["data", "party", "_gold"]) == 1234
-    assert set_by_path(sample, ["data", "party", "_gold"], 9999) is True
-    assert get_by_path(sample, ["data", "party", "_gold"]) == 9999
-
-    hero = get_by_path(sample, ["data", "actors", "_data", "@a", 1])
+    hero = adapter.get_by_path(["data", "actors", "_data", "@a", 1])
     assert hero["_name"] == "Hero"
     assert hero["_level"] == 10
 
     print("✔ test_path_navigation_and_helpers passou com sucesso!")
 
 
+def test_cli_export_import_roundtrip_subprocess():
+    """Testa roundtrip de exportação e importação via subprocesso chamando main.py."""
+    import subprocess
+    fixture_rpgsave = ROOT_DIR / "tests" / "fixtures" / "file2.rpgsave"
+    if not fixture_rpgsave.exists():
+        fixture_rpgsave = ROOT_DIR / "save" / "file2.rpgsave"
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmppath = Path(tmpdir)
+        e_json = tmppath / "e.json"
+        r_rpgsave = tmppath / "r.rpgsave"
+        e2_json = tmppath / "e2.json"
+
+        # 1. main.py export <fixture_rpgsave> e.json
+        cmd1 = [sys.executable, str(ROOT_DIR / "main.py"), "export", str(fixture_rpgsave), str(e_json)]
+        res1 = subprocess.run(cmd1, capture_output=True, text=True)
+        assert res1.returncode == 0, f"Export 1 falhou: {res1.stderr}"
+        assert e_json.exists()
+
+        # 2. main.py import e.json r.rpgsave
+        cmd2 = [sys.executable, str(ROOT_DIR / "main.py"), "import", str(e_json), str(r_rpgsave)]
+        res2 = subprocess.run(cmd2, capture_output=True, text=True)
+        assert res2.returncode == 0, f"Import falhou: {res2.stderr}"
+        assert r_rpgsave.exists()
+
+        # 3. main.py export r.rpgsave e2.json
+        cmd3 = [sys.executable, str(ROOT_DIR / "main.py"), "export", str(r_rpgsave), str(e2_json)]
+        res3 = subprocess.run(cmd3, capture_output=True, text=True)
+        assert res3.returncode == 0, f"Export 2 falhou: {res3.stderr}"
+        assert e2_json.exists()
+
+        e1_data = json.loads(e_json.read_text(encoding="utf-8"))
+        e2_data = json.loads(e2_json.read_text(encoding="utf-8"))
+        assert e2_data["data"] == e1_data["data"], "Os dados exportados diferem após roundtrip!"
+
+        # Verifica se party está no root de r.rpgsave quando carregado por MvMzAdapter
+        adapter = MvMzAdapter()
+        adapter.load(r_rpgsave)
+        assert "party" in adapter.raw_data, "Chave 'party' não está no root do save reimportado!"
+        print("✔ test_cli_export_import_roundtrip_subprocess passou com sucesso!")
+
+
 if __name__ == "__main__":
     test_export_and_import_roundtrip()
     test_database_mappings_load()
     test_path_navigation_and_helpers()
+    test_cli_export_import_roundtrip_subprocess()
     print("\nTODOS OS TESTES PASSARAM COM SUCESSO!")

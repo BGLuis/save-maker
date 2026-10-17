@@ -6,3 +6,4 @@ rubymarshal>=1.2.10
 darkdetect>=0.8.0
 packaging>=20.0
 rich>=13.0.0
+pytest>=8.0.0

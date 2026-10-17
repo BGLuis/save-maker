@@ -12,6 +12,11 @@ LOCAL_BIN := $(HOME)/.local/bin
 BINARY_NAME := save-maker
 ALIASES ?= savemaker save-editor rpg-save-editor rpgse rse sm
 
+# Cores para saída do terminal
+CYAN := \033[36m
+GREEN := \033[32m
+RESET := \033[0m
+
 # Fallback se a .venv não existir
 ifeq ($(wildcard $(PYTHON)),)
     PYTHON := python3
@@ -132,13 +137,10 @@ install: install-cli install-desktop
 uninstall: uninstall-cli uninstall-desktop
 	@echo "✓ Desinstalação completa concluída."
 
-test:
-	@echo "Executando testes automatizados..."
-	@$(PYTHON) tests/test_database_autodiscovery.py
-	@$(PYTHON) tests/test_all_formats.py
-	@$(PYTHON) tests/test_cli_interactive.py
-	@$(PYTHON) tests/test_performance.py
-	@$(PYTHON) tests/test_editor.py
+test: ## Executa a suíte de testes automatizados via pytest
+	@echo -e "$(CYAN)▶ Executando suíte de testes automatizados (pytest)...$(RESET)"
+	@$(PYTHON) -m pytest -v
+	@echo -e "$(GREEN)✔ Todos os testes passaram com sucesso!$(RESET)"
 
 clean:
 	@echo "Limpando arquivos temporários e caches..."
