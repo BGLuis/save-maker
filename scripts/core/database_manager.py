@@ -28,10 +28,14 @@ except Exception:
     ruby_load = None
     _RUBY_AVAILABLE = False
 
-from .wolf_database import parse_wolf_project, project_types_to_wolf_types, WolfCryptoUnsupportedError
+from .wolf_adapter import _INVENTORY_KEYWORDS
+from .wolf_database import (
+    parse_wolf_project, parse_wolf_fixed_database, project_types_to_wolf_types, WolfCryptoUnsupportedError,
+)
 
 _WOLF_ITEM_NAME_KEYWORDS = ["アイテム", "item"]
 _WOLF_ACTOR_NAME_KEYWORDS = ["アクター", "キャラクター", "actor", "character"]
+_WOLF_NAME_MAP_FILE = "wolf_name_map.json"
 
 
 class GameDatabaseManager:
@@ -48,6 +52,9 @@ class GameDatabaseManager:
         self.switches: Dict[int, str] = {}
         self.variables: Dict[int, str] = {}
         self.wolf_types: Dict[int, Dict[str, Any]] = {}
+        self.wolf_fixed_types: List[Dict[str, Any]] = []
+        self.wolf_name_map: Dict[str, int] = {}
+        self.save_dir: Optional[Path] = None
         self.currency_unit: str = "G"
         self.game_title: str = ""
         self.config: Dict[str, Any] = {}
@@ -87,6 +94,7 @@ class GameDatabaseManager:
         self.clear()
         p = Path(save_path).resolve()
         save_dir = p if p.is_dir() else p.parent
+        self.save_dir = save_dir
 
         candidate_dirs: List[Path] = [
             # Subpastas da pasta do save
@@ -157,6 +165,7 @@ class GameDatabaseManager:
         if self._load_system_file(d): loaded_any = True
         # 8. Carrega CDataBase.project do Wolf RPG Editor (nomes de tipos/campos/linhas)
         if self._load_wolf_database(d): loaded_any = True
+        self._load_wolf_fixed_database(d)
         # 9. Carrega config.json se existir
         self._load_config_file(d)
 
@@ -174,6 +183,9 @@ class GameDatabaseManager:
         self.switches.clear()
         self.variables.clear()
         self.wolf_types.clear()
+        self.wolf_fixed_types.clear()
+        self.wolf_name_map.clear()
+        self.save_dir = None
         self.currency_unit = "G"
         self.game_title = ""
         self.config.clear()
@@ -447,6 +459,45 @@ class GameDatabaseManager:
                 }
 
         return bool(self.wolf_types)
+
+    def _load_wolf_fixed_database(self, directory: Path):
+        """Carrega DataBase.dat/.project (nomes de itens, armas e armaduras) e o mapa manual
+        opcional wolf_name_map.json. Falhas degradam para \"sem nomes\"."""
+        dat_path = directory / "DataBase.dat"
+        if dat_path.is_file():
+            try:
+                self.wolf_fixed_types = parse_wolf_fixed_database(dat_path, directory / "DataBase.project")
+            except Exception as e:
+                print(f"[GameDatabaseManager] Erro ao ler DataBase.dat: {e}")
+
+        search_dirs = [directory, directory.parent]
+        if self.save_dir is not None:
+            search_dirs.insert(0, self.save_dir)
+        for folder in search_dirs:
+            map_path = folder / _WOLF_NAME_MAP_FILE
+            if not map_path.is_file():
+                continue
+            try:
+                raw = json.loads(map_path.read_text(encoding="utf-8-sig"))
+                self.wolf_name_map = {str(k): int(v) for k, v in raw.items()}
+            except Exception as e:
+                print(f"[GameDatabaseManager] Erro ao ler {map_path.name}: {e}")
+            break
+
+    def resolve_wolf_row_names(self, save_type_idx: int, kind: str) -> List[str]:
+        """Nomes das linhas do banco fixo que correspondem ao tipo `save_type_idx` da
+        VariableDatabase do save. Ordem: wolf_name_map.json, depois o tipo do DataBase cujo
+        nome casa com a categoria (`kind`). Sem correspondência, retorna lista vazia."""
+        if not self.wolf_fixed_types:
+            return []
+        mapped = self.wolf_name_map.get(str(save_type_idx))
+        if mapped is not None:
+            return self.wolf_fixed_types[mapped]["rows"] if 0 <= mapped < len(self.wolf_fixed_types) else []
+        keywords = [k.lower() for k in _INVENTORY_KEYWORDS.get(kind, [])]
+        for fixed in self.wolf_fixed_types:
+            if any(k in fixed["name"].lower() for k in keywords):
+                return fixed["rows"]
+        return []
 
     def _load_config_file(self, directory: Path):
         """Carrega config.json se presente."""

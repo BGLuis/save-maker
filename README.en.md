@@ -35,7 +35,7 @@
 | **RPG Maker VX Ace / VX / XP** | `.rvdata2`, `.rvdata`, `.rxdata` | Supported | ✅ Multi-object Ruby Marshal 4.8 stream preservation via `marshal_io.py`. |
 | **RPG Maker 2000 / 2003** | `.lsd` | Basic / Experimental | ⚠️ Support for chunk `0x6D` (`SaveInventory` gold and items) in binary `LcfSaveData` format. |
 | **Generic JSON / Web Saves** | `.json`, `.sav`, `.dat`, `.txt` | Supported | ✅ Parsing and manipulation of JSON-structured or encoded web saves. |
-| **Wolf RPG Editor / ウディタ** | `.sav` | Experimental | ⚠️ Experimental support for decoding and basic editing. |
+| **Wolf RPG Editor / ウディタ** | `.sav` | Experimental | ⚠️ Experimental support for decoding and basic editing. Item, weapon and armor names come from `Data/BasicData/DataBase.dat`; if automatic pairing is wrong, create `wolf_name_map.json` (e.g. `{"7": 2, "8": 3, "9": 4}`, save type → DataBase type) in the save folder. |
 
 ### Key Features
 - **Modern Graphical User Interface (GUI):**

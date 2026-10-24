@@ -23,7 +23,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from .wolf_adapter import ByteReader, _decode_wolf_string, _read_memdata, _LCG_MUL, _LCG_ADD, _LCG_MASK
+from .wolf_adapter import (
+    ByteReader, _decode_wolf_string, _read_memdata, _xor_crypt, _LCG_MUL, _LCG_ADD, _LCG_MASK,
+)
 
 
 class WolfCryptoUnsupportedError(Exception):
@@ -171,3 +173,66 @@ def project_types_to_wolf_types(types: List[Dict[str, Any]]) -> Dict[int, Dict[s
             "rows": [{"index": i, "name": n} for i, n in enumerate(t["rows"])],
         }
     return wolf_types
+
+
+_DAT_MAGIC = b"W\x00\x00OL"
+_DAT_MAGIC_NEXT = b"FM\x00"
+_DAT_TYPE_SEPARATOR = b"\xfe\xff\xff\xff"
+_DAT_STRING_FIELD_START = 2000
+_DAT_UTF8_FLAG = 0x55
+
+
+def _read_dat_names(path: Path) -> List[List[str]]:
+    """Lê um .dat do Wolf RPG (DataBase.dat / CDataBase.dat) e devolve, por tipo, o primeiro
+    valor de texto de cada linha - onde o editor guarda o nome do registro. Tipos sem campo de
+    texto resultam em nomes vazios. O .dat vem em texto puro ou cifrado com o mesmo XOR de 3
+    passadas dos saves (sementes nos bytes 0, 3 e 9)."""
+    data = bytearray(path.read_bytes())
+    if not (data.startswith(_DAT_MAGIC) or data.startswith(b"\x00" + _DAT_MAGIC)):
+        _xor_crypt(data, start=0)
+
+    r = ByteReader(bytes(data), 1 if data.startswith(b"\x00" + _DAT_MAGIC) else 0)
+    if r.raw(len(_DAT_MAGIC)) != _DAT_MAGIC:
+        raise WolfCryptoUnsupportedError(f"Arquivo .dat sem assinatura Wolf após decifrar: {path}")
+    encoding = "utf-8" if r.u8() == _DAT_UTF8_FLAG else "cp932"
+    if r.raw(len(_DAT_MAGIC_NEXT)) != _DAT_MAGIC_NEXT:
+        raise WolfCryptoUnsupportedError(f"Cabeçalho .dat inesperado: {path}")
+    r.u8()  # versão do motor
+
+    types: List[List[str]] = []
+    for _ in range(r.u32()):
+        if r.raw(len(_DAT_TYPE_SEPARATOR)) != _DAT_TYPE_SEPARATOR:
+            raise ValueError(f"Separador de tipo ausente em {path} (offset {r.pos})")
+        r.u32()
+        field_infos = [r.u32() for _ in range(r.u32())]
+        int_count = sum(1 for f in field_infos if f < _DAT_STRING_FIELD_START)
+        str_count = len(field_infos) - int_count
+        names: List[str] = []
+        for _ in range(r.u32()):
+            for _ in range(int_count):
+                r.u32()
+            strings = [_decode_wolf_string(_read_memdata(r, 4), encoding) for _ in range(str_count)]
+            names.append(strings[0] if strings else "")
+        types.append(names)
+    return types
+
+
+def parse_wolf_fixed_database(dat_path: Path | str, project_path: Path | str | None = None) -> List[Dict[str, Any]]:
+    """
+    Resolve nomes de tipos e linhas do banco fixo (DataBase.dat + DataBase.project), onde o
+    Wolf guarda os nomes de itens, armas e armaduras que o save só referencia por índice.
+    O nome da linha é o do .project quando preenchido; senão, o primeiro texto do .dat.
+    Retorna [{"name": str, "rows": [str, ...]}, ...] na ordem dos tipos do arquivo.
+    """
+    dat_types = _read_dat_names(Path(dat_path))
+    project_types = parse_wolf_project(project_path) if project_path and Path(project_path).is_file() else []
+
+    result: List[Dict[str, Any]] = []
+    for idx, dat_rows in enumerate(dat_types):
+        project = project_types[idx] if idx < len(project_types) else {"name": "", "rows": []}
+        rows = [
+            (project["rows"][i] if i < len(project["rows"]) else "") or dat_name
+            for i, dat_name in enumerate(dat_rows)
+        ]
+        result.append({"name": project["name"] or f"Type_{idx}", "rows": rows})
+    return result

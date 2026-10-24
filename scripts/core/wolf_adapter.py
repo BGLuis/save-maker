@@ -12,7 +12,8 @@ LIMITAÇÕES CONHECIDAS (leia antes de confiar nos dados):
     SavePart7 é DESCONHECIDA. Eles são preservados estruturalmente (tipo e ordem corretos, para
     permitir round-trip byte-a-byte), mas expostos apenas como blobs genéricos na aba Avançado.
   - get_gold(), get_playtime_and_steps(), get_actors() e get_inventory() são heurísticas de
-    melhor esforço: procuram por nomes de campo (via CDataBase.project do jogo) que contenham
+    melhor esforço: procuram por nomes de campo (via CDataBase.project do jogo; nomes de itens/armas/armaduras
+    via DataBase.dat) que contenham
     palavras-chave como "Gold"/"所持金". Podem retornar dados incorretos ou vazios em jogos com
     nomenclatura diferente.
   - get_switches()/set_switch() sempre retornam vazio/no-op: o Wolf RPG Editor não tem switches
@@ -1810,10 +1811,15 @@ class WolfAdapter(BaseSaveAdapter):
             return results
         rows_meta = info.get("rows", [])
         rows_data = types[type_idx].get("rows", [])
+        resolver = getattr(self.db, "resolve_wolf_row_names", None)
+        fixed_names = resolver(type_idx, kind) if resolver else []
         qty_fields = [f for f in info.get("fields", [])
                       if any(k in (f.get("name") or "").lower() for k in _QUANTITY_KEYWORDS)]
         for row_idx, row in enumerate(rows_data):
-            name = rows_meta[row_idx]["name"] if row_idx < len(rows_meta) else f"{kind} #{row_idx}"
+            name = fixed_names[row_idx] if row_idx < len(fixed_names) else ""
+            if not name:
+                name = rows_meta[row_idx]["name"] if row_idx < len(rows_meta) else ""
+            name = name or f"{kind} #{row_idx}"
             qty = 1
             if qty_fields:
                 fidx = qty_fields[0]["index"]

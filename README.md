@@ -36,7 +36,7 @@ O **Save Maker** é um editor e conversor universal, moderno e de alto desempenh
 | **RPG Maker VX Ace / VX / XP** | `.rvdata2`, `.rvdata`, `.rxdata` | Suportado | ✅ Preservação da stream multi-objeto Ruby Marshal 4.8 via `marshal_io.py`. |
 | **RPG Maker 2000 / 2003** | `.lsd` | Básico / Experimental | ⚠️ Suporte a chunk `0x6D` (`SaveInventory` ouro e itens) em formato binário `LcfSaveData`. |
 | **Generic JSON / Web Saves** | `.json`, `.sav`, `.dat`, `.txt` | Suportado | ✅ Parsing e manipulação de saves estruturados em JSON ou texto codificado. |
-| **Wolf RPG Editor / ウディタ** | `.sav` | Experimental | ⚠️ Suporte experimental para decodificação e edição básica. |
+| **Wolf RPG Editor / ウディタ** | `.sav` | Experimental | ⚠️ Suporte experimental para decodificação e edição básica. Nomes de itens, armas e armaduras vêm de `Data/BasicData/DataBase.dat`; se o pareamento automático errar, crie `wolf_name_map.json` (ex.: `{"7": 2, "8": 3, "9": 4}`, tipo do save → tipo do DataBase) na pasta do save. |
 
 ### Recursos Principais
 - **Interface Gráfica Moderna (GUI):**
