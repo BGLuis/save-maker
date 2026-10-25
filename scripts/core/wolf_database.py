@@ -133,6 +133,23 @@ def _read_project_type(r: ByteReader) -> Dict[str, Any]:
     return {"name": name, "field_names": field_names, "data_names": data_names}
 
 
+def _detect_raw_types_encoding(raw_types: List[Dict[str, Any]], default_encoding: str) -> str:
+    """Arquivos .project v3 salvos sem criptografia têm header_u32 <= 0xFF mas texto em UTF-8."""
+    if default_encoding != "cp932":
+        return default_encoding
+    has_non_ascii = False
+    for rt in raw_types:
+        for blob in (rt["name"], *rt["field_names"], *rt["data_names"]):
+            raw = blob[:-1] if blob and blob[-1] == 0 else blob
+            if any(b >= 0x80 for b in raw):
+                has_non_ascii = True
+                try:
+                    raw.decode("utf-8")
+                except UnicodeDecodeError:
+                    return "cp932"
+    return "utf-8" if has_non_ascii else default_encoding
+
+
 def parse_wolf_project(path: Path | str) -> List[Dict[str, Any]]:
     """
     Faz o parse de um arquivo CDataBase.project e retorna a lista de tipos na ordem em que
@@ -148,9 +165,11 @@ def parse_wolf_project(path: Path | str) -> List[Dict[str, Any]]:
 
     r = ByteReader(data, 0)
     type_count = r.u32()
+    raw_types = [_read_project_type(r) for _ in range(type_count)]
+    encoding = _detect_raw_types_encoding(raw_types, encoding)
+
     types: List[Dict[str, Any]] = []
-    for _ in range(type_count):
-        raw_type = _read_project_type(r)
+    for raw_type in raw_types:
         types.append({
             "name": _decode_wolf_string(raw_type["name"], encoding),
             "fields": [_decode_wolf_string(f, encoding) for f in raw_type["field_names"]],
@@ -178,8 +197,26 @@ def project_types_to_wolf_types(types: List[Dict[str, Any]]) -> Dict[int, Dict[s
 _DAT_MAGIC = b"W\x00\x00OL"
 _DAT_MAGIC_NEXT = b"FM\x00"
 _DAT_TYPE_SEPARATOR = b"\xfe\xff\xff\xff"
+_DAT_INT_FIELD_START = 1000
 _DAT_STRING_FIELD_START = 2000
+_DAT_STRING_INDICATOR = 0x0001D4C0
 _DAT_UTF8_FLAG = 0x55
+
+
+def _has_cjk(text: str) -> bool:
+    return any("\u3000" <= c <= "\u9fff" or "\uff00" <= c <= "\uffef" for c in text)
+
+
+def _pick_fixed_row_name(proj_name: str, dat_name: str, table_translated: bool = False) -> str:
+    """Prefere o nome traduzido em DataBase.dat quando DataBase.project mantém o rótulo japonês
+    original do editor; caso contrário usa proj_name ou dat_name."""
+    if dat_name and "/" not in dat_name and "\\" not in dat_name:
+        if not proj_name or (_has_cjk(proj_name) and not _has_cjk(dat_name)):
+            return dat_name
+    chosen = proj_name or dat_name
+    if table_translated and _has_cjk(chosen):
+        return ""
+    return chosen
 
 
 def _read_dat_names(path: Path) -> List[List[str]]:
@@ -203,10 +240,12 @@ def _read_dat_names(path: Path) -> List[List[str]]:
     for _ in range(r.u32()):
         if r.raw(len(_DAT_TYPE_SEPARATOR)) != _DAT_TYPE_SEPARATOR:
             raise ValueError(f"Separador de tipo ausente em {path} (offset {r.pos})")
-        r.u32()
+        unk1 = r.u32()
+        if unk1 == _DAT_STRING_INDICATOR:
+            _read_memdata(r, 4)
         field_infos = [r.u32() for _ in range(r.u32())]
-        int_count = sum(1 for f in field_infos if f < _DAT_STRING_FIELD_START)
-        str_count = len(field_infos) - int_count
+        int_count = sum(1 for f in field_infos if _DAT_INT_FIELD_START <= f < _DAT_STRING_FIELD_START)
+        str_count = sum(1 for f in field_infos if f >= _DAT_STRING_FIELD_START)
         names: List[str] = []
         for _ in range(r.u32()):
             for _ in range(int_count):
@@ -230,8 +269,16 @@ def parse_wolf_fixed_database(dat_path: Path | str, project_path: Path | str | N
     result: List[Dict[str, Any]] = []
     for idx, dat_rows in enumerate(dat_types):
         project = project_types[idx] if idx < len(project_types) else {"name": "", "rows": []}
+        table_translated = (
+            any(r.strip() and not _has_cjk(r) and "/" not in r and "\\" not in r for r in dat_rows)
+            and any(_has_cjk(r) for r in project["rows"])
+        )
         rows = [
-            (project["rows"][i] if i < len(project["rows"]) else "") or dat_name
+            _pick_fixed_row_name(
+                project["rows"][i] if i < len(project["rows"]) else "",
+                dat_name,
+                table_translated,
+            )
             for i, dat_name in enumerate(dat_rows)
         ]
         result.append({"name": project["name"] or f"Type_{idx}", "rows": rows})

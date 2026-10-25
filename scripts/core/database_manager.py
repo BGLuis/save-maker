@@ -34,7 +34,8 @@ from .wolf_database import (
 )
 
 _WOLF_ITEM_NAME_KEYWORDS = ["アイテム", "item"]
-_WOLF_ACTOR_NAME_KEYWORDS = ["アクター", "キャラクター", "actor", "character"]
+_WOLF_ACTOR_NAME_KEYWORDS = ["アクター", "キャラクター", "主人公", "キャラ名", "actor", "character", "hero"]
+_WOLF_EQUIP_NAME_KEYWORDS = ["装備", "equip"]
 _WOLF_NAME_MAP_FILE = "wolf_name_map.json"
 
 
@@ -53,6 +54,7 @@ class GameDatabaseManager:
         self.variables: Dict[int, str] = {}
         self.wolf_types: Dict[int, Dict[str, Any]] = {}
         self.wolf_fixed_types: List[Dict[str, Any]] = []
+        self.wolf_sys_types: Dict[int, Dict[str, Any]] = {}
         self.wolf_name_map: Dict[str, int] = {}
         self.save_dir: Optional[Path] = None
         self.currency_unit: str = "G"
@@ -62,7 +64,7 @@ class GameDatabaseManager:
     def is_loaded(self) -> bool:
         """Retorna True se algum banco de dados relevante foi carregado."""
         return bool(self.items or self.weapons or self.armors or self.actors or self.switches
-                    or self.variables or self.wolf_types)
+                    or self.variables or self.wolf_types or self.wolf_fixed_types)
 
     def summary_info(self) -> str:
         """Gera uma string descritiva com o resumo do que foi carregado."""
@@ -165,7 +167,7 @@ class GameDatabaseManager:
         if self._load_system_file(d): loaded_any = True
         # 8. Carrega CDataBase.project do Wolf RPG Editor (nomes de tipos/campos/linhas)
         if self._load_wolf_database(d): loaded_any = True
-        self._load_wolf_fixed_database(d)
+        if self._load_wolf_fixed_database(d): loaded_any = True
         # 9. Carrega config.json se existir
         self._load_config_file(d)
 
@@ -184,6 +186,7 @@ class GameDatabaseManager:
         self.variables.clear()
         self.wolf_types.clear()
         self.wolf_fixed_types.clear()
+        self.wolf_sys_types.clear()
         self.wolf_name_map.clear()
         self.save_dir = None
         self.currency_unit = "G"
@@ -460,15 +463,25 @@ class GameDatabaseManager:
 
         return bool(self.wolf_types)
 
-    def _load_wolf_fixed_database(self, directory: Path):
-        """Carrega DataBase.dat/.project (nomes de itens, armas e armaduras) e o mapa manual
-        opcional wolf_name_map.json. Falhas degradam para \"sem nomes\"."""
-        dat_path = directory / "DataBase.dat"
-        if dat_path.is_file():
+    def _load_wolf_fixed_database(self, directory: Path) -> bool:
+        """Carrega DataBase.dat/.project (nomes de itens, armas, armaduras e atores),
+        SysDatabase.project (nomes de variáveis) e o mapa manual opcional wolf_name_map.json."""
+        dat_path = self._find_case_insensitive_file(directory, "database", [".dat"])
+        if dat_path and dat_path.is_file():
             try:
-                self.wolf_fixed_types = parse_wolf_fixed_database(dat_path, directory / "DataBase.project")
+                proj_path = self._find_case_insensitive_file(directory, "database", [".project"])
+                self.wolf_fixed_types = parse_wolf_fixed_database(dat_path, proj_path)
             except Exception as e:
                 print(f"[GameDatabaseManager] Erro ao ler DataBase.dat: {e}")
+
+        sys_proj_path = self._find_case_insensitive_file(directory, "sysdatabase", [".project"])
+        if sys_proj_path and sys_proj_path.is_file():
+            try:
+                self.wolf_sys_types = project_types_to_wolf_types(parse_wolf_project(sys_proj_path))
+            except Exception as e:
+                print(f"[GameDatabaseManager] Erro ao ler SysDatabase.project: {e}")
+
+        self._populate_catalogs_from_wolf_fixed()
 
         search_dirs = [directory, directory.parent]
         if self.save_dir is not None:
@@ -484,20 +497,82 @@ class GameDatabaseManager:
                 print(f"[GameDatabaseManager] Erro ao ler {map_path.name}: {e}")
             break
 
+        return bool(self.wolf_fixed_types or self.wolf_sys_types)
+
+    def _populate_catalogs_from_wolf_fixed(self):
+        """Popula self.items, self.weapons, self.armors e self.actors com os nomes reais de
+        DataBase.dat/.project, substituindo placeholders genéricos vindos de CDataBase.project."""
+        if not self.wolf_fixed_types:
+            return
+
+        def fill_target(target: Dict[str, Dict[str, Any]], rows: List[str], clear_placeholders: bool = False):
+            named = [(i, r.strip()) for i, r in enumerate(rows) if r and r.strip()]
+            if not named:
+                return
+            if clear_placeholders:
+                for k in [k for k, v in target.items() if f"#{k}" in str(v.get("name", ""))]:
+                    del target[k]
+            for idx, rname in named:
+                s_id = str(idx)
+                if s_id not in target or f"#{s_id}" in str(target[s_id].get("name", "")):
+                    target[s_id] = {
+                        "id": s_id,
+                        "name": rname,
+                        "description": "",
+                        "price": 0,
+                        "iconIndex": 0,
+                        "raw": {},
+                    }
+
+        item_kws = [k.lower() for k in _INVENTORY_KEYWORDS.get("items", [])]
+        weapon_kws = [k.lower() for k in _INVENTORY_KEYWORDS.get("weapons", [])]
+        armor_kws = [k.lower() for k in _INVENTORY_KEYWORDS.get("armors", [])]
+        equip_kws = [k.lower() for k in _WOLF_EQUIP_NAME_KEYWORDS]
+        actor_kws = [k.lower() for k in _WOLF_ACTOR_NAME_KEYWORDS]
+
+        actors_filled = False
+        for fixed in self.wolf_fixed_types:
+            fname = (fixed.get("name") or "").lower()
+            rows = fixed.get("rows", [])
+            if any(k in fname for k in item_kws):
+                fill_target(self.items, rows, clear_placeholders=True)
+            if any(k in fname for k in weapon_kws) or any(k in fname for k in equip_kws):
+                fill_target(self.weapons, rows)
+            if any(k in fname for k in armor_kws) or any(k in fname for k in equip_kws):
+                fill_target(self.armors, rows)
+            if not actors_filled and any(k in fname for k in actor_kws):
+                if any(r and r.strip() for r in rows):
+                    fill_target(self.actors, rows, clear_placeholders=True)
+                    actors_filled = True
+
     def resolve_wolf_row_names(self, save_type_idx: int, kind: str) -> List[str]:
         """Nomes das linhas do banco fixo que correspondem ao tipo `save_type_idx` da
         VariableDatabase do save. Ordem: wolf_name_map.json, depois o tipo do DataBase cujo
-        nome casa com a categoria (`kind`). Sem correspondência, retorna lista vazia."""
+        nome casa com a categoria (`kind`), preferindo mesma contagem de linhas."""
         if not self.wolf_fixed_types:
             return []
         mapped = self.wolf_name_map.get(str(save_type_idx))
         if mapped is not None:
             return self.wolf_fixed_types[mapped]["rows"] if 0 <= mapped < len(self.wolf_fixed_types) else []
-        keywords = [k.lower() for k in _INVENTORY_KEYWORDS.get(kind, [])]
-        for fixed in self.wolf_fixed_types:
-            if any(k in fixed["name"].lower() for k in keywords):
-                return fixed["rows"]
-        return []
+
+        if kind == "actors":
+            keywords = [k.lower() for k in _WOLF_ACTOR_NAME_KEYWORDS]
+        else:
+            keywords = [k.lower() for k in _INVENTORY_KEYWORDS.get(kind, [])]
+
+        expected_len = len(self.wolf_types.get(save_type_idx, {}).get("rows", [])) if self.wolf_types else 0
+        matches = [f for f in self.wolf_fixed_types if any(k in f["name"].lower() for k in keywords)]
+        if not matches and kind in ("weapons", "armors"):
+            equip_kws = [k.lower() for k in _WOLF_EQUIP_NAME_KEYWORDS]
+            matches = [f for f in self.wolf_fixed_types if any(k in f["name"].lower() for k in equip_kws)]
+        if not matches:
+            return []
+        if expected_len > 0:
+            for m in matches:
+                if len(m["rows"]) == expected_len and any(m["rows"]):
+                    return m["rows"]
+            return []
+        return matches[0]["rows"]
 
     def _load_config_file(self, directory: Path):
         """Carrega config.json se presente."""
