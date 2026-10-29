@@ -137,12 +137,15 @@ class GenericJsonAdapter(BaseSaveAdapter):
                 return True
         return False
 
-    def get_inventory(self, kind: str = "items") -> List[Dict[str, Any]]:
+    def get_inventory(self, kind: str = "items", include_all_db: bool = False) -> List[Dict[str, Any]]:
         results = []
         if isinstance(self.raw_data, dict):
             inv = self.raw_data.get(kind, self.raw_data.get(f"_{kind}", {}))
+            seen_ids = set()
             if isinstance(inv, dict):
                 for k, qty in inv.items():
+                    s_id = str(k)
+                    seen_ids.add(s_id)
                     name = None
                     if self.db:
                         if kind == "weapons":
@@ -151,11 +154,37 @@ class GenericJsonAdapter(BaseSaveAdapter):
                             name = self.db.get_armor_name(k)
                         else:
                             name = self.db.get_item_name(k)
-                    results.append({
-                        "id": str(k),
+                    item_dict = {
+                        "id": s_id,
                         "name": name if name else f"{kind.capitalize()} #{k}",
                         "quantity": int(qty),
                         "kind": kind
+                    }
+                    if include_all_db:
+                        item_dict["in_save"] = True
+                    results.append(item_dict)
+            if include_all_db and self.db:
+                source = []
+                if kind == "weapons":
+                    source = self.db.get_all_known_weapons()
+                elif kind == "armors":
+                    source = self.db.get_all_known_armors()
+                else:
+                    source = self.db.get_all_known_items()
+                for entry in source:
+                    s_id = str(entry.get("id"))
+                    if not s_id or s_id in seen_ids or s_id == "0":
+                        continue
+                    raw_name = entry.get("name")
+                    if not raw_name or not str(raw_name).strip():
+                        continue
+                    seen_ids.add(s_id)
+                    results.append({
+                        "id": s_id,
+                        "name": str(raw_name),
+                        "quantity": 0,
+                        "kind": kind,
+                        "in_save": False
                     })
         return sorted(results, key=lambda x: str(x["id"]))
 

@@ -160,7 +160,7 @@ class BaseSaveAdapter(ABC):
         pass
 
     @abstractmethod
-    def get_inventory(self, kind: str = "items") -> List[Dict[str, Any]]:
+    def get_inventory(self, kind: str = "items", include_all_db: bool = False) -> List[Dict[str, Any]]:
         """
         Retorna itens do tipo especificado ('items', 'weapons', 'armors'):
         [
@@ -168,9 +168,12 @@ class BaseSaveAdapter(ABC):
                 'id': str,
                 'name': str,
                 'quantity': int,
-                'kind': str
+                'kind': str,
+                'in_save': bool
             }
         ]
+        Se include_all_db for True e o banco de dados do jogo estiver disponível,
+        inclui também itens com quantidade 0 que existem no jogo mas não no save.
         """
         pass
 

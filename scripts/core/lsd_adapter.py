@@ -314,17 +314,39 @@ class LsdAdapter(BaseSaveAdapter):
         self.mark_dirty(f"Ator {actor_id} atualizado (não encontrado no save)")
         return False
 
-    def get_inventory(self, kind: str = "items") -> List[Dict[str, Any]]:
+    def get_inventory(self, kind: str = "items", include_all_db: bool = False) -> List[Dict[str, Any]]:
         results = []
         if kind == "items":
+            seen_ids = set()
             for item_id, qty in self._items.items():
+                s_id = str(item_id)
+                seen_ids.add(s_id)
                 name = self.db.get_item_name(item_id) if self.db else f"Item #{item_id}"
-                results.append({
-                    "id": str(item_id),
+                item_dict = {
+                    "id": s_id,
                     "name": name,
                     "quantity": qty,
                     "kind": "items"
-                })
+                }
+                if include_all_db:
+                    item_dict["in_save"] = True
+                results.append(item_dict)
+            if include_all_db and self.db:
+                for entry in self.db.get_all_known_items():
+                    s_id = str(entry.get("id"))
+                    if not s_id or s_id in seen_ids or s_id == "0":
+                        continue
+                    raw_name = entry.get("name")
+                    if not raw_name or not str(raw_name).strip():
+                        continue
+                    seen_ids.add(s_id)
+                    results.append({
+                        "id": s_id,
+                        "name": str(raw_name),
+                        "quantity": 0,
+                        "kind": "items",
+                        "in_save": False
+                    })
         return sorted(results, key=lambda x: int(x["id"]))
 
     def set_item_quantity(self, kind: str, item_id: int | str, qty: int) -> bool:

@@ -2138,7 +2138,7 @@ class WolfAdapter(BaseSaveAdapter):
 
     # --- Inventário (melhor esforço) --------------------------------------------
 
-    def get_inventory(self, kind: str = "items") -> List[Dict[str, Any]]:
+    def get_inventory(self, kind: str = "items", include_all_db: bool = False) -> List[Dict[str, Any]]:
         wolf_types = getattr(self.db, "wolf_types", None) if self.db else None
         if not wolf_types or kind not in _INVENTORY_KEYWORDS:
             return []
@@ -2146,10 +2146,10 @@ class WolfAdapter(BaseSaveAdapter):
         for type_idx, info in wolf_types.items():
             name = (info.get("name") or "").lower()
             if any(k in name for k in kws):
-                return self._rows_as_inventory(int(type_idx), info, kind)
+                return self._rows_as_inventory(int(type_idx), info, kind, include_all_db=include_all_db)
         return []
 
-    def _rows_as_inventory(self, type_idx: int, info: dict, kind: str) -> List[Dict[str, Any]]:
+    def _rows_as_inventory(self, type_idx: int, info: dict, kind: str, include_all_db: bool = False) -> List[Dict[str, Any]]:
         results = []
         types = self.variable_database.get("types", [])
         if type_idx >= len(types):
@@ -2183,7 +2183,10 @@ class WolfAdapter(BaseSaveAdapter):
                 if not qty_fields and not real_name:
                     continue
             name = real_name or f"{kind} #{row_idx}"
-            results.append({"id": str(row_idx), "name": name, "quantity": qty, "kind": kind})
+            item_dict = {"id": str(row_idx), "name": name, "quantity": qty, "kind": kind}
+            if include_all_db:
+                item_dict["in_save"] = qty > 0
+            results.append(item_dict)
         return results
 
     def set_item_quantity(self, kind: str, item_id: int | str, qty: int) -> bool:

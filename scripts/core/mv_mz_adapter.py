@@ -376,7 +376,7 @@ class MvMzAdapter(BaseSaveAdapter):
                 return True
         return False
 
-    def get_inventory(self, kind: str = "items") -> List[Dict[str, Any]]:
+    def get_inventory(self, kind: str = "items", include_all_db: bool = False) -> List[Dict[str, Any]]:
         results = []
         party = self.get_party_dict()
         key_map = {
@@ -387,10 +387,13 @@ class MvMzAdapter(BaseSaveAdapter):
         target_key = key_map.get(kind, "_items")
         inv_dict = party.get(target_key, {})
 
+        seen_ids = set()
         if isinstance(inv_dict, dict):
             for k, qty in inv_dict.items():
                 if str(k).startswith("@"):
                     continue
+                s_id = str(k)
+                seen_ids.add(s_id)
                 name = None
                 if self.db:
                     if kind == "items": name = self.db.get_item_name(k)
@@ -399,12 +402,38 @@ class MvMzAdapter(BaseSaveAdapter):
                 if not name:
                     name = f"{kind.capitalize()} #{k}"
 
-                results.append({
-                    "id": str(k),
+                item_dict = {
+                    "id": s_id,
                     "name": name,
                     "quantity": int(qty),
                     "kind": kind
+                }
+                if include_all_db:
+                    item_dict["in_save"] = True
+                results.append(item_dict)
+
+        if include_all_db and self.db:
+            source = []
+            if kind == "items": source = self.db.get_all_known_items()
+            elif kind == "weapons": source = self.db.get_all_known_weapons()
+            elif kind == "armors": source = self.db.get_all_known_armors()
+
+            for entry in source:
+                s_id = str(entry.get("id"))
+                if not s_id or s_id in seen_ids or s_id == "0":
+                    continue
+                raw_name = entry.get("name")
+                if not raw_name or not str(raw_name).strip():
+                    continue
+                seen_ids.add(s_id)
+                results.append({
+                    "id": s_id,
+                    "name": str(raw_name),
+                    "quantity": 0,
+                    "kind": kind,
+                    "in_save": False
                 })
+
         return sorted(results, key=lambda x: int(x["id"]) if x["id"].isdigit() else str(x["id"]))
 
     def set_item_quantity(self, kind: str, item_id: int | str, qty: int) -> bool:
