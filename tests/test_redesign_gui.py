@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """
 Testes específicos para os novos componentes e telas do Redesign da GUI (Figma).
+Valida a fidelidade estrutural e interativa com o Figma Save Maker (#0:1).
 """
 
 import pytest
 from pathlib import Path
-from unittest.mock import MagicMock, patch
-import tkinter as tk
-
 from scripts.ui.modern_app import ModernSaveEditorApp
+from scripts.ui.views.switches_view import extract_category_and_clean_name
 
 FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
 
+
 def test_redesign_sidebar_and_navigation():
-    """Valida a navegação pelas áreas via Sidebar e via atalhos."""
+    """Valida a navegação pelas áreas via Sidebar, atalhos visíveis, statusbar e busca."""
     try:
         app = ModernSaveEditorApp()
         app.withdraw()
@@ -23,6 +23,18 @@ def test_redesign_sidebar_and_navigation():
     try:
         assert app.sidebar is not None
         assert app.topbar is not None
+        assert hasattr(app, "statusbar")
+        assert hasattr(app, "lbl_status_text")
+
+        # Verifica atalhos visíveis nos botões da Sidebar (Ctrl 0 a Ctrl 5)
+        assert "library" in app.sidebar.nav_shortcuts
+        assert app.sidebar.nav_shortcuts["library"].cget("text") == "Ctrl 0"
+        assert app.sidebar.nav_shortcuts["overview"].cget("text") == "Ctrl 1"
+        assert app.sidebar.nav_shortcuts["advanced"].cget("text") == "Ctrl 5"
+
+        # Topbar possui método focus_search (Ctrl+K) e botão Exportar JSON
+        app.topbar.focus_search()
+        assert "Exportar JSON" in app.topbar.btn_export.cget("text")
 
         # Teste de navegação para cada uma das áreas
         app.select_nav_area("overview")
@@ -53,7 +65,7 @@ def test_redesign_sidebar_and_navigation():
 
 
 def test_redesign_undo_redo_and_dirty_badge():
-    """Valida a integração da Topbar com o UndoManager e o Dirty Badge."""
+    """Valida a integração da Topbar com o UndoManager, Dirty Badge e telas detalhadas do Figma."""
     try:
         app = ModernSaveEditorApp()
         app.withdraw()
@@ -66,6 +78,9 @@ def test_redesign_undo_redo_and_dirty_badge():
 
         assert app.adapter is not None
         initial_gold = app.adapter.get_gold()
+
+        # Statusbar atualizada com tempo de carregamento
+        assert "save carregado em" in app.lbl_status_text.cget("text")
 
         # O botão desfazer deve começar desabilitado
         assert app.topbar.btn_undo.cget("state") == "disabled"
@@ -81,6 +96,45 @@ def test_redesign_undo_redo_and_dirty_badge():
         app.undo_last_action()
         assert app.adapter.get_gold() == initial_gold
         assert app.topbar.btn_undo.cget("state") == "disabled"
+
+        # Verifica Tela 02 (Personagens): barras de recursos, badges e barra de EXP
+        app.select_nav_area("actors")
+        assert "hp" in app.view_actors.resource_bars
+        assert "mp" in app.view_actors.resource_bars
+        assert "tp" in app.view_actors.resource_bars
+        assert hasattr(app.view_actors, "exp_bar")
+        assert hasattr(app.view_actors, "lbl_class_badge")
+        assert hasattr(app.view_actors, "lbl_party_badge")
+
+        # Verifica Tela 03 (Inventário): coluna de descrição preservando índice 2 como quantidade
+        app.select_nav_area("inventory")
+        assert tuple(app.tree_inv.cget("displaycolumns")) == ("id", "name", "desc", "qty")
+        inv_children = app.tree_inv.get_children()
+        assert len(inv_children) > 0
+        first_vals = app.tree_inv.item(inv_children[0], "values")
+        assert len(first_vals) == 4  # (id, name, qty, desc)
+
+        # Verifica Tela 04 (Switches): coluna de categoria preservando índice 2 como estado/valor
+        cat, clean = extract_category_and_clean_name("[Chefe] Dragão Derrotado")
+        assert cat == "Chefe"
+        assert clean == "Dragão Derrotado"
+        app.select_nav_area("switches")
+        assert tuple(app.tree_sys.cget("displaycolumns")) == ("id", "cat", "name", "val")
+
+        # Verifica Tela 05 (Árvore JSON): breadcrumb e validação ao vivo
+        app.select_nav_area("advanced")
+        app.view_advanced.set_inspector_node("party._gold", 12480)
+        assert "party" in app.view_advanced.lbl_breadcrumb.cget("text")
+        assert "JSON válido" in app.view_advanced.lbl_validation.cget("text")
+
+        # Verifica Tela 09 e 10 (Biblioteca): filtro, ordenação e detalhes com coluna Ouro
+        app.select_nav_area("library")
+        assert hasattr(app.view_library, "entry_game_filter")
+        assert "recent" in app.view_library.sort_btns
+        games = app.lib_mgr.get_games()
+        if games:
+            app.view_library.show_game_details(games[0])
+            assert "gold" in tuple(app.view_library.tree_slots.cget("columns"))
     finally:
         app.destroy()
 
@@ -96,8 +150,9 @@ def test_redesign_theme_toggle():
     try:
         # Modo inicial
         app.toggle_theme()
-        # Não deve lançar exceções e deve alternar o texto na Sidebar
+        # Não deve lançar exceções e deve alternar o texto e o pill switch na Sidebar
         assert app.sidebar.lbl_theme_text.cget("text") in ("Tema claro", "Tema escuro")
+        assert hasattr(app.sidebar, "theme_switch_pill")
 
         app.toggle_theme()
         assert app.sidebar.lbl_theme_text.cget("text") in ("Tema claro", "Tema escuro")

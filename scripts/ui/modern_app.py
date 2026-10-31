@@ -36,7 +36,7 @@ from core.library_manager import LibraryManager
 from ui.theme import (
     PRIMARY_COLOR, PRIMARY_HOVER, PRIMARY_TEXT,
     SUCCESS_COLOR, SUCCESS_HOVER, DANGER_COLOR, DANGER_HOVER,
-    WARNING_COLOR, WARNING_HOVER, BG_CANVAS, BG_CARD, BG_SUB, BG_ACTIVE,
+    WARNING_COLOR, WARNING_HOVER, BG_CANVAS, BG_SIDEBAR, BG_CARD, BG_SUB, BG_ACTIVE,
     TEXT_MUTED, TEXT_MAIN, TEXT_SUBTLE, BORDER_COLOR, BORDER_SUBTLE,
     get_ui_font, get_mono_font, setup_treeview_styles, init_draw_engine
 )
@@ -278,14 +278,19 @@ class ModernSaveEditorApp(CtkDndApp):
     # --- Construção da UI ---
 
     def _build_main_layout(self):
+        # 0. Barra de Status Inferior (30px - fiel ao Figma #5:843 / #5:2023)
+        self._build_statusbar()
+
         # 1. Sidebar Fixa à Esquerda
         self.sidebar = Sidebar(
             self,
             on_navigate=self.select_nav_area,
             on_theme_toggle=self.toggle_theme,
-            on_select_db_dir=self.select_game_data_dir
+            on_select_db_dir=self.select_game_data_dir,
+            on_open_file=self.open_file_dialog
         )
         self.sidebar.pack(side="left", fill="y")
+        self.sidebar.update_library_count(len(self.lib_mgr.get_games()))
 
         # 2. Container da Direita (Topbar + Área de Conteúdo)
         self.right_container = ctk.CTkFrame(self, fg_color="transparent")
@@ -300,6 +305,7 @@ class ModernSaveEditorApp(CtkDndApp):
             on_search_change=self._on_global_search_change
         )
         self.topbar.pack(side="top", fill="x")
+        self.topbar.set_save_loaded(False)
 
         # Container onde as telas (Views) serão alternadas
         self.views_container = ctk.CTkFrame(self.right_container, fg_color="transparent")
@@ -311,6 +317,51 @@ class ModernSaveEditorApp(CtkDndApp):
         # Inicia no Estado Vazio ou Biblioteca se não houver arquivo aberto
         self.select_nav_area("empty")
 
+    def _build_statusbar(self):
+        """Constrói a barra de status inferior de 30px com indicador de estado e dicas de atalho (#5:843)."""
+        self.statusbar = ctk.CTkFrame(
+            self, height=30, fg_color=BG_SIDEBAR, corner_radius=0,
+            border_width=1, border_color=BORDER_COLOR
+        )
+        self.statusbar.pack(side="bottom", fill="x")
+        self.statusbar.pack_propagate(False)
+
+        left_status = ctk.CTkFrame(self.statusbar, fg_color="transparent")
+        left_status.pack(side="left", padx=16, fill="y")
+
+        self.lbl_status_dot = ctk.CTkLabel(
+            left_status, text="●", font=get_ui_font(10),
+            text_color=TEXT_SUBTLE
+        )
+        self.lbl_status_dot.pack(side="left", padx=(0, 6))
+
+        self.lbl_status_text = ctk.CTkLabel(
+            left_status,
+            text="Aguardando um arquivo · arraste e solte em qualquer lugar da janela",
+            font=get_ui_font(11), text_color=TEXT_MUTED
+        )
+        self.lbl_status_text.pack(side="left")
+
+        right_hints = ctk.CTkFrame(self.statusbar, fg_color="transparent")
+        right_hints.pack(side="right", padx=16, fill="y")
+
+        shortcuts = [
+            ("Ctrl S", "salvar"),
+            ("Ctrl Z", "desfazer"),
+            ("Ctrl K", "buscar"),
+        ]
+        for key_txt, desc_txt in shortcuts:
+            item = ctk.CTkFrame(right_hints, fg_color="transparent")
+            item.pack(side="left", padx=(12, 0))
+            ctk.CTkLabel(
+                item, text=key_txt, font=get_mono_font(10, "bold"),
+                text_color=TEXT_MUTED
+            ).pack(side="left", padx=(0, 4))
+            ctk.CTkLabel(
+                item, text=desc_txt, font=get_ui_font(11),
+                text_color=TEXT_SUBTLE
+            ).pack(side="left")
+
     def _init_views(self):
         # View 06: Estado Vazio
         self.view_empty = EmptyView(
@@ -318,7 +369,8 @@ class ModernSaveEditorApp(CtkDndApp):
             on_choose_file=self.open_file_dialog,
             on_choose_game_dir=self.select_game_data_dir,
             on_open_recent=lambda p: self.load_save_file(p),
-            get_recent_files=self.lib_mgr.get_recent_files
+            get_recent_files=self.lib_mgr.get_recent_files,
+            on_clear_recents=self.lib_mgr.clear_recent_files
         )
 
         # View 01: Visão Geral
@@ -422,7 +474,8 @@ class ModernSaveEditorApp(CtkDndApp):
         self.lbl_selected_sys = CompatibilityWidgetProxy()
 
     def _setup_keyboard_shortcuts(self):
-        """Registra os atalhos de teclado globais Ctrl 1–5, Ctrl S, Ctrl Z, Ctrl K."""
+        """Registra os atalhos de teclado globais Ctrl 0–5, Ctrl S, Ctrl Z, Ctrl K."""
+        self.bind("<Control-KeyPress-0>", lambda e: self.select_nav_area("library"))
         self.bind("<Control-KeyPress-1>", lambda e: self.select_nav_area("overview"))
         self.bind("<Control-KeyPress-2>", lambda e: self.select_nav_area("actors"))
         self.bind("<Control-KeyPress-3>", lambda e: self.select_nav_area("inventory"))
@@ -557,11 +610,13 @@ class ModernSaveEditorApp(CtkDndApp):
             return
 
         def work():
+            t0 = time.perf_counter()
             db_found = self.db.discover_and_load(p)
             adapter = detect_and_create_adapter(p, self.db)
             adapter.load(p)
             self.adapter = adapter
             self.current_file = p
+            self._last_load_ms = max(1, int((time.perf_counter() - t0) * 1000))
             return db_found
 
         if synchronous:
@@ -586,6 +641,7 @@ class ModernSaveEditorApp(CtkDndApp):
 
         # Limpa o histórico de undo para o novo arquivo
         self.undo_mgr.clear()
+        self.topbar.set_save_loaded(True)
 
         # Atualiza a Sidebar com informações do save
         self.sidebar.update_file_status(
@@ -610,6 +666,9 @@ class ModernSaveEditorApp(CtkDndApp):
             title=raw_db_title
         )
         self.sidebar.update_library_count(len(self.lib_mgr.get_games()))
+
+        load_ms = getattr(self, "_last_load_ms", 42)
+        self._set_status(f"Pronto · save carregado em {load_ms} ms")
 
         # Alterna para a visão geral
         self.select_nav_area("overview")
@@ -678,7 +737,15 @@ class ModernSaveEditorApp(CtkDndApp):
         self.topbar.set_dirty_status(is_dirty, cnt)
 
     def _set_status(self, msg: str, busy: bool = False):
-        pass
+        if hasattr(self, "lbl_status_text") and self.lbl_status_text is not None:
+            self.lbl_status_text.configure(text=msg)
+        if hasattr(self, "lbl_status_dot") and self.lbl_status_dot is not None:
+            if busy:
+                self.lbl_status_dot.configure(text_color=WARNING_COLOR)
+            elif self.adapter is not None:
+                self.lbl_status_dot.configure(text_color=SUCCESS_COLOR)
+            else:
+                self.lbl_status_dot.configure(text_color=TEXT_SUBTLE)
 
     def toggle_theme(self):
         current = ctk.get_appearance_mode()
@@ -729,6 +796,18 @@ class ModernSaveEditorApp(CtkDndApp):
 
     # --- Lógica de Visão Geral (Ouro, Cheats e Heróis) ---
 
+    def _enrich_actor_dict(self, a: Dict[str, Any]) -> Dict[str, Any]:
+        """Adiciona class_name e next_exp ao dicionário do ator usando o GameDatabaseManager."""
+        if self.db and self.db.is_loaded():
+            cid = a.get("class_id", 1)
+            if not a.get("class_name"):
+                a["class_name"] = self.db.get_class_name(cid)
+            if not a.get("next_exp") and hasattr(self.db, "get_exp_for_level"):
+                nxt = self.db.get_exp_for_level(cid, int(a.get("level", 1)) + 1)
+                if nxt:
+                    a["next_exp"] = nxt
+        return a
+
     def _refresh_overview(self):
         if not self.adapter: return
 
@@ -742,10 +821,10 @@ class ModernSaveEditorApp(CtkDndApp):
         if hasattr(self.adapter, "get_playtime_and_steps"):
             playtime, steps = self.adapter.get_playtime_and_steps()
 
-        actors = self.adapter.get_actors() if hasattr(self.adapter, "get_actors") else []
+        actors = [self._enrich_actor_dict(a) for a in (self.adapter.get_actors() if hasattr(self.adapter, "get_actors") else [])]
         party = []
         if hasattr(self.adapter, "get_party_members"):
-            party = self.adapter.get_party_members()
+            party = [self._enrich_actor_dict(p) for p in self.adapter.get_party_members()]
         elif hasattr(self.adapter, "get_party_dict"):
             party_dict = self.adapter.get_party_dict()
             party_ids = party_dict.get("_actors", []) if isinstance(party_dict, dict) else []
@@ -762,6 +841,12 @@ class ModernSaveEditorApp(CtkDndApp):
             total_actors=len(actors),
             saved_date=saved_date
         )
+
+        if hasattr(self.view_overview, "update_cheat_counts"):
+            ic = len(self.db.items) if (self.db and self.db.is_loaded()) else 0
+            wc = len(self.db.weapons) if (self.db and self.db.is_loaded()) else 0
+            ac = len(self.db.armors) if (self.db and self.db.is_loaded()) else 0
+            self.view_overview.update_cheat_counts(len(party), ic, wc, ac)
 
         # Heróis do grupo
         self.view_overview.update_party_preview(party)
@@ -891,10 +976,10 @@ class ModernSaveEditorApp(CtkDndApp):
 
     def _refresh_actors(self):
         if not self.adapter: return
-        actors = self.adapter.get_actors() if hasattr(self.adapter, "get_actors") else []
+        actors = [self._enrich_actor_dict(a) for a in (self.adapter.get_actors() if hasattr(self.adapter, "get_actors") else [])]
         party_members = []
         if hasattr(self.adapter, "get_party_members"):
-            party_members = self.adapter.get_party_members()
+            party_members = [self._enrich_actor_dict(p) for p in self.adapter.get_party_members()]
         elif hasattr(self.adapter, "get_party_dict"):
             party_dict = self.adapter.get_party_dict()
             p_ids = party_dict.get("_actors", []) if isinstance(party_dict, dict) else []
@@ -920,7 +1005,7 @@ class ModernSaveEditorApp(CtkDndApp):
             aid = actor_data_or_id
         self.selected_actor_id = aid
 
-        actors = self.adapter.get_actors() if self.adapter else []
+        actors = [self._enrich_actor_dict(a) for a in (self.adapter.get_actors() if self.adapter else [])]
         sel_actor = next((a for a in actors if str(a["id"]) == str(aid)), None)
         if sel_actor:
             self.view_actors.set_selected_actor_data(sel_actor)
@@ -947,7 +1032,7 @@ class ModernSaveEditorApp(CtkDndApp):
         self.adapter.update_actor(self.selected_actor_id, stats)
 
         # Atualiza apenas o botão do ator modificado sem recriar widgets
-        actors = self.adapter.get_actors() if hasattr(self.adapter, "get_actors") else []
+        actors = [self._enrich_actor_dict(a) for a in (self.adapter.get_actors() if hasattr(self.adapter, "get_actors") else [])]
         updated_actor = next((a for a in actors if str(a.get("id")) == str(self.selected_actor_id)), None)
         if updated_actor:
             aid_str = str(self.selected_actor_id)
@@ -955,6 +1040,12 @@ class ModernSaveEditorApp(CtkDndApp):
                 name = updated_actor.get("name", "")
                 lvl = updated_actor.get("level", 1)
                 self.actor_buttons[aid_str].configure(text=f"{name}\n(Nível {lvl})")
+            if hasattr(self.view_actors, "hero_lvl_labels") and aid_str in self.view_actors.hero_lvl_labels:
+                self.view_actors.hero_lvl_labels[aid_str].configure(text=f"Nv {updated_actor.get('level', 1)}")
+            if hasattr(self.view_actors, "hero_hp_bars") and aid_str in self.view_actors.hero_hp_bars:
+                hp = updated_actor.get("hp", 0)
+                mhp = max(1, updated_actor.get("max_hp", hp) or hp or 1)
+                self.view_actors.hero_hp_bars[aid_str].set(min(1.0, max(0.0, float(hp) / float(mhp))))
 
         self.tabs_need_refresh["overview"] = True
         self.tabs_need_refresh["advanced"] = True
@@ -1025,11 +1116,27 @@ class ModernSaveEditorApp(CtkDndApp):
         elif self._inv_sort_col == "qty":
             filtered.sort(key=lambda x: int(x.get("quantity", 0)), reverse=reverse)
 
+        db_dict = {}
+        if self.db and self.db.is_loaded():
+            if self.current_inv_kind == "items":
+                db_dict = self.db.items
+            elif self.current_inv_kind == "weapons":
+                db_dict = self.db.weapons
+            elif self.current_inv_kind == "armors":
+                db_dict = self.db.armors
+
         for it in filtered:
             i_id_raw = str(it["id"])
             i_id_fmt = f"#{i_id_raw.zfill(3)}" if i_id_raw.isdigit() else f"#{i_id_raw}"
-            tag = "normal_qty" if it.get("quantity", 0) > 0 else "zero_qty"
-            self.tree_inv.insert("", "end", iid=str(it["id"]), values=(i_id_fmt, it["name"], str(it["quantity"])), tags=(tag,))
+            qty_val = int(it.get("quantity", 0))
+            tag = "normal_qty" if qty_val > 0 else "zero_qty"
+            desc_str = str(it.get("description") or db_dict.get(i_id_raw, {}).get("description", "") or "—")
+            desc_str = " ".join(desc_str.split())
+            self.tree_inv.insert(
+                "", "end", iid=str(it["id"]),
+                values=(i_id_fmt, it["name"], str(qty_val), desc_str),
+                tags=(tag,)
+            )
 
         # Atualiza contadores dos segmentos (possuídos / total do catálogo)
         self._update_inventory_counts_only()
@@ -1217,11 +1324,17 @@ class ModernSaveEditorApp(CtkDndApp):
             elif self._system_sort_col == "val":
                 filtered.sort(key=lambda x: int(x["value"]), reverse=reverse)
 
+            from ui.views.switches_view import extract_category_and_clean_name
             for s in filtered:
                 s_id = s["id"]
                 val_text = "🟢 LIGADO (ON)" if s["value"] else "⚪ DESLIGADO (OFF)"
                 tag = "on" if s["value"] else "off"
-                self.tree_sys.insert("", "end", iid=str(s_id), values=(f"#{str(s_id).zfill(4)}", s["name"], val_text), tags=(tag,))
+                cat, _ = extract_category_and_clean_name(s["name"])
+                self.tree_sys.insert(
+                    "", "end", iid=str(s_id),
+                    values=(f"#{str(s_id).zfill(4)}", s["name"], val_text, cat),
+                    tags=(tag,)
+                )
 
             all_vars = self.adapter.get_variables()
             self.view_switches.update_subtab_counts(len(switches), len(all_vars), on_count, named_count)
@@ -1249,9 +1362,14 @@ class ModernSaveEditorApp(CtkDndApp):
             elif self._system_sort_col == "val":
                 filtered.sort(key=lambda x: str(x["value"]), reverse=reverse)
 
+            from ui.views.switches_view import extract_category_and_clean_name
             for v in filtered:
                 v_id = v["id"]
-                self.tree_sys.insert("", "end", iid=str(v_id), values=(f"#{str(v_id).zfill(4)}", v["name"], str(v["value"])))
+                cat, _ = extract_category_and_clean_name(v["name"])
+                self.tree_sys.insert(
+                    "", "end", iid=str(v_id),
+                    values=(f"#{str(v_id).zfill(4)}", v["name"], str(v["value"]), cat)
+                )
 
             all_sw = self.adapter.get_switches()
             self.view_switches.update_subtab_counts(len(all_sw), len(variables), 0, named_count)
@@ -1357,7 +1475,12 @@ class ModernSaveEditorApp(CtkDndApp):
 
         for key, value in items_slice:
             is_container = isinstance(value, (dict, list)) or hasattr(value, "attributes")
-            val_str = "{...}" if isinstance(value, dict) else (" [...]" if isinstance(value, list) else repr(value))
+            if isinstance(value, dict):
+                val_str = f"{{ {len(value)} chaves }}"
+            elif isinstance(value, list):
+                val_str = f"[ {len(value)} itens ]"
+            else:
+                val_str = repr(value)
             node = self.adv_tree.insert(parent_node, "end", text=str(key), values=(val_str,))
             child_path = path + [key]
             self.tree_paths[node] = child_path

@@ -241,6 +241,11 @@ class LibraryManager:
         self.data["recent_files"] = recents[:20]
         self.save()
 
+    def clear_recent_files(self):
+        """Limpa a lista de arquivos abertos recentemente."""
+        self.data["recent_files"] = []
+        self.save()
+
     def get_recent_files(self, limit: int = 10) -> List[Dict[str, Any]]:
         """Retorna os arquivos recentes existentes com tempo relativo formatado."""
         res = []
@@ -383,6 +388,7 @@ class LibraryManager:
                 pass
 
         cur_p = Path(current_open_file).resolve() if current_open_file else None
+        recent_paths = {str(Path(r["path"]).resolve()) for r in self.data.get("recent_files", []) if r.get("path")}
 
         # Monta a lista unificada de slots
         slots = []
@@ -391,9 +397,11 @@ class LibraryManager:
             stat = fpath.stat()
             bak_path = fpath.with_name(f"{name}.bak")
             has_bak = bak_path.exists()
+            resolved_str = str(fpath.resolve())
 
             # Status do slot
             is_current = bool(cur_p and cur_p == fpath.resolve())
+            was_opened = is_current or has_bak or (resolved_str in recent_paths)
             if is_current:
                 status = "Aberto agora"
             elif has_bak:
@@ -424,11 +432,88 @@ class LibraryManager:
                 "heroes": heroes_summary,
                 "status": status,
                 "is_current": is_current,
-                "has_backup": has_bak
+                "has_backup": has_bak,
+                "never_opened": not was_opened,
             })
 
         slots.sort(key=lambda s: (s["slot_number"] if s["slot_number"] is not None else 9999, s["filename"]))
         return slots
+
+    def get_slot_preview_details(self, slot_path: str | Path) -> Dict[str, Any]:
+        """
+        Lê metadados ricos de pré-visualização de um slot (ouro, tempo, passos, grupo, inventário e BD)
+        de forma tolerante a falhas, sem alterar o estado do editor principal.
+        """
+        p = Path(slot_path).resolve()
+        info: Dict[str, Any] = {
+            "gold": 0,
+            "gold_str": "—",
+            "playtime": "—",
+            "steps": 0,
+            "party_names": "",
+            "party_members": [],
+            "items_count": 0,
+            "weapons_count": 0,
+            "armors_count": 0,
+            "db_connected": False,
+            "db_summary": "",
+        }
+        if not p.is_file():
+            return info
+
+        try:
+            from core.database_manager import GameDatabaseManager
+            from core.detector import detect_and_create_adapter
+
+            db = GameDatabaseManager()
+            db_ok = db.discover_and_load(p)
+            info["db_connected"] = db_ok
+            if db_ok:
+                info["db_summary"] = db.summary_info()
+
+            adapter = detect_and_create_adapter(p, db)
+            if not adapter:
+                return info
+            adapter.load(p)
+
+            gold = adapter.get_gold() if hasattr(adapter, "get_gold") else 0
+            info["gold"] = gold
+            info["gold_str"] = f"{gold:,} G".replace(",", ".")
+
+            if hasattr(adapter, "get_playtime_and_steps"):
+                pt, st = adapter.get_playtime_and_steps()
+                if pt and pt != "Desconhecido":
+                    if ":" in pt and len(pt.split(":")) == 3:
+                        parts = pt.split(":")
+                        info["playtime"] = f"{int(parts[0])}h {parts[1]}m"
+                    else:
+                        info["playtime"] = pt
+                info["steps"] = st
+
+            actors = adapter.get_actors() if hasattr(adapter, "get_actors") else []
+            party_members = []
+            if hasattr(adapter, "get_party_dict"):
+                p_dict = adapter.get_party_dict()
+                p_ids = p_dict.get("_actors", []) if isinstance(p_dict, dict) else []
+                if p_ids:
+                    p_set = [str(x) for x in p_ids]
+                    party_members = [a for a in actors if str(a.get("id")) in p_set]
+            if not party_members:
+                party_members = actors[:4]
+
+            info["party_members"] = party_members[:4]
+            if party_members:
+                names = [str(a.get("name", "")).split()[0] for a in party_members[:4] if a.get("name")]
+                info["party_names"] = " · ".join(names)
+
+            if hasattr(adapter, "get_inventory"):
+                info["items_count"] = len([x for x in adapter.get_inventory("items") if x.get("quantity", 0) > 0])
+                info["weapons_count"] = len([x for x in adapter.get_inventory("weapons") if x.get("quantity", 0) > 0])
+                info["armors_count"] = len([x for x in adapter.get_inventory("armors") if x.get("quantity", 0) > 0])
+        except Exception:
+            pass
+
+        return info
 
     def discover_neighboring_games(self, reference_path: str | Path) -> List[Dict[str, Any]]:
         """Descobre jogos vizinhos no mesmo diretório pai ou diretório de jogos."""

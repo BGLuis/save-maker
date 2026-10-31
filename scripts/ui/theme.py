@@ -12,59 +12,64 @@ import tkinter.font as tkfont
 import customtkinter as ctk
 from PIL import Image
 
-# Acento Primário: Ouro / Dourado
-PRIMARY_COLOR = ("#B7801A", "#E2B342")        # Gold dark/light accent
-PRIMARY_HOVER = ("#9A6915", "#F0C155")
-PRIMARY_TEXT = ("#FFFFFF", "#0B0C10")
+# Acento Primário: Ouro / Dourado (Figma #E9B44C dark / #B7801A light)
+PRIMARY_COLOR = ("#B7801A", "#E9B44C")
+PRIMARY_HOVER = ("#9A6915", "#D8A23B")
+PRIMARY_TEXT = ("#FFFFFF", "#1A1408")
 
-# Semântica de Sucesso (Verde)
-SUCCESS_COLOR = ("#1E9E66", "#34D399")
+# Semântica de Sucesso (Verde #3FCF8E)
+SUCCESS_COLOR = ("#1E9E66", "#3FCF8E")
 SUCCESS_HOVER = ("#178253", "#2BB882")
-SUCCESS_BG = ("#E8F7F0", "#132B1E")
+SUCCESS_BG = ("#E8F7F0", "#142D23")
 
-# Semântica de Perigo (Vermelho)
-DANGER_COLOR = ("#D64545", "#F87171")
+# Semântica de Perigo / HP (Vermelho Coral #F2706B)
+DANGER_COLOR = ("#D64545", "#F2706B")
 DANGER_HOVER = ("#BF3939", "#EF4444")
-DANGER_BG = ("#FCEBEB", "#3A181C")
+DANGER_BG = ("#FCEBEB", "#2D181A")
 
 # Semântica de Aviso / Destaque Dourado
-WARNING_COLOR = ("#B7801A", "#FBBF24")
-WARNING_HOVER = ("#9A6915", "#F59E0B")
-WARNING_BG = ("#F9F4E8", "#2E2310")
+WARNING_COLOR = ("#B7801A", "#E9B44C")
+WARNING_HOVER = ("#9A6915", "#D8A23B")
+WARNING_BG = ("#FBF3E0", "#2A2418")
 
-# Semântica de Informação (Azul)
-INFO_COLOR = ("#2563EB", "#60A5FA")
-INFO_BG = ("#EFF6FF", "#14253D")
+# Semântica de Informação / MP (Azul #6E8BFF)
+INFO_COLOR = ("#3B5BDB", "#6E8BFF")
+INFO_BG = ("#EAEFFD", "#192038")
 
-# Backgrounds
-BG_CANVAS_LIGHT = "#F6F7F9"
+# Cores dedicadas para Barras de Recursos (HP / MP / TP)
+HP_COLOR = ("#D64545", "#F2706B")
+MP_COLOR = ("#3B5BDB", "#6E8BFF")
+TP_COLOR = ("#1E9E66", "#3FCF8E")
+
+# Backgrounds (Figma Light #F4F2EE / #FAF8F4 / #EFECE6 e Dark #0B0C10 / #14161C / #1B1E26 / #232733)
+BG_CANVAS_LIGHT = "#F4F2EE"
 BG_CANVAS_DARK = "#0B0C10"
 BG_CANVAS = (BG_CANVAS_LIGHT, BG_CANVAS_DARK)
 
-BG_SIDEBAR_LIGHT = "#FFFFFF"
-BG_SIDEBAR_DARK = "#0F1117"
+BG_SIDEBAR_LIGHT = "#FAF8F4"
+BG_SIDEBAR_DARK = "#14161C"
 BG_SIDEBAR = (BG_SIDEBAR_LIGHT, BG_SIDEBAR_DARK)
 
 BG_CARD_LIGHT = "#FFFFFF"
 BG_CARD_DARK = "#14161C"
 BG_CARD = (BG_CARD_LIGHT, BG_CARD_DARK)
 
-BG_SUB_LIGHT = "#F1F3F6"
-BG_SUB_DARK = "#1A1D24"
+BG_SUB_LIGHT = "#FAF8F4"
+BG_SUB_DARK = "#1B1E26"
 BG_SUB = (BG_SUB_LIGHT, BG_SUB_DARK)
 
-BG_ACTIVE_LIGHT = "#E8ECF2"
-BG_ACTIVE_DARK = "#1E222B"
+BG_ACTIVE_LIGHT = "#EFECE6"
+BG_ACTIVE_DARK = "#232733"
 BG_ACTIVE = (BG_ACTIVE_LIGHT, BG_ACTIVE_DARK)
 
 # Textos
-TEXT_MAIN = ("#111318", "#F0F2F5")
-TEXT_MUTED = ("#636B78", "#8C93A0")
-TEXT_SUBTLE = ("#949CA9", "#5A6170")
+TEXT_MAIN = ("#16171C", "#ECEEF3")
+TEXT_MUTED = ("#5B606C", "#9AA0AE")
+TEXT_SUBTLE = ("#8A8F99", "#6B7180")
 
 # Bordas
-BORDER_COLOR = ("#E2E5EA", "#232730")
-BORDER_SUBTLE = ("#CBD0D8", "#2E333F")
+BORDER_COLOR = ("#E4E0D8", "#262A35")
+BORDER_SUBTLE = ("#D3CEC4", "#353A48")
 
 # Cache de fontes detectadas
 _BEST_UI_FAMILY: Optional[str] = None
