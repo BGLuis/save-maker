@@ -532,6 +532,11 @@ class ModernSaveEditorApp(CtkDndApp):
         if not from_shim and self.adapter:
             self._on_tab_change()
 
+        try:
+            self.update_idletasks()
+        except Exception:
+            pass
+
     def _on_tab_change(self):
         """Atualiza a tela ativa se ela estiver com a flag de refresh pendente."""
         if not self.adapter: return
@@ -558,6 +563,11 @@ class ModernSaveEditorApp(CtkDndApp):
                 self._populate_tree()
                 self.tabs_need_refresh["advanced"] = False
 
+        try:
+            self.update_idletasks()
+        except Exception:
+            pass
+
     def _refresh_all_views(self):
         """Atualiza a tela ativa imediatamente e invalida o cache das demais para lazy loading."""
         if not self.adapter: return
@@ -581,6 +591,11 @@ class ModernSaveEditorApp(CtkDndApp):
         elif "Avançado" in curr_tab or "Árvore" in curr_tab:
             self._populate_tree()
             self.tabs_need_refresh["advanced"] = False
+
+        try:
+            self.update_idletasks()
+        except Exception:
+            pass
 
     def _setup_treeview_styles(self, mode: str = "dark"):
         setup_treeview_styles(mode)
@@ -1618,16 +1633,23 @@ class ModernSaveEditorApp(CtkDndApp):
         self.destroy()
 
     def _check_gui_queue(self):
+        had_tasks = False
         try:
             while True:
                 fn, args, kwargs = self.gui_queue.get_nowait()
                 try:
                     fn(*args, **kwargs)
+                    had_tasks = True
                 except Exception as e:
                     print(f"[GUI Queue Error] {e}")
         except queue.Empty:
             pass
         finally:
+            if had_tasks:
+                try:
+                    self.update_idletasks()
+                except Exception:
+                    pass
             self.after(100, self._check_gui_queue)
 
     def queue_ui(self, fn, *args, **kwargs):

@@ -245,3 +245,8 @@ class EmptyView(ctk.CTkFrame):
 
             if idx < len(recents[:6]) - 1:
                 ctk.CTkFrame(self.recent_list_frame, height=1, fg_color=BORDER_COLOR).pack(fill="x", padx=8)
+
+        try:
+            self.recent_list_frame.update_idletasks()
+        except Exception:
+            pass

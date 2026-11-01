@@ -586,6 +586,11 @@ class ActorsView(ctk.CTkFrame):
             for a in out_party:
                 self._create_hero_list_item(a, str(a.get("id")) == str(selected_id))
 
+        try:
+            self.actors_scroll.update_idletasks()
+        except Exception:
+            pass
+
     def _create_hero_list_item(self, actor: Dict[str, Any], is_selected: bool):
         aid_str = str(actor.get("id"))
         name_raw = actor.get("name") or "Herói"
@@ -697,6 +702,11 @@ class ActorsView(ctk.CTkFrame):
         self.lbl_exp_next.configure(text=f"/ {next_exp:,}".replace(",", "."))
         self.exp_bar.set(min(1.0, max(0.0, float(exp_val) / float(max(1, next_exp)))))
 
+        try:
+            self.right.update_idletasks()
+        except Exception:
+            pass
+
     def _on_filter_change(self, event=None):
         q = self.entry_filter.get().strip().lower()
         for aid_str, btn in self.actor_buttons.items():
@@ -705,3 +715,8 @@ class ActorsView(ctk.CTkFrame):
                 row_frame.pack(fill="x", pady=1)
             else:
                 row_frame.pack_forget()
+
+        try:
+            self.actors_scroll.update_idletasks()
+        except Exception:
+            pass

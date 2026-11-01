@@ -501,3 +501,8 @@ class OverviewView(ctk.CTkScrollableFrame):
 
             bar_mp = StatBar(card_pad, label="MP", current=mp, maximum=max_mp, fill_color=MP_COLOR, height=6)
             bar_mp.pack(fill="x", pady=3)
+
+        try:
+            self.heroes_container.update_idletasks()
+        except Exception:
+            pass

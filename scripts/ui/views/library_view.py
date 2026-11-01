@@ -241,6 +241,11 @@ class LibraryView(ctk.CTkFrame):
             if suggestions:
                 self._create_suggestions_card(self.scroll_list, suggestions, games[0].get("title", "seu jogo"))
 
+        try:
+            self.scroll_list.update_idletasks()
+        except Exception:
+            pass
+
     def _toggle_game_collapse(self, game_path: str):
         if game_path in self.collapsed_games:
             self.collapsed_games.remove(game_path)
@@ -793,6 +798,11 @@ class LibraryView(ctk.CTkFrame):
             self.tree_slots.selection_set(target_item)
             self._on_slot_selected(slots, slot_previews)
 
+        try:
+            self.container.update_idletasks()
+        except Exception:
+            pass
+
     def _build_slot_preview_pane(self):
         p = ctk.CTkFrame(self.right_preview, fg_color="transparent")
         p.pack(fill="both", expand=True, padx=18, pady=16)
@@ -994,6 +1004,11 @@ class LibraryView(ctk.CTkFrame):
             bar = ctk.CTkProgressBar(r, width=54, height=4, corner_radius=2, fg_color=BG_ACTIVE, progress_color=HP_COLOR)
             bar.pack(side="right", padx=4)
             bar.set(min(1.0, max(0.0, float(hp) / float(mhp))))
+
+        try:
+            self.prev_party_box.update_idletasks()
+        except Exception:
+            pass
 
     def _handle_open_slot(self):
         if not self.selected_slot:
