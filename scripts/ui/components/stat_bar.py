@@ -54,10 +54,6 @@ class StatBar(ctk.CTkFrame):
         )
         self.progress_bar.pack(fill="x")
         self.progress_bar.set(pct)
-        try:
-            self.update_idletasks()
-        except Exception:
-            pass
 
     def update_values(self, current: int, maximum: int):
         self.current = current

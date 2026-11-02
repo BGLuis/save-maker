@@ -140,6 +140,19 @@ class Topbar(ctk.CTkFrame):
     def set_title(self, title: str):
         self.lbl_title.configure(text=title)
 
+    def set_loading(self, is_loading: bool, text: str = ""):
+        """Exibe status de carregamento e desativa temporariamente botões de ação."""
+        if is_loading:
+            self.lbl_title.configure(text=text or "Carregando...")
+            self.btn_save.configure(state="disabled")
+            self.btn_export.configure(state="disabled")
+            self.btn_undo.configure(state="disabled")
+            self.lbl_dirty_dot.configure(text="⏳", text_color=PRIMARY_COLOR)
+            self.lbl_dirty_text.configure(text="Carregando...", text_color=PRIMARY_COLOR)
+            self.dirty_badge.configure(fg_color=BG_SUB, border_width=1, border_color=BORDER_COLOR)
+        else:
+            self.dirty_badge.configure(fg_color="transparent", border_width=0)
+
     def focus_search(self):
         """Foca no campo de busca global ao pressionar Ctrl+K."""
         self.entry_search.focus_set()

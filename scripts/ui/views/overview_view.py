@@ -52,6 +52,7 @@ class OverviewView(ctk.CTkScrollableFrame):
 
         self._initial_gold: Optional[int] = None
         self.cheat_desc_labels: Dict[str, ctk.CTkLabel] = {}
+        self._hero_cards: List[Dict[str, Any]] = []
 
         self._build_ui()
 
@@ -427,10 +428,10 @@ class OverviewView(ctk.CTkScrollableFrame):
         self.lbl_saved_val.configure(text=saved_date or "—")
 
     def update_party_preview(self, party_actors: List[Dict[str, Any]]):
-        for w in self.heroes_container.winfo_children():
-            w.destroy()
-
         if not party_actors:
+            self._hero_cards.clear()
+            for w in self.heroes_container.winfo_children():
+                w.destroy()
             lbl_none = ctk.CTkLabel(
                 self.heroes_container, text="Nenhum herói no grupo ativo.",
                 font=get_ui_font(12), text_color=TEXT_MUTED
@@ -438,10 +439,45 @@ class OverviewView(ctk.CTkScrollableFrame):
             lbl_none.pack(pady=10)
             return
 
-        count = min(4, len(party_actors))
+        target_actors = party_actors[:4]
+        count = len(target_actors)
+
+        # Se já tivermos o mesmo número de cards, reciclamos (atualizando propriedades sem reconstruir)
+        if len(self._hero_cards) == count:
+            for idx, a in enumerate(target_actors):
+                c_data = self._hero_cards[idx]
+                name_raw = a.get("name") or "Herói"
+                parts = name_raw.split()
+                initials = (parts[0][0] + parts[1][0]).upper() if len(parts) >= 2 else name_raw[:2].upper()
+                lvl = a.get("level", 1)
+                cls_name = a.get("class_name") or ""
+                sub_txt = f"Nível {lvl} · {cls_name}" if cls_name else f"Nível {lvl}"
+
+                hp = a.get("hp", 0)
+                max_hp = a.get("max_hp", hp) or hp or 1
+                mp = a.get("mp", 0)
+                max_mp = a.get("max_mp", mp) or mp or 1
+
+                c_data["lbl_av"].configure(text=initials)
+                c_data["lbl_n"].configure(text=name_raw)
+                c_data["lbl_lvl"].configure(text=sub_txt)
+                c_data["bar_hp"].update_values(hp, max_hp)
+                c_data["bar_mp"].update_values(mp, max_mp)
+
+            try:
+                self.heroes_container.update_idletasks()
+            except Exception:
+                pass
+            return
+
+        # Caso contrário, reconstrói os cards e armazena referências para reciclagem futura
+        self._hero_cards.clear()
+        for w in self.heroes_container.winfo_children():
+            w.destroy()
+
         self.heroes_container.grid_columnconfigure(tuple(range(count)), weight=1)
 
-        for col, a in enumerate(party_actors[:4]):
+        for col, a in enumerate(target_actors):
             card = ctk.CTkFrame(
                 self.heroes_container, fg_color=BG_SUB, corner_radius=8,
                 border_width=1, border_color=BORDER_COLOR
@@ -501,6 +537,15 @@ class OverviewView(ctk.CTkScrollableFrame):
 
             bar_mp = StatBar(card_pad, label="MP", current=mp, maximum=max_mp, fill_color=MP_COLOR, height=6)
             bar_mp.pack(fill="x", pady=3)
+
+            self._hero_cards.append({
+                "card": card,
+                "lbl_av": lbl_av,
+                "lbl_n": lbl_n,
+                "lbl_lvl": lbl_lvl,
+                "bar_hp": bar_hp,
+                "bar_mp": bar_mp,
+            })
 
         try:
             self.heroes_container.update_idletasks()

@@ -60,12 +60,12 @@ class LibraryView(ctk.CTkFrame):
         self.container.pack(fill="both", expand=True)
         self.show_games_list()
 
-    def _get_cached_slot_preview(self, slot_path: str) -> Dict[str, Any]:
+    def _get_cached_slot_preview(self, slot_path: str, fetch_sync: bool = False) -> Dict[str, Any]:
         if slot_path not in self._slot_preview_cache:
-            if hasattr(self.lib_mgr, "get_slot_preview_details"):
+            if fetch_sync and hasattr(self.lib_mgr, "get_slot_preview_details"):
                 self._slot_preview_cache[slot_path] = self.lib_mgr.get_slot_preview_details(slot_path)
             else:
-                self._slot_preview_cache[slot_path] = {}
+                return {}
         return self._slot_preview_cache[slot_path]
 
     def show_games_list(self):
@@ -425,7 +425,7 @@ class LibraryView(ctk.CTkFrame):
         """Componente SaveSlot Card rico (#10:1367)."""
         is_cur = slot.get("is_current", False)
         has_bak = slot.get("has_backup", False)
-        preview = self._get_cached_slot_preview(slot["path"])
+        preview = self._get_cached_slot_preview(slot["path"], fetch_sync=False)
 
         scard = ctk.CTkFrame(
             parent, width=224, height=148, corner_radius=10,

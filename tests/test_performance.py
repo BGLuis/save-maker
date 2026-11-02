@@ -176,6 +176,93 @@ class TestPerformanceAndOptimization(unittest.TestCase):
         finally:
             app.destroy()
 
+    def test_fast_lzstring_fidelity_and_speed(self):
+        """Valida que o motor otimizado de LZString produz o mesmo resultado da biblioteca padrão com alta velocidade."""
+        from scripts.core.fast_lzstring import FAST_LZSTRING, decompress_from_base64
+        import lzstring
+
+        lz_std = lzstring.LZString()
+        txt = self.sample_save.read_text(encoding="utf-8", errors="ignore").strip()
+
+        # Medição rápida
+        t0 = time.perf_counter()
+        res_fast = decompress_from_base64(txt)
+        dur_fast = time.perf_counter() - t0
+
+        t1 = time.perf_counter()
+        res_std = lz_std.decompressFromBase64(txt)
+        dur_std = time.perf_counter() - t1
+
+        self.assertEqual(res_fast, res_std, "O resultado descompactado não coincide com a biblioteca padrão")
+        self.assertLess(dur_fast, 0.15, f"Descompressão rápida demorou {dur_fast*1000:.2f}ms (esperado < 150ms)")
+
+    def test_loading_view_and_topbar_integration(self):
+        """Valida que LoadingView e Topbar respondem corretamente a eventos de carregamento."""
+        from scripts.ui.modern_app import ModernSaveEditorApp
+
+        app = ModernSaveEditorApp()
+        try:
+            self.assertIn("loading", app.all_views)
+            loading_view, title = app.all_views["loading"]
+            self.assertEqual(title, "Carregando...")
+
+            # Testa ciclo de vida do LoadingView
+            loading_view.start("file10.rpgsave", "Testando carregamento...")
+            self.assertIn("file10.rpgsave", loading_view.lbl_filename.cget("text"))
+            self.assertEqual(loading_view.lbl_status.cget("text"), "Testando carregamento...")
+            loading_view.stop()
+
+            # Testa estados da Topbar
+            app.topbar.set_loading(True, "Processando...")
+            self.assertEqual(app.topbar.lbl_title.cget("text"), "Processando...")
+            self.assertEqual(app.topbar.btn_save.cget("state"), "disabled")
+            self.assertEqual(app.topbar.btn_export.cget("state"), "disabled")
+
+            app.topbar.set_loading(False)
+            app.topbar.set_title("Visão geral")
+            self.assertEqual(app.topbar.lbl_title.cget("text"), "Visão geral")
+
+            # Testa carregamento síncrono com LoadingView
+            app.load_save_file(self.sample_save, synchronous=True)
+            self.assertIsNotNone(app.adapter)
+            self.assertEqual(app.tabview.get(), "📊 Visão Geral")
+        finally:
+            app.destroy()
+
+    def test_lazy_database_loading_and_view_virtualization(self):
+        """Valida que o GameDatabaseManager é verdadeiramente preguiçoso e a UI virtualizada."""
+        from scripts.core.database_manager import GameDatabaseManager
+        from scripts.ui.modern_app import ModernSaveEditorApp
+
+        db = GameDatabaseManager()
+        db.discover_and_load(self.sample_save, lazy=True)
+        self.assertTrue(db.is_loaded())
+        # Verifica que items e actors não foram carregados antecipadamente
+        self.assertFalse(db._loaded_items)
+        self.assertFalse(db._loaded_actors)
+
+        # Acesso a items carrega apenas items
+        items = db.items
+        self.assertTrue(db._loaded_items)
+        self.assertGreater(len(items), 0)
+        self.assertFalse(db._loaded_actors)
+
+        # Virtualização de telas
+        app = ModernSaveEditorApp()
+        try:
+            # Apenas empty e loading instanciados no início
+            self.assertIn("empty", app._view_instances)
+            self.assertIn("loading", app._view_instances)
+            self.assertNotIn("inventory", app._view_instances)
+            self.assertNotIn("actors", app._view_instances)
+
+            # Acesso à aba carrega sob demanda
+            app.select_nav_area("inventory")
+            self.assertIn("inventory", app._view_instances)
+            self.assertIsNotNone(app.view_inventory)
+        finally:
+            app.destroy()
+
 
 if __name__ == "__main__":
     unittest.main()

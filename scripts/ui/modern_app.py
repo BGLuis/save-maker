@@ -50,6 +50,7 @@ from ui.views.inventory_view import InventoryView
 from ui.views.switches_view import SwitchesView
 from ui.views.advanced_view import AdvancedView
 from ui.views.library_view import LibraryView
+from ui.views.loading_view import LoadingView
 
 try:
     import tkinterdnd2
@@ -363,7 +364,7 @@ class ModernSaveEditorApp(CtkDndApp):
             ).pack(side="left")
 
     def _init_views(self):
-        # View 06: Estado Vazio
+        # Views essenciais criadas imediatamente na inicialização
         self.view_empty = EmptyView(
             self.views_container,
             on_choose_file=self.open_file_dialog,
@@ -372,9 +373,35 @@ class ModernSaveEditorApp(CtkDndApp):
             get_recent_files=self.lib_mgr.get_recent_files,
             on_clear_recents=self.lib_mgr.clear_recent_files
         )
+        self.view_loading = LoadingView(self.views_container)
 
-        # View 01: Visão Geral
-        self.view_overview = OverviewView(
+        self._view_instances: Dict[str, Any] = {
+            "empty": self.view_empty,
+            "loading": self.view_loading,
+        }
+
+        self._view_titles = {
+            "empty": "Save Maker",
+            "loading": "Carregando...",
+            "overview": "Visão geral",
+            "actors": "Personagens",
+            "inventory": "Inventário",
+            "switches": "Switches & variáveis",
+            "advanced": "Árvore JSON",
+            "library": "Biblioteca de Jogos"
+        }
+
+        self._view_factories = {
+            "overview": self._create_overview_view,
+            "actors": self._create_actors_view,
+            "inventory": self._create_inventory_view,
+            "switches": self._create_switches_view,
+            "advanced": self._create_advanced_view,
+            "library": self._create_library_view,
+        }
+
+    def _create_overview_view(self) -> OverviewView:
+        return OverviewView(
             self.views_container,
             on_apply_gold=self._set_gold,
             on_add_gold=self._add_gold,
@@ -388,8 +415,8 @@ class ModernSaveEditorApp(CtkDndApp):
             on_navigate_to_actors=lambda: self.select_nav_area("actors")
         )
 
-        # View 02: Personagens
-        self.view_actors = ActorsView(
+    def _create_actors_view(self) -> ActorsView:
+        return ActorsView(
             self.views_container,
             on_select_actor=self._select_actor,
             on_save_stats=self._save_current_actor_stats,
@@ -397,8 +424,8 @@ class ModernSaveEditorApp(CtkDndApp):
             on_heal_actor=self._heal_current_actor
         )
 
-        # View 03: Inventário
-        self.view_inventory = InventoryView(
+    def _create_inventory_view(self) -> InventoryView:
+        return InventoryView(
             self.views_container,
             on_kind_change=self._on_inv_segment_change,
             on_filter_change=lambda q: self._on_inv_filter_change(q),
@@ -411,8 +438,8 @@ class ModernSaveEditorApp(CtkDndApp):
             on_filter_chip=lambda c: self._on_inv_chip_change(c)
         )
 
-        # View 04: Switches & Variáveis
-        self.view_switches = SwitchesView(
+    def _create_switches_view(self) -> SwitchesView:
+        return SwitchesView(
             self.views_container,
             on_segment_change=self._on_system_segment_change,
             on_filter_change=lambda q: self._on_system_filter_change(q),
@@ -424,16 +451,17 @@ class ModernSaveEditorApp(CtkDndApp):
             on_turn_off_visible=self._turn_off_visible_switches
         )
 
-        # View 05: Árvore JSON
-        self.view_advanced = AdvancedView(
+    def _create_advanced_view(self) -> AdvancedView:
+        v = AdvancedView(
             self.views_container,
             on_save_value=self._save_tree_val
         )
-        self.view_advanced.tree.bind("<<TreeviewSelect>>", self._on_tree_select)
-        self.view_advanced.tree.bind("<<TreeviewOpen>>", self._on_tree_open)
+        v.tree.bind("<<TreeviewSelect>>", self._on_tree_select)
+        v.tree.bind("<<TreeviewOpen>>", self._on_tree_open)
+        return v
 
-        # View 09 / 10: Biblioteca de Jogos
-        self.view_library = LibraryView(
+    def _create_library_view(self) -> LibraryView:
+        return LibraryView(
             self.views_container,
             library_manager=self.lib_mgr,
             on_open_save_file=lambda p: self.load_save_file(p),
@@ -442,15 +470,77 @@ class ModernSaveEditorApp(CtkDndApp):
             on_ask_save_dirty=self._confirm_save_before_switch
         )
 
-        self.all_views = {
-            "empty": (self.view_empty, "Save Maker"),
-            "overview": (self.view_overview, "Visão geral"),
-            "actors": (self.view_actors, "Personagens"),
-            "inventory": (self.view_inventory, "Inventário"),
-            "switches": (self.view_switches, "Switches & variáveis"),
-            "advanced": (self.view_advanced, "Árvore JSON"),
-            "library": (self.view_library, "Biblioteca de Jogos")
-        }
+    def get_or_create_view(self, area_id: str):
+        """Retorna a view já criada ou instancia sob demanda (Lazy)."""
+        if area_id in self._view_instances:
+            return self._view_instances[area_id]
+        if area_id in self._view_factories:
+            view = self._view_factories[area_id]()
+            self._view_instances[area_id] = view
+            return view
+        return self.view_empty
+
+    @property
+    def view_overview(self):
+        return self.get_or_create_view("overview")
+
+    @view_overview.setter
+    def view_overview(self, val):
+        self._view_instances["overview"] = val
+
+    @property
+    def view_actors(self):
+        return self.get_or_create_view("actors")
+
+    @view_actors.setter
+    def view_actors(self, val):
+        self._view_instances["actors"] = val
+
+    @property
+    def view_inventory(self):
+        return self.get_or_create_view("inventory")
+
+    @view_inventory.setter
+    def view_inventory(self, val):
+        self._view_instances["inventory"] = val
+
+    @property
+    def view_switches(self):
+        return self.get_or_create_view("switches")
+
+    @view_switches.setter
+    def view_switches(self, val):
+        self._view_instances["switches"] = val
+
+    @property
+    def view_advanced(self):
+        return self.get_or_create_view("advanced")
+
+    @view_advanced.setter
+    def view_advanced(self, val):
+        self._view_instances["advanced"] = val
+
+    @property
+    def view_library(self):
+        return self.get_or_create_view("library")
+
+    @view_library.setter
+    def view_library(self, val):
+        self._view_instances["library"] = val
+
+    @property
+    def all_views(self) -> Dict[str, Any]:
+        res = {}
+        for k, title in self._view_titles.items():
+            if k in self._view_instances:
+                res[k] = (self._view_instances[k], title)
+            else:
+                res[k] = (self.get_or_create_view(k), title)
+        return res
+
+    @all_views.setter
+    def all_views(self, val):
+        pass
 
     def _setup_compatibility_proxies(self):
         """Cria referências compatíveis para atributos acessados por testes antigos."""
@@ -489,6 +579,20 @@ class ModernSaveEditorApp(CtkDndApp):
         self.bind("<Control-k>", lambda e: self._shortcut_search())
         self.bind("<Control-K>", lambda e: self._shortcut_search())
 
+        # Eventos virtuais para carregamento assíncrono de alta performance
+        self.bind("<<SaveLoaded>>", self._handle_save_loaded_event)
+        self.bind("<<SaveError>>", self._handle_save_error_event)
+
+    def _handle_save_loaded_event(self, event=None):
+        res = getattr(self, "_async_load_result", None)
+        if res and res[0]:
+            self._on_load_success(res[1])
+
+    def _handle_save_error_event(self, event=None):
+        res = getattr(self, "_async_load_result", None)
+        if res and not res[0]:
+            self._on_load_error(res[1])
+
     def _shortcut_save(self):
         self.save_current_file()
         return "break"
@@ -501,20 +605,21 @@ class ModernSaveEditorApp(CtkDndApp):
 
     def select_nav_area(self, area_id: str, from_shim: bool = False):
         """Alterna a tela ativa exibida no container principal."""
-        if area_id not in self.all_views:
+        if area_id not in self._view_titles:
             area_id = "overview"
 
-        # Esconde todas as views
-        for vid, (view_widget, _) in self.all_views.items():
+        # Esconde todas as views ativas já instanciadas
+        for vid, view_widget in self._view_instances.items():
             view_widget.pack_forget()
 
-        # Exibe a view selecionada
-        active_widget, title = self.all_views[area_id]
+        # Exibe a view selecionada (criando sob demanda se necessário)
+        active_widget = self.get_or_create_view(area_id)
+        title = self._view_titles[area_id]
         active_widget.pack(fill="both", expand=True)
 
         self.topbar.set_title(title)
 
-        if not from_shim and area_id != "empty":
+        if not from_shim and area_id not in ("empty", "loading"):
             self.sidebar.select_area(area_id, notify=False)
 
         # Mapeamento para o shim de tabview
@@ -525,9 +630,19 @@ class ModernSaveEditorApp(CtkDndApp):
             "switches": "⚙ Switches & Variáveis",
             "advanced": "🌲 Modo Avançado / Árvore",
             "library": "📚 Biblioteca",
-            "empty": "Save Maker"
+            "empty": "Save Maker",
+            "loading": "Carregando..."
         }
         self.tabview._current_tab_name = tab_names_map.get(area_id, "📊 Visão Geral")
+
+        # Limpa busca residual ao alternar de aba para não contaminar a próxima
+        if not from_shim and self.search_var.get():
+            self.search_var.set("")
+            if hasattr(self, "topbar") and hasattr(self.topbar, "entry_search"):
+                try:
+                    self.topbar.entry_search.delete(0, "end")
+                except Exception:
+                    pass
 
         if not from_shim and self.adapter:
             self._on_tab_change()
@@ -624,6 +739,15 @@ class ModernSaveEditorApp(CtkDndApp):
         if not p.is_file():
             return
 
+        self._set_status(f"Carregando {p.name}...")
+        self.select_nav_area("loading")
+        self.view_loading.start(p.name, "Lendo save e banco de dados...")
+        self.topbar.set_loading(True, f"Carregando {p.name}...")
+        try:
+            self.update_idletasks()
+        except Exception:
+            pass
+
         def work():
             t0 = time.perf_counter()
             db_found = self.db.discover_and_load(p)
@@ -631,6 +755,23 @@ class ModernSaveEditorApp(CtkDndApp):
             adapter.load(p)
             self.adapter = adapter
             self.current_file = p
+
+            # Persiste jogo e histórico na biblioteca em segundo plano (evita I/O síncrono na thread de UI)
+            try:
+                raw_db_title = getattr(self.db, "game_title", "")
+                self.lib_mgr.register_game(
+                    p,
+                    engine=adapter.engine_name,
+                    title=raw_db_title
+                )
+                self.lib_mgr.add_recent_file(
+                    p,
+                    engine=adapter.engine_name,
+                    title=raw_db_title
+                )
+            except Exception:
+                pass
+
             self._last_load_ms = max(1, int((time.perf_counter() - t0) * 1000))
             return db_found
 
@@ -642,15 +783,26 @@ class ModernSaveEditorApp(CtkDndApp):
         def task():
             try:
                 db_found = work()
-                self.queue_ui(self._on_load_success, db_found)
+                self._async_load_result = (True, db_found)
+                try:
+                    self.event_generate("<<SaveLoaded>>", when="tail")
+                except Exception:
+                    self.queue_ui(self._on_load_success, db_found)
             except Exception as e:
                 import traceback
                 traceback.print_exc()
-                self.queue_ui(self._on_load_error, str(e))
+                self._async_load_result = (False, str(e))
+                try:
+                    self.event_generate("<<SaveError>>", when="tail")
+                except Exception:
+                    self.queue_ui(self._on_load_error, str(e))
 
         threading.Thread(target=task, daemon=True).start()
 
     def _on_load_success(self, db_found: bool):
+        self.view_loading.stop()
+        self.topbar.set_loading(False)
+
         if not self.adapter or not self.current_file:
             return
 
@@ -668,29 +820,38 @@ class ModernSaveEditorApp(CtkDndApp):
         db_summary = self.db.summary_info()
         self.sidebar.update_database_status(db_found, db_summary)
 
-        # Registra no LibraryManager com resolução inteligente de título
-        raw_db_title = getattr(self.db, "game_title", "")
-        self.lib_mgr.register_game(
-            self.current_file,
-            engine=self.adapter.engine_name,
-            title=raw_db_title
-        )
-        self.lib_mgr.add_recent_file(
-            self.current_file,
-            engine=self.adapter.engine_name,
-            title=raw_db_title
-        )
+        # Atualiza contagem na sidebar (já salvo em segundo plano)
         self.sidebar.update_library_count(len(self.lib_mgr.get_games()))
 
         load_ms = getattr(self, "_last_load_ms", 42)
         self._set_status(f"Pronto · save carregado em {load_ms} ms")
 
-        # Alterna para a visão geral
+        # Invalida abas para lazy loading sob demanda
+        for k in self.tabs_need_refresh:
+            self.tabs_need_refresh[k] = True
+
+        # Alterna para a visão geral (renderização única e eficiente)
         self.select_nav_area("overview")
-        self._refresh_all_views()
         self._update_dirty_indicator()
 
+        # Pré-carrega o restante do banco em background para quando o usuário trocar de aba
+        def bg_db_warmup():
+            try:
+                self.db.ensure_all_loaded()
+                self.queue_ui(lambda: self.sidebar.update_database_status(True, self.db.summary_info()))
+                if hasattr(self.view_overview, "update_cheat_counts") and self.adapter:
+                    actors_list = self.adapter.get_actors() if hasattr(self.adapter, "get_actors") else []
+                    self.queue_ui(lambda: self.view_overview.update_cheat_counts(
+                        len(actors_list), len(self.db._items), len(self.db._weapons), len(self.db._armors)
+                    ))
+            except Exception:
+                pass
+        threading.Thread(target=bg_db_warmup, daemon=True).start()
+
     def _on_load_error(self, err_msg: str):
+        self.view_loading.stop()
+        self.topbar.set_loading(False)
+        self.select_nav_area("empty" if not self.adapter else "overview")
         messagebox.showerror("Erro ao abrir save", f"Não foi possível ler o arquivo:\n\n{err_msg}")
 
     def save_current_file(self):
@@ -858,9 +1019,9 @@ class ModernSaveEditorApp(CtkDndApp):
         )
 
         if hasattr(self.view_overview, "update_cheat_counts"):
-            ic = len(self.db.items) if (self.db and self.db.is_loaded()) else 0
-            wc = len(self.db.weapons) if (self.db and self.db.is_loaded()) else 0
-            ac = len(self.db.armors) if (self.db and self.db.is_loaded()) else 0
+            ic = len(self.db._items) if (self.db and getattr(self.db, "_loaded_items", False)) else 0
+            wc = len(self.db._weapons) if (self.db and getattr(self.db, "_loaded_items", False)) else 0
+            ac = len(self.db._armors) if (self.db and getattr(self.db, "_loaded_items", False)) else 0
             self.view_overview.update_cheat_counts(len(party), ic, wc, ac)
 
         # Heróis do grupo
