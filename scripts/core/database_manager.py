@@ -22,6 +22,22 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 try:
+    import orjson
+    def _fast_json_loads(data: bytes | str) -> Any:
+        if isinstance(data, str):
+            data = data.encode("utf-8")
+        if data.startswith(b"\xef\xbb\xbf"):
+            data = data[3:]
+        return orjson.loads(data)
+except ImportError:
+    def _fast_json_loads(data: bytes | str) -> Any:
+        if isinstance(data, bytes):
+            if data.startswith(b"\xef\xbb\xbf"):
+                data = data[3:]
+            return json.loads(data.decode("utf-8"))
+        return json.loads(data)
+
+try:
     from rubymarshal.reader import load as ruby_load
     _RUBY_AVAILABLE = True
 except Exception:
@@ -44,14 +60,21 @@ class GameDatabaseManager:
 
     def __init__(self):
         self.data_dir: Optional[Path] = None
-        self.items: Dict[str, Dict[str, Any]] = {}
-        self.weapons: Dict[str, Dict[str, Any]] = {}
-        self.armors: Dict[str, Dict[str, Any]] = {}
-        self.actors: Dict[str, Dict[str, Any]] = {}
-        self.classes: Dict[str, Dict[str, Any]] = {}
-        self.skills: Dict[str, Dict[str, Any]] = {}
-        self.switches: Dict[int, str] = {}
-        self.variables: Dict[int, str] = {}
+        self._dir_cache: Optional[Dict[str, Path]] = None
+        self._loaded_items: bool = False
+        self._loaded_actors: bool = False
+        self._loaded_system: bool = False
+        self._loaded_wolf: bool = False
+
+        self._items: Dict[str, Dict[str, Any]] = {}
+        self._weapons: Dict[str, Dict[str, Any]] = {}
+        self._armors: Dict[str, Dict[str, Any]] = {}
+        self._actors: Dict[str, Dict[str, Any]] = {}
+        self._classes: Dict[str, Dict[str, Any]] = {}
+        self._skills: Dict[str, Dict[str, Any]] = {}
+        self._switches: Dict[int, str] = {}
+        self._variables: Dict[int, str] = {}
+
         self.wolf_types: Dict[int, Dict[str, Any]] = {}
         self.wolf_fixed_types: List[Dict[str, Any]] = []
         self.wolf_sys_types: Dict[int, Dict[str, Any]] = {}
@@ -61,34 +84,161 @@ class GameDatabaseManager:
         self.game_title: str = ""
         self.config: Dict[str, Any] = {}
 
+    @property
+    def items(self) -> Dict[str, Dict[str, Any]]:
+        self.ensure_items_loaded()
+        return self._items
+
+    @items.setter
+    def items(self, val: Dict[str, Dict[str, Any]]):
+        self._items = val
+        self._loaded_items = True
+
+    @property
+    def weapons(self) -> Dict[str, Dict[str, Any]]:
+        self.ensure_items_loaded()
+        return self._weapons
+
+    @weapons.setter
+    def weapons(self, val: Dict[str, Dict[str, Any]]):
+        self._weapons = val
+        self._loaded_items = True
+
+    @property
+    def armors(self) -> Dict[str, Dict[str, Any]]:
+        self.ensure_items_loaded()
+        return self._armors
+
+    @armors.setter
+    def armors(self, val: Dict[str, Dict[str, Any]]):
+        self._armors = val
+        self._loaded_items = True
+
+    @property
+    def actors(self) -> Dict[str, Dict[str, Any]]:
+        self.ensure_actors_loaded()
+        return self._actors
+
+    @actors.setter
+    def actors(self, val: Dict[str, Dict[str, Any]]):
+        self._actors = val
+        self._loaded_actors = True
+
+    @property
+    def classes(self) -> Dict[str, Dict[str, Any]]:
+        self.ensure_actors_loaded()
+        return self._classes
+
+    @classes.setter
+    def classes(self, val: Dict[str, Dict[str, Any]]):
+        self._classes = val
+        self._loaded_actors = True
+
+    @property
+    def skills(self) -> Dict[str, Dict[str, Any]]:
+        self.ensure_actors_loaded()
+        return self._skills
+
+    @skills.setter
+    def skills(self, val: Dict[str, Dict[str, Any]]):
+        self._skills = val
+        self._loaded_actors = True
+
+    @property
+    def switches(self) -> Dict[int, str]:
+        self.ensure_system_loaded()
+        return self._switches
+
+    @switches.setter
+    def switches(self, val: Dict[int, str]):
+        self._switches = val
+        self._loaded_system = True
+
+    @property
+    def variables(self) -> Dict[int, str]:
+        self.ensure_system_loaded()
+        return self._variables
+
+    @variables.setter
+    def variables(self, val: Dict[int, str]):
+        self._variables = val
+        self._loaded_system = True
+
+    def ensure_items_loaded(self):
+        """Carrega Items, Weapons e Armors sob demanda se ainda não foram carregados."""
+        if self._loaded_items or not self.data_dir:
+            return
+        self._loaded_items = True
+        d = self.data_dir
+        cache = self._dir_cache
+        self._load_data_file(d, "Items", self._items, cache)
+        self._load_data_file(d, "Weapons", self._weapons, cache)
+        self._load_data_file(d, "Armors", self._armors, cache)
+
+    def ensure_actors_loaded(self):
+        """Carrega Actors, Classes e Skills sob demanda se ainda não foram carregados."""
+        if self._loaded_actors or not self.data_dir:
+            return
+        self._loaded_actors = True
+        d = self.data_dir
+        cache = self._dir_cache
+        self._load_data_file(d, "Actors", self._actors, cache)
+        self._load_data_file(d, "Classes", self._classes, cache)
+        self._load_data_file(d, "Skills", self._skills, cache)
+
+    def ensure_system_loaded(self):
+        """Carrega switches, variáveis e moeda sob demanda se ainda não foram carregados."""
+        if self._loaded_system or not self.data_dir:
+            return
+        self._loaded_system = True
+        d = self.data_dir
+        cache = self._dir_cache
+        self._load_system_file(d, cache)
+
+    def ensure_all_loaded(self) -> bool:
+        """Garante que todos os arquivos de banco de dados foram carregados."""
+        if not self.data_dir:
+            return False
+        self.ensure_items_loaded()
+        self.ensure_actors_loaded()
+        self.ensure_system_loaded()
+        d = self.data_dir
+        cache = self._dir_cache
+        if not self._loaded_wolf and cache and ("cdatabase.project" in cache or "database.dat" in cache):
+            self._load_wolf_database(d, cache)
+            self._load_wolf_fixed_database(d, cache)
+            self._loaded_wolf = True
+        self._load_config_file(d, cache)
+        return bool(self._items or self._weapons or self._armors or self._actors
+                    or self._switches or self._variables or self.wolf_types or self.wolf_fixed_types)
+
     def is_loaded(self) -> bool:
-        """Retorna True se algum banco de dados relevante foi carregado."""
-        return bool(self.items or self.weapons or self.armors or self.actors or self.switches
-                    or self.variables or self.wolf_types or self.wolf_fixed_types)
+        """Retorna True se algum banco de dados relevante foi conectado ou carregado."""
+        return bool(self.data_dir is not None or self._items or self._weapons or self._armors
+                    or self._actors or self._switches or self._variables or self.wolf_types or self.wolf_fixed_types)
 
     def summary_info(self) -> str:
-        """Gera uma string descritiva com o resumo do que foi carregado."""
+        """Gera uma string descritiva com o resumo do que foi carregado ou conectado."""
         parts = []
-        if self.items:
-            parts.append(f"{len(self.items)} itens")
-        if self.weapons:
-            parts.append(f"{len(self.weapons)} armas")
-        if self.armors:
-            parts.append(f"{len(self.armors)} armaduras")
-        if self.actors:
-            parts.append(f"{len(self.actors)} heróis")
-        if self.switches:
-            parts.append(f"{len(self.switches)} switches")
-        if self.variables:
-            parts.append(f"{len(self.variables)} vars")
+        if self._loaded_items:
+            if self._items: parts.append(f"{len(self._items)} itens")
+            if self._weapons: parts.append(f"{len(self._weapons)} armas")
+            if self._armors: parts.append(f"{len(self._armors)} armaduras")
+        if self._loaded_actors:
+            if self._actors: parts.append(f"{len(self._actors)} heróis")
+        if self._loaded_system:
+            if self._switches: parts.append(f"{len(self._switches)} switches")
+            if self._variables: parts.append(f"{len(self._variables)} vars")
         if self.wolf_types:
             parts.append(f"{len(self.wolf_types)} tipos Wolf RPG")
 
-        if not parts:
-            return "Nenhum banco de dados conectado"
-        return ", ".join(parts)
+        if parts:
+            return ", ".join(parts)
+        if self.data_dir:
+            return f"Banco conectado ({self.data_dir.name})"
+        return "Nenhum banco de dados conectado"
 
-    def discover_and_load(self, save_path: Path | str) -> bool:
+    def discover_and_load(self, save_path: Path | str, lazy: bool = True) -> bool:
         """
         Varre automaticamente as pastas vizinhas e ascendentes do save
         para encontrar a pasta de dados do jogo.
@@ -98,31 +248,58 @@ class GameDatabaseManager:
         save_dir = p if p.is_dir() else p.parent
         self.save_dir = save_dir
 
-        candidate_dirs: List[Path] = [
-            # Subpastas da pasta do save
-            save_dir / "data",
-            save_dir / "Data",
-            # Pasta pai (ex: Game/save -> Game/data)
-            save_dir.parent / "data",
-            save_dir.parent / "Data",
-            # Padrão Steam/PC MV/MZ (Game/www/data ou Game/save -> Game/www/data)
-            save_dir.parent / "www" / "data",
-            save_dir.parent / "www" / "Data",
-            save_dir / "www" / "data",
-            # Pasta avô (ex: Game/www/save -> Game/www/data)
-            save_dir.parent.parent / "data",
-            save_dir.parent.parent / "Data",
-            save_dir.parent.parent / "www" / "data",
-            save_dir.parent.parent / "www" / "Data",
-            # Padrão Wolf RPG Editor (Game/Save/SaveDataNN.sav -> Game/Data/BasicData)
-            save_dir.parent / "Data" / "BasicData",
-            save_dir.parent / "data" / "BasicData",
-            save_dir / "Data" / "BasicData",
-        ]
+        ext = p.suffix.lower()
+        if ext in (".rpgsave", ".rmmzsave"):
+            candidate_dirs: List[Path] = [
+                save_dir.parent / "data",
+                save_dir.parent / "Data",
+                save_dir.parent / "www" / "data",
+                save_dir.parent / "www" / "Data",
+                save_dir.parent.parent / "data",
+                save_dir.parent.parent / "Data",
+                save_dir.parent.parent / "www" / "data",
+                save_dir / "data",
+                save_dir / "Data",
+                save_dir / "www" / "data",
+            ]
+        elif ext in (".rvdata2", ".rvdata", ".rxdata"):
+            candidate_dirs = [
+                save_dir.parent / "Data",
+                save_dir.parent / "data",
+                save_dir / "Data",
+                save_dir / "data",
+                save_dir.parent.parent / "Data",
+                save_dir.parent.parent / "data",
+            ]
+        elif ext in (".sav", ".dat"):
+            candidate_dirs = [
+                save_dir.parent / "Data" / "BasicData",
+                save_dir.parent / "data" / "BasicData",
+                save_dir / "Data" / "BasicData",
+                save_dir.parent / "data",
+                save_dir.parent / "Data",
+            ]
+        else:
+            candidate_dirs = [
+                save_dir / "data",
+                save_dir / "Data",
+                save_dir.parent / "data",
+                save_dir.parent / "Data",
+                save_dir.parent / "www" / "data",
+                save_dir.parent / "www" / "Data",
+                save_dir / "www" / "data",
+                save_dir.parent.parent / "data",
+                save_dir.parent.parent / "Data",
+                save_dir.parent.parent / "www" / "data",
+                save_dir.parent.parent / "www" / "Data",
+                save_dir.parent / "Data" / "BasicData",
+                save_dir.parent / "data" / "BasicData",
+                save_dir / "Data" / "BasicData",
+            ]
 
         for cand in candidate_dirs:
             if cand.is_dir() and self._is_rpg_data_dir(cand):
-                if self.load_directory(cand):
+                if self.load_directory(cand, lazy=lazy):
                     return True
 
         return False
@@ -140,7 +317,7 @@ class GameDatabaseManager:
                 return True
         return False
 
-    def load_directory(self, directory: Path | str) -> bool:
+    def load_directory(self, directory: Path | str, lazy: bool = False) -> bool:
         """Carrega todos os arquivos de banco de dados encontrados no diretório."""
         d = Path(directory).resolve()
         if not d.is_dir():
@@ -149,45 +326,53 @@ class GameDatabaseManager:
         self.clear()
         self.data_dir = d
 
-        loaded_any = False
+        # Pré-indexa os arquivos do diretório em O(1) para evitar varreduras repetidas em HDDs lentos
+        dir_cache: Dict[str, Path] = {}
+        try:
+            for child in d.iterdir():
+                if child.is_file():
+                    dir_cache[child.name.lower()] = child
+        except Exception:
+            pass
+        self._dir_cache = dir_cache
 
-        # 1. Carrega Items
-        if self._load_data_file(d, "Items", self.items): loaded_any = True
-        # 2. Carrega Weapons
-        if self._load_data_file(d, "Weapons", self.weapons): loaded_any = True
-        # 3. Carrega Armors
-        if self._load_data_file(d, "Armors", self.armors): loaded_any = True
-        # 4. Carrega Actors
-        if self._load_data_file(d, "Actors", self.actors): loaded_any = True
-        # 5. Carrega Classes
-        if self._load_data_file(d, "Classes", self.classes): loaded_any = True
-        # 6. Carrega Skills
-        if self._load_data_file(d, "Skills", self.skills): loaded_any = True
-        # 7. Carrega System (switches, variables, moeda)
-        if self._load_system_file(d): loaded_any = True
-        # 8. Carrega CDataBase.project do Wolf RPG Editor (nomes de tipos/campos/linhas)
-        if self._load_wolf_database(d): loaded_any = True
-        if self._load_wolf_fixed_database(d): loaded_any = True
-        # 9. Carrega config.json se existir
-        self._load_config_file(d)
+        # Se for lazy, só carrega o básico necessário imediatamente (System para título e moeda)
+        if lazy:
+            self.ensure_system_loaded()
+            self._load_config_file(d, dir_cache)
+            if "cdatabase.project" in dir_cache or "database.dat" in dir_cache:
+                self._load_wolf_database(d, dir_cache)
+                self._load_wolf_fixed_database(d, dir_cache)
+                self._loaded_wolf = True
+            return True
 
-        return loaded_any
+        # Eager (carrega tudo imediatamente):
+        return self.ensure_all_loaded()
 
     def clear(self):
         """Limpa todos os dados carregados."""
         self.data_dir = None
-        self.items.clear()
-        self.weapons.clear()
-        self.armors.clear()
-        self.actors.clear()
-        self.classes.clear()
-        self.skills.clear()
-        self.switches.clear()
-        self.variables.clear()
+        self._dir_cache = None
+        self._loaded_items = False
+        self._loaded_actors = False
+        self._loaded_system = False
+        self._loaded_wolf = False
+        self._items.clear()
+        self._weapons.clear()
+        self._armors.clear()
+        self._actors.clear()
+        self._classes.clear()
+        self._skills.clear()
+        self._switches.clear()
+        self._variables.clear()
         self.wolf_types.clear()
         self.wolf_fixed_types.clear()
         self.wolf_sys_types.clear()
         self.wolf_name_map.clear()
+        self.save_dir = None
+        self.currency_unit = "G"
+        self.game_title = ""
+        self.config.clear()
         self.save_dir = None
         self.currency_unit = "G"
         self.game_title = ""
@@ -296,8 +481,15 @@ class GameDatabaseManager:
 
     # --- Carregadores internos tolerantes a falhas ---
 
-    def _find_case_insensitive_file(self, directory: Path, basename: str, exts: List[str]) -> Optional[Path]:
+    def _find_case_insensitive_file(self, directory: Path, basename: str, exts: List[str], dir_cache: Optional[Dict[str, Path]] = None) -> Optional[Path]:
         """Procura arquivo ignorando maiúsculas/minúsculas no nome ou extensão."""
+        if dir_cache is not None:
+            for ext in exts:
+                candidate_name = f"{basename}{ext}".lower()
+                if candidate_name in dir_cache:
+                    return dir_cache[candidate_name]
+            return None
+
         for ext in exts:
             candidates = [
                 directory / f"{basename}{ext}",
@@ -320,15 +512,15 @@ class GameDatabaseManager:
             pass
         return None
 
-    def _load_data_file(self, directory: Path, basename: str, target_dict: Dict[str, Dict[str, Any]]) -> bool:
+    def _load_data_file(self, directory: Path, basename: str, target_dict: Dict[str, Dict[str, Any]], dir_cache: Optional[Dict[str, Path]] = None) -> bool:
         """Carrega arquivos como Items.json ou Items.rvdata2."""
-        fpath = self._find_case_insensitive_file(directory, basename, [".json", ".rvdata2", ".rxdata"])
+        fpath = self._find_case_insensitive_file(directory, basename, [".json", ".rvdata2", ".rxdata"], dir_cache)
         if not fpath:
             return False
 
         try:
             if fpath.suffix.lower() == ".json":
-                content = json.loads(fpath.read_text(encoding="utf-8-sig"))
+                content = _fast_json_loads(fpath.read_bytes())
             elif _RUBY_AVAILABLE and ruby_load is not None:
                 with open(fpath, "rb") as fd:
                     content = ruby_load(fd)
@@ -373,15 +565,15 @@ class GameDatabaseManager:
             print(f"[GameDatabaseManager] Erro ao ler {fpath.name}: {e}")
             return False
 
-    def _load_system_file(self, directory: Path) -> bool:
+    def _load_system_file(self, directory: Path, dir_cache: Optional[Dict[str, Path]] = None) -> bool:
         """Carrega System.json / System.rvdata2 para obter switches e variáveis."""
-        fpath = self._find_case_insensitive_file(directory, "System", [".json", ".rvdata2", ".rxdata"])
+        fpath = self._find_case_insensitive_file(directory, "System", [".json", ".rvdata2", ".rxdata"], dir_cache)
         if not fpath:
             return False
 
         try:
             if fpath.suffix.lower() == ".json":
-                sys_data = json.loads(fpath.read_text(encoding="utf-8-sig"))
+                sys_data = _fast_json_loads(fpath.read_bytes())
             elif _RUBY_AVAILABLE and ruby_load is not None:
                 with open(fpath, "rb") as fd:
                     raw_obj = ruby_load(fd)
@@ -398,21 +590,21 @@ class GameDatabaseManager:
             if isinstance(raw_switches, list):
                 for idx, name in enumerate(raw_switches):
                     if idx > 0 and name:
-                        self.switches[idx] = str(name).strip()
+                        self._switches[idx] = str(name).strip()
 
             # Variables
             raw_vars = sys_data.get("variables") or sys_data.get("@variables") or []
             if isinstance(raw_vars, list):
                 for idx, name in enumerate(raw_vars):
                     if idx > 0 and name:
-                        self.variables[idx] = str(name).strip()
+                        self._variables[idx] = str(name).strip()
 
-            return bool(self.switches or self.variables or self.game_title)
+            return bool(self._switches or self._variables or self.game_title)
         except Exception as e:
             print(f"[GameDatabaseManager] Erro ao ler System: {e}")
             return False
 
-    def _load_wolf_database(self, directory: Path) -> bool:
+    def _load_wolf_database(self, directory: Path, dir_cache: Optional[Dict[str, Path]] = None) -> bool:
         """
         Carrega o schema de CDataBase.project do Wolf RPG Editor (nomes de tipos, campos e
         linhas de dados) para popular self.wolf_types, consumido pelas heurísticas de melhor
@@ -427,9 +619,11 @@ class GameDatabaseManager:
         Falhas (arquivo ausente, criptografia não suportada, formato inesperado) degradam
         graciosamente para "sem nomes Wolf resolvidos" em vez de interromper a descoberta.
         """
-        fpath = directory / "CDataBase.project"
-        if not fpath.is_file():
-            return False
+        fpath = self._find_case_insensitive_file(directory, "CDataBase", [".project"], dir_cache)
+        if not fpath:
+            fpath = directory / "CDataBase.project"
+            if not fpath.is_file():
+                return False
 
         try:
             types = parse_wolf_project(fpath)
@@ -445,9 +639,9 @@ class GameDatabaseManager:
         for type_idx, info in self.wolf_types.items():
             name_lower = (info.get("name") or "").lower()
             if any(k in name_lower for k in _WOLF_ITEM_NAME_KEYWORDS):
-                target = self.items
+                target = self._items
             elif any(k in name_lower for k in _WOLF_ACTOR_NAME_KEYWORDS):
-                target = self.actors
+                target = self._actors
             else:
                 continue
             for row in info.get("rows", []):
@@ -463,18 +657,18 @@ class GameDatabaseManager:
 
         return bool(self.wolf_types)
 
-    def _load_wolf_fixed_database(self, directory: Path) -> bool:
+    def _load_wolf_fixed_database(self, directory: Path, dir_cache: Optional[Dict[str, Path]] = None) -> bool:
         """Carrega DataBase.dat/.project (nomes de itens, armas, armaduras e atores),
         SysDatabase.project (nomes de variáveis) e o mapa manual opcional wolf_name_map.json."""
-        dat_path = self._find_case_insensitive_file(directory, "database", [".dat"])
+        dat_path = self._find_case_insensitive_file(directory, "database", [".dat"], dir_cache)
         if dat_path and dat_path.is_file():
             try:
-                proj_path = self._find_case_insensitive_file(directory, "database", [".project"])
+                proj_path = self._find_case_insensitive_file(directory, "database", [".project"], dir_cache)
                 self.wolf_fixed_types = parse_wolf_fixed_database(dat_path, proj_path)
             except Exception as e:
                 print(f"[GameDatabaseManager] Erro ao ler DataBase.dat: {e}")
 
-        sys_proj_path = self._find_case_insensitive_file(directory, "sysdatabase", [".project"])
+        sys_proj_path = self._find_case_insensitive_file(directory, "sysdatabase", [".project"], dir_cache)
         if sys_proj_path and sys_proj_path.is_file():
             try:
                 self.wolf_sys_types = project_types_to_wolf_types(parse_wolf_project(sys_proj_path))
@@ -491,7 +685,7 @@ class GameDatabaseManager:
             if not map_path.is_file():
                 continue
             try:
-                raw = json.loads(map_path.read_text(encoding="utf-8-sig"))
+                raw = _fast_json_loads(map_path.read_bytes())
                 self.wolf_name_map = {str(k): int(v) for k, v in raw.items()}
             except Exception as e:
                 print(f"[GameDatabaseManager] Erro ao ler {map_path.name}: {e}")
@@ -535,14 +729,14 @@ class GameDatabaseManager:
             fname = (fixed.get("name") or "").lower()
             rows = fixed.get("rows", [])
             if any(k in fname for k in item_kws):
-                fill_target(self.items, rows, clear_placeholders=True)
+                fill_target(self._items, rows, clear_placeholders=True)
             if any(k in fname for k in weapon_kws) or any(k in fname for k in equip_kws):
-                fill_target(self.weapons, rows)
+                fill_target(self._weapons, rows)
             if any(k in fname for k in armor_kws) or any(k in fname for k in equip_kws):
-                fill_target(self.armors, rows)
+                fill_target(self._armors, rows)
             if not actors_filled and any(k in fname for k in actor_kws):
                 if any(r and r.strip() for r in rows):
-                    fill_target(self.actors, rows, clear_placeholders=True)
+                    fill_target(self._actors, rows, clear_placeholders=True)
                     actors_filled = True
 
     def resolve_wolf_row_names(self, save_type_idx: int, kind: str) -> List[str]:
@@ -574,16 +768,16 @@ class GameDatabaseManager:
             return []
         return matches[0]["rows"]
 
-    def _load_config_file(self, directory: Path):
+    def _load_config_file(self, directory: Path, dir_cache: Optional[Dict[str, Path]] = None):
         """Carrega config.json se presente."""
-        fpath = self._find_case_insensitive_file(directory, "config", [".json"])
+        fpath = self._find_case_insensitive_file(directory, "config", [".json"], dir_cache)
         if not fpath:
             # Tenta na pasta pai (raiz do jogo)
             fpath = self._find_case_insensitive_file(directory.parent, "config", [".json"])
 
         if fpath and fpath.is_file():
             try:
-                self.config = json.loads(fpath.read_text(encoding="utf-8-sig"))
+                self.config = _fast_json_loads(fpath.read_bytes())
             except Exception:
                 pass
 
