@@ -141,11 +141,14 @@ class SwitchesView(ctk.CTkFrame):
         )
         table_container.pack(fill="both", expand=True)
 
+        tree_frame = ctk.CTkFrame(table_container, fg_color="transparent")
+        tree_frame.pack(fill="both", expand=True, padx=2, pady=(2, 0))
+
         # Nota: columns mantém ("id", "name", "val", "cat") para que values[0..2] permaneçam
         # idênticos nos testes, enquanto displaycolumns exibe ("id", "cat", "name", "val") como no Figma (#6:762).
         cols = ("id", "name", "val", "cat")
         self.tree_sys = ttk.Treeview(
-            table_container, columns=cols,
+            tree_frame, columns=cols,
             displaycolumns=("id", "cat", "name", "val"),
             show="headings", selectmode="browse"
         )
@@ -165,14 +168,11 @@ class SwitchesView(ctk.CTkFrame):
         self.tree_sys.tag_configure("on", foreground=on_fg)
         self.tree_sys.tag_configure("off", foreground=off_fg)
 
-        tree_frame = ctk.CTkFrame(table_container, fg_color="transparent")
-        tree_frame.pack(fill="both", expand=True, padx=2, pady=(2, 0))
-
         scrollbar = ttk.Scrollbar(tree_frame, orient="vertical", command=self.tree_sys.yview)
         self.tree_sys.configure(yscrollcommand=scrollbar.set)
 
-        self.tree_sys.pack(side="left", fill="both", expand=True, padx=(8, 0), pady=6)
         scrollbar.pack(side="right", fill="y", padx=(0, 6), pady=6)
+        self.tree_sys.pack(side="left", fill="both", expand=True, padx=(8, 0), pady=6)
 
         # Bindings de Teclado e Seleção
         self.tree_sys.bind("<<TreeviewSelect>>", self._on_tree_select)

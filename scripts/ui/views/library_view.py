@@ -754,8 +754,8 @@ class LibraryView(ctk.CTkFrame):
         ysb = ttk.Scrollbar(left_table_box, orient="vertical", command=self.tree_slots.yview)
         self.tree_slots.configure(yscrollcommand=ysb.set)
 
-        self.tree_slots.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=10)
         ysb.pack(side="right", fill="y", padx=(0, 6), pady=10)
+        self.tree_slots.pack(side="left", fill="both", expand=True, padx=(10, 0), pady=10)
 
         self.tree_slots.bind("<<TreeviewSelect>>", lambda e: self._on_slot_selected(slots, slot_previews))
         self.tree_slots.bind("<Double-1>", lambda e: self._handle_open_slot())

@@ -130,9 +130,12 @@ class AdvancedView(ctk.CTkFrame):
         xsb = ttk.Scrollbar(tree_box, orient="horizontal", command=self.tree.xview)
         self.tree.configure(yscrollcommand=ysb.set, xscrollcommand=xsb.set)
 
-        self.tree.pack(side="left", fill="both", expand=True)
-        ysb.pack(side="right", fill="y")
-        xsb.pack(side="bottom", fill="x")
+        tree_box.grid_rowconfigure(0, weight=1)
+        tree_box.grid_columnconfigure(0, weight=1)
+
+        self.tree.grid(row=0, column=0, sticky="nsew")
+        ysb.grid(row=0, column=1, sticky="ns")
+        xsb.grid(row=1, column=0, sticky="ew")
 
         # 2. Coluna Direita: Painel Inspetor (#6:1063, width=380)
         self.right = ctk.CTkFrame(

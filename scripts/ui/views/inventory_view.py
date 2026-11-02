@@ -136,11 +136,14 @@ class InventoryView(ctk.CTkFrame):
         )
         table_container.pack(fill="both", expand=True)
 
+        tree_frame = ctk.CTkFrame(table_container, fg_color="transparent")
+        tree_frame.pack(fill="both", expand=True, padx=2, pady=(2, 0))
+
         # Nota: columns mantém ("id", "name", "qty", "desc") para preservar values[2] == qty nos testes,
         # enquanto displaycolumns exibe ("id", "name", "desc", "qty") como no Figma (#5:2526).
         cols = ("id", "name", "qty", "desc")
         self.tree_inv = ttk.Treeview(
-            table_container, columns=cols,
+            tree_frame, columns=cols,
             displaycolumns=("id", "name", "desc", "qty"),
             show="headings", selectmode="extended"
         )
@@ -163,14 +166,11 @@ class InventoryView(ctk.CTkFrame):
         self.tree_inv.tag_configure("modified_qty", foreground=gold_fg)
         self.tree_inv.tag_configure("zero_qty", foreground=muted_fg)
 
-        tree_frame = ctk.CTkFrame(table_container, fg_color="transparent")
-        tree_frame.pack(fill="both", expand=True, padx=2, pady=(2, 0))
-
         scrollbar = ttk.Scrollbar(tree_frame, orient="vertical", command=self.tree_inv.yview)
         self.tree_inv.configure(yscrollcommand=scrollbar.set)
 
-        self.tree_inv.pack(side="left", fill="both", expand=True, padx=(8, 0), pady=6)
         scrollbar.pack(side="right", fill="y", padx=(0, 6), pady=6)
+        self.tree_inv.pack(side="left", fill="both", expand=True, padx=(8, 0), pady=6)
 
         self.tree_inv.bind("<<TreeviewSelect>>", self._on_tree_select)
 
