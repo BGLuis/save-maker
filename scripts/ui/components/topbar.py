@@ -111,31 +111,39 @@ class Topbar(ctk.CTkFrame):
         )
         self.search_container.pack(side="left", padx=10, pady=11)
 
+        # Kbd indicator "Ctrl K" empacotado primeiro à direita
+        self.kbd_frame = ctk.CTkFrame(
+            self.search_container, fg_color=BG_ACTIVE, corner_radius=4,
+            border_width=1, border_color=BORDER_COLOR, height=20
+        )
+        self.kbd_frame.pack(side="right", padx=(4, 8), pady=5)
+
+        lbl_kbd = ctk.CTkLabel(
+            self.kbd_frame, text="Ctrl K", font=get_mono_font(11),
+            text_color=TEXT_MUTED, padx=5
+        )
+        lbl_kbd.pack()
+
+        # Ícone de busca empacotado à esquerda
         search_icon = get_icon("search", size=(14, 14))
         lbl_search_icon = ctk.CTkLabel(
             self.search_container, text="" if search_icon else "🔍", image=search_icon
         )
         lbl_search_icon.pack(side="left", padx=(10, 4))
 
+        # Entry empacotado no centro com pady=2 para não sobrepor a borda de 1px do frame
         self.entry_search = ctk.CTkEntry(
             self.search_container, placeholder_text="Buscar no save…",
-            width=190, height=30, font=get_ui_font(13),
+            width=190, height=28, font=get_ui_font(13),
             fg_color="transparent", border_width=0, text_color=TEXT_MAIN
         )
-        self.entry_search.pack(side="left", fill="both", expand=True)
+        self.entry_search.pack(side="left", fill="both", expand=True, pady=2)
         self.entry_search.bind("<KeyRelease>", self._handle_search)
-
-        # Kbd indicator "Ctrl K"
-        self.kbd_frame = ctk.CTkFrame(
-            self.search_container, fg_color=BG_ACTIVE, corner_radius=4,
-            border_width=1, border_color=BORDER_COLOR, height=20
-        )
-        self.kbd_frame.pack(side="right", padx=(4, 8), pady=5)
-        lbl_kbd = ctk.CTkLabel(
-            self.kbd_frame, text="Ctrl K", font=get_mono_font(11),
-            text_color=TEXT_MUTED, padx=5
-        )
-        lbl_kbd.pack()
+        self.entry_search.bind("<Escape>", lambda e: (self.entry_search.delete(0, "end"), self._handle_search()))
+        self.search_container.bind("<Button-1>", lambda e: self.entry_search.focus_set())
+        lbl_search_icon.bind("<Button-1>", lambda e: self.entry_search.focus_set())
+        self.kbd_frame.bind("<Button-1>", lambda e: self.entry_search.focus_set())
+        lbl_kbd.bind("<Button-1>", lambda e: self.entry_search.focus_set())
 
     def set_title(self, title: str):
         self.lbl_title.configure(text=title)

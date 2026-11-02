@@ -52,6 +52,7 @@ class LibraryView(ctk.CTkFrame):
         self.collapsed_games: Set[str] = set()
         self.ignored_suggestions: Set[str] = set()
         self._slot_preview_cache: Dict[str, Dict[str, Any]] = {}
+        self._filter_debounce_job = None
 
         self._build_ui()
 
@@ -106,17 +107,31 @@ class LibraryView(ctk.CTkFrame):
         search_wrap.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
         s_ico = get_icon("search", size=(14, 14))
-        ctk.CTkLabel(search_wrap, text="" if s_ico else "🔍", image=s_ico).pack(side="left", padx=(10, 4))
+        lbl_s = ctk.CTkLabel(search_wrap, text="" if s_ico else "🔍", image=s_ico)
+        lbl_s.pack(side="left", padx=(10, 4))
 
         self.entry_game_filter = ctk.CTkEntry(
             search_wrap, placeholder_text="Filtrar jogos…",
-            font=get_ui_font(12), height=30, fg_color="transparent",
+            font=get_ui_font(12), height=28, fg_color="transparent",
             border_width=0, text_color=TEXT_MAIN
         )
-        self.entry_game_filter.pack(side="left", fill="both", expand=True)
+        self.entry_game_filter.pack(side="left", fill="both", expand=True, pady=2)
         if self.filter_query:
             self.entry_game_filter.insert(0, self.filter_query)
-        self.entry_game_filter.bind("<KeyRelease>", self._on_game_filter_change)
+
+        def _on_game_filter_key(event=None):
+            if event and event.keysym == "Escape":
+                self.entry_game_filter.delete(0, "end")
+                self._on_game_filter_change()
+                return
+            if self._filter_debounce_job:
+                self.after_cancel(self._filter_debounce_job)
+            self._filter_debounce_job = self.after(200, self._on_game_filter_change)
+
+        self.entry_game_filter.bind("<KeyRelease>", _on_game_filter_key)
+        self.entry_game_filter.bind("<Escape>", lambda e: (self.entry_game_filter.delete(0, "end"), self._on_game_filter_change()))
+        search_wrap.bind("<Button-1>", lambda e: self.entry_game_filter.focus_set())
+        lbl_s.bind("<Button-1>", lambda e: self.entry_game_filter.focus_set())
 
         # Segmented control de Ordenação (#11:1995: Recentes / Nome / Motor)
         sort_box = ctk.CTkFrame(

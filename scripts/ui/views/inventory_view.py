@@ -54,6 +54,7 @@ class InventoryView(ctk.CTkFrame):
         self._original_quantities: Dict[str, int] = {}
         self._total_shown: int = 0
         self._total_catalog: int = 0
+        self._filter_debounce_job = None
 
         self._build_ui()
 
@@ -87,11 +88,27 @@ class InventoryView(ctk.CTkFrame):
 
         self.entry_filter = ctk.CTkEntry(
             search_wrap, placeholder_text="Filtrar por nome ou ID…",
-            font=get_ui_font(12), height=30, fg_color="transparent",
+            font=get_ui_font(12), height=28, fg_color="transparent",
             border_width=0, text_color=TEXT_MAIN
         )
-        self.entry_filter.pack(side="left", fill="both", expand=True)
-        self.entry_filter.bind("<KeyRelease>", lambda e: self.on_filter_change(self.entry_filter.get()))
+        self.entry_filter.pack(side="left", fill="both", expand=True, pady=2)
+
+        def _on_filter_key(event=None):
+            if event and event.keysym == "Escape":
+                self.entry_filter.delete(0, "end")
+                if self.on_filter_change:
+                    self.on_filter_change("")
+                return
+            if self._filter_debounce_job:
+                self.after_cancel(self._filter_debounce_job)
+            self._filter_debounce_job = self.after(
+                150, lambda: self.on_filter_change(self.entry_filter.get()) if self.on_filter_change else None
+            )
+
+        self.entry_filter.bind("<KeyRelease>", _on_filter_key)
+        self.entry_filter.bind("<Escape>", lambda e: (self.entry_filter.delete(0, "end"), self.on_filter_change("") if self.on_filter_change else None))
+        search_wrap.bind("<Button-1>", lambda e: self.entry_filter.focus_set())
+        lbl_s.bind("<Button-1>", lambda e: self.entry_filter.focus_set())
 
         # Chips de Filtro (Todos / No Save / Não Obtidos)
         chips_box = ctk.CTkFrame(
@@ -211,6 +228,7 @@ class InventoryView(ctk.CTkFrame):
         )
         self.ent_inv_qty.pack(side="left", padx=2)
         self.ent_inv_qty.bind("<Return>", lambda e: self._handle_qty_entry())
+        self.ent_inv_qty.bind("<FocusOut>", lambda e: self._handle_qty_entry())
 
         ctk.CTkButton(
             self.stepper_box, text="+", width=28, height=28,

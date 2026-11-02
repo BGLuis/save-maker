@@ -189,6 +189,8 @@ class AdvancedView(ctk.CTkFrame):
         self.entry_val.pack(fill="x", padx=10, pady=8)
         self.entry_val.bind("<KeyRelease>", self._validate_live_input)
         self.entry_val.bind("<Return>", lambda e: self._handle_apply())
+        self.entry_val.bind("<FocusOut>", lambda e: self._handle_apply())
+        self.code_box.bind("<Button-1>", lambda e: self.entry_val.focus_set())
 
         # Indicador de validação JSON ao vivo (#6:1080)
         val_row = ctk.CTkFrame(right_pad, fg_color="transparent")

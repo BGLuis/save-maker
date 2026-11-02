@@ -43,6 +43,7 @@ class ActorsView(ctk.CTkFrame):
         self.resource_bars: Dict[str, ctk.CTkProgressBar] = {}
         self.attr_cards: Dict[str, ctk.CTkFrame] = {}
         self.attr_code_labels: Dict[str, ctk.CTkLabel] = {}
+        self._filter_debounce_job = None
         self.original_stats: Dict[str, int] = {}
         self.stat_badges: Dict[str, ctk.CTkLabel] = {}
         self.current_actor_id: Optional[Any] = None
@@ -90,10 +91,23 @@ class ActorsView(ctk.CTkFrame):
 
         self.entry_filter = ctk.CTkEntry(
             search_wrap, placeholder_text="Filtrar heróis…", font=get_ui_font(12),
-            height=28, fg_color="transparent", border_width=0, text_color=TEXT_MAIN
+            height=26, fg_color="transparent", border_width=0, text_color=TEXT_MAIN
         )
-        self.entry_filter.pack(side="left", fill="both", expand=True)
-        self.entry_filter.bind("<KeyRelease>", self._on_filter_change)
+        self.entry_filter.pack(side="left", fill="both", expand=True, pady=2)
+
+        def _on_filter_key(event=None):
+            if event and event.keysym == "Escape":
+                self.entry_filter.delete(0, "end")
+                self._on_filter_change()
+                return
+            if self._filter_debounce_job:
+                self.after_cancel(self._filter_debounce_job)
+            self._filter_debounce_job = self.after(150, self._on_filter_change)
+
+        self.entry_filter.bind("<KeyRelease>", _on_filter_key)
+        self.entry_filter.bind("<Escape>", lambda e: (self.entry_filter.delete(0, "end"), self._on_filter_change()))
+        search_wrap.bind("<Button-1>", lambda e: self.entry_filter.focus_set())
+        lbl_s.bind("<Button-1>", lambda e: self.entry_filter.focus_set())
 
         ctk.CTkFrame(left, height=1, fg_color=BORDER_COLOR).pack(fill="x")
 
@@ -266,6 +280,7 @@ class ActorsView(ctk.CTkFrame):
         )
         self.actor_entries["level"].pack(side="left", fill="both", expand=True)
         self.actor_entries["level"].bind("<Return>", lambda e: self.on_save_stats())
+        self.actor_entries["level"].bind("<FocusOut>", lambda e: self.on_save_stats())
 
         btn_lvl_plus = ctk.CTkButton(
             lvl_stepper, text="+", width=36, height=34,
@@ -300,6 +315,7 @@ class ActorsView(ctk.CTkFrame):
         )
         self.actor_entries["exp"].pack(side="right", padx=(4, 4))
         self.actor_entries["exp"].bind("<Return>", lambda e: self.on_save_stats())
+        self.actor_entries["exp"].bind("<FocusOut>", lambda e: self.on_save_stats())
 
         self.exp_bar = ctk.CTkProgressBar(
             exp_box, height=6, corner_radius=3,
@@ -398,6 +414,7 @@ class ActorsView(ctk.CTkFrame):
         self.actor_entries[cur_key].pack(side="left")
         self.actor_entries[cur_key].bind("<KeyRelease>", lambda e, ck=cur_key, mk=max_key: self._update_resource_bar(ck, mk))
         self.actor_entries[cur_key].bind("<Return>", lambda e: self.on_save_stats())
+        self.actor_entries[cur_key].bind("<FocusOut>", lambda e: self.on_save_stats())
 
         ctk.CTkLabel(f_row, text="/", font=get_mono_font(12), text_color=TEXT_SUBTLE).pack(side="left", padx=4)
 
@@ -410,6 +427,7 @@ class ActorsView(ctk.CTkFrame):
             self.actor_entries[max_key].pack(side="left")
             self.actor_entries[max_key].bind("<KeyRelease>", lambda e, ck=cur_key, mk=max_key: self._update_resource_bar(ck, mk))
             self.actor_entries[max_key].bind("<Return>", lambda e: self.on_save_stats())
+            self.actor_entries[max_key].bind("<FocusOut>", lambda e: self.on_save_stats())
         else:
             lbl_tp_max = ctk.CTkFrame(
                 f_row, width=54, height=28, corner_radius=5,
@@ -502,6 +520,7 @@ class ActorsView(ctk.CTkFrame):
         self.actor_entries[key].pack(side="left")
         self.actor_entries[key].bind("<KeyRelease>", lambda e, k=key: self._on_attr_entry_change(k))
         self.actor_entries[key].bind("<Return>", lambda e: self.on_save_stats())
+        self.actor_entries[key].bind("<FocusOut>", lambda e: self.on_save_stats())
 
         btn_p = ctk.CTkButton(
             stepper, text="+", width=24, height=26,

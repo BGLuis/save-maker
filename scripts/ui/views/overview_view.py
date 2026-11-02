@@ -166,22 +166,29 @@ class OverviewView(ctk.CTkScrollableFrame):
         )
         input_wrap.pack(side="left", fill="x", expand=True, padx=(0, 8))
 
-        in_coins = get_icon("coins", size=(14, 14))
-        lbl_in_ico = ctk.CTkLabel(input_wrap, text="" if in_coins else "🪙", image=in_coins)
-        lbl_in_ico.pack(side="left", padx=(10, 4))
-
-        self.entry_gold = ctk.CTkEntry(
-            input_wrap, height=30, font=get_mono_font(13),
-            fg_color="transparent", border_width=0, text_color=TEXT_MAIN
-        )
-        self.entry_gold.pack(side="left", fill="both", expand=True)
-        self.entry_gold.bind("<Return>", lambda e: self._handle_apply_gold())
-
+        # Unidade "G" empacotada à direita primeiro
         lbl_in_unit = ctk.CTkLabel(
             input_wrap, text="G", font=get_mono_font(11),
             text_color=TEXT_SUBTLE
         )
         lbl_in_unit.pack(side="right", padx=(4, 10))
+
+        # Ícone empacotado à esquerda
+        in_coins = get_icon("coins", size=(14, 14))
+        lbl_in_ico = ctk.CTkLabel(input_wrap, text="" if in_coins else "🪙", image=in_coins)
+        lbl_in_ico.pack(side="left", padx=(10, 4))
+
+        # Entry empacotada no centro com pady=2 para preservar a borda de 1px intacta
+        self.entry_gold = ctk.CTkEntry(
+            input_wrap, height=28, font=get_mono_font(13),
+            fg_color="transparent", border_width=0, text_color=TEXT_MAIN
+        )
+        self.entry_gold.pack(side="left", fill="both", expand=True, pady=2)
+        self.entry_gold.bind("<Return>", lambda e: self._handle_apply_gold())
+        self.entry_gold.bind("<FocusOut>", lambda e: self._handle_apply_gold())
+        input_wrap.bind("<Button-1>", lambda e: self.entry_gold.focus_set())
+        lbl_in_ico.bind("<Button-1>", lambda e: self.entry_gold.focus_set())
+        lbl_in_unit.bind("<Button-1>", lambda e: self.entry_gold.focus_set())
 
         btn_apply = ctk.CTkButton(
             edit_row, text="Aplicar", width=84, height=34,

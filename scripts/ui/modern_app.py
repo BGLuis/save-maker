@@ -564,7 +564,47 @@ class ModernSaveEditorApp(CtkDndApp):
         self.lbl_selected_sys = CompatibilityWidgetProxy()
 
     def _setup_keyboard_shortcuts(self):
-        """Registra os atalhos de teclado globais Ctrl 0–5, Ctrl S, Ctrl Z, Ctrl K."""
+        """Registra os atalhos de teclado globais Ctrl 0–5, Ctrl S, Ctrl Z, Ctrl K e edição no Linux."""
+        # Atalhos de edição de texto para Linux / Tkinter nativo
+        def _select_all(event):
+            try:
+                event.widget.select_range(0, "end")
+                event.widget.icursor("end")
+            except Exception:
+                pass
+            return "break"
+
+        def _copy(event):
+            try:
+                event.widget.event_generate("<<Copy>>")
+            except Exception:
+                pass
+            return "break"
+
+        def _paste(event):
+            try:
+                event.widget.event_generate("<<Paste>>")
+            except Exception:
+                pass
+            return "break"
+
+        def _cut(event):
+            try:
+                event.widget.event_generate("<<Cut>>")
+            except Exception:
+                pass
+            return "break"
+
+        for cls_name in ("Entry", "TEntry"):
+            self.bind_class(cls_name, "<Control-a>", _select_all)
+            self.bind_class(cls_name, "<Control-A>", _select_all)
+            self.bind_class(cls_name, "<Control-c>", _copy)
+            self.bind_class(cls_name, "<Control-C>", _copy)
+            self.bind_class(cls_name, "<Control-v>", _paste)
+            self.bind_class(cls_name, "<Control-V>", _paste)
+            self.bind_class(cls_name, "<Control-x>", _cut)
+            self.bind_class(cls_name, "<Control-X>", _cut)
+
         self.bind("<Control-KeyPress-0>", lambda e: self.select_nav_area("library"))
         self.bind("<Control-KeyPress-1>", lambda e: self.select_nav_area("overview"))
         self.bind("<Control-KeyPress-2>", lambda e: self.select_nav_area("actors"))
@@ -574,8 +614,17 @@ class ModernSaveEditorApp(CtkDndApp):
 
         self.bind("<Control-s>", lambda e: self._shortcut_save())
         self.bind("<Control-S>", lambda e: self._shortcut_save())
-        self.bind("<Control-z>", lambda e: self.undo_last_action())
-        self.bind("<Control-Z>", lambda e: self.undo_last_action())
+
+        def _handle_undo(e):
+            widget = getattr(e, "widget", None)
+            focused = self.focus_get()
+            if isinstance(widget, (tk.Entry, ttk.Entry, tk.Text)) or isinstance(focused, (tk.Entry, ttk.Entry, tk.Text)):
+                return None
+            self.undo_last_action()
+            return "break"
+
+        self.bind("<Control-z>", _handle_undo)
+        self.bind("<Control-Z>", _handle_undo)
         self.bind("<Control-k>", lambda e: self._shortcut_search())
         self.bind("<Control-K>", lambda e: self._shortcut_search())
 
