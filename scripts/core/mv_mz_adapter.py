@@ -16,10 +16,25 @@ from typing import Any, Dict, List, Optional, Tuple
 from .base_adapter import BaseSaveAdapter
 
 try:
-    from lzstring import LZString
-    _LZSTRING = LZString()
+    from .fast_lzstring import FAST_LZSTRING as _LZSTRING
 except Exception:
-    _LZSTRING = None
+    try:
+        from lzstring import LZString
+        _LZSTRING = LZString()
+    except Exception:
+        _LZSTRING = None
+
+try:
+    import orjson
+    def _loads_json(data: bytes | str) -> Any:
+        if isinstance(data, str):
+            data = data.encode("utf-8")
+        return orjson.loads(data)
+except ImportError:
+    def _loads_json(data: bytes | str) -> Any:
+        if isinstance(data, bytes):
+            data = data.decode("utf-8-sig")
+        return json.loads(data)
 
 
 class MvMzAdapter(BaseSaveAdapter):
@@ -52,7 +67,7 @@ class MvMzAdapter(BaseSaveAdapter):
                 if not txt.startswith("{") and not txt.startswith("["):
                     unb64 = _LZSTRING.decompressFromBase64(txt)
                     if unb64:
-                        parsed = json.loads(unb64)
+                        parsed = _loads_json(unb64)
                         comp = f"{comp}+lzstring"
             except Exception:
                 pass
@@ -60,7 +75,7 @@ class MvMzAdapter(BaseSaveAdapter):
         if parsed is None:
             # Tenta decodificar como texto direto
             try:
-                parsed = json.loads(decompressed.decode("utf-8-sig"))
+                parsed = _loads_json(decompressed)
             except Exception as e:
                 raise ValueError(f"Arquivo não pôde ser interpretado como JSON de MV/MZ: {e}")
 
@@ -651,8 +666,7 @@ class MvMzAdapter(BaseSaveAdapter):
 
     def _parse_json(self, bytes_data: bytes) -> Optional[Any]:
         try:
-            text = bytes_data.decode("utf-8-sig")
-            return json.loads(text)
+            return _loads_json(bytes_data)
         except Exception:
             return None
 

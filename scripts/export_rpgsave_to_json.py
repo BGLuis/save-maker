@@ -11,10 +11,13 @@ import traceback
 from pathlib import Path
 
 try:
-    from lzstring import LZString
-    _LZSTRING = LZString()
+    from core.fast_lzstring import FAST_LZSTRING as _LZSTRING
 except Exception:
-    _LZSTRING = None
+    try:
+        from lzstring import LZString
+        _LZSTRING = LZString()
+    except Exception:
+        _LZSTRING = None
 
 def read_bytes(path: Path) -> bytes:
     return path.read_bytes()

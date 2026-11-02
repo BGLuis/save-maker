@@ -1,4 +1,6 @@
 lzstring>=1.0.4
+lzstring-optimized>=0.9.1
+orjson>=3.10.0
 future>=1.0.0
 tkinterdnd2-universal>=0.4.3
 customtkinter>=5.2.0
